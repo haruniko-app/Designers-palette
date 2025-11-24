@@ -120,3 +120,125 @@ return "完了";
 throw new Error('配置エラー: ' + e.message)                                                   ;
 }
 }
+
+// =================================================================
+// 整列機能
+// =================================================================
+
+/**
+ * 選択された要素を整列する汎用関数
+ * @param {string} alignmentType - 整列タイプ (LEFT, CENTER, RIGHT, TOP, MIDDLE, BOTTOM, HORIZONTAL, VERTICAL)
+ */
+function alignElements(alignmentType) {
+  try {
+    var selection = SlidesApp.getActivePresentation().getSelection();
+    var pageElementRange = selection.getPageElementRange();
+
+    if (!pageElementRange) {
+      throw new Error('要素を選択してください');
+    }
+
+    var elements = pageElementRange.getPageElements();
+    if (elements.length === 0) {
+      throw new Error('要素を選択してください');
+    }
+
+    // 整列タイプに応じた処理
+    switch(alignmentType) {
+      case 'LEFT':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.LEFT);
+        break;
+      case 'CENTER':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
+        break;
+      case 'RIGHT':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.RIGHT);
+        break;
+      case 'TOP':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.TOP);
+        break;
+      case 'MIDDLE':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
+        break;
+      case 'BOTTOM':
+        elements[0].alignOnPage(SlidesApp.AlignmentPosition.BOTTOM);
+        break;
+      case 'HORIZONTAL':
+        // 複数選択時のみ有効
+        if (elements.length < 2) {
+          throw new Error('水平方向に等間隔配置するには2つ以上の要素を選択してください');
+        }
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
+        break;
+      case 'VERTICAL':
+        // 複数選択時のみ有効
+        if (elements.length < 2) {
+          throw new Error('垂直方向に等間隔配置するには2つ以上の要素を選択してください');
+        }
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
+        break;
+      default:
+        throw new Error('不明な整列タイプ: ' + alignmentType);
+    }
+
+    return '整列完了';
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+/**
+ * 左揃え
+ */
+function alignLeft() {
+  return alignElements('LEFT');
+}
+
+/**
+ * 中央揃え（水平）
+ */
+function alignCenter() {
+  return alignElements('CENTER');
+}
+
+/**
+ * 右揃え
+ */
+function alignRight() {
+  return alignElements('RIGHT');
+}
+
+/**
+ * 上揃え
+ */
+function alignTop() {
+  return alignElements('TOP');
+}
+
+/**
+ * 中央揃え（垂直）
+ */
+function alignMiddle() {
+  return alignElements('MIDDLE');
+}
+
+/**
+ * 下揃え
+ */
+function alignBottom() {
+  return alignElements('BOTTOM');
+}
+
+/**
+ * 水平方向に整列
+ */
+function alignHorizontal() {
+  return alignElements('HORIZONTAL');
+}
+
+/**
+ * 垂直方向に整列
+ */
+function alignVertical() {
+  return alignElements('VERTICAL');
+}

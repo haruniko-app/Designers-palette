@@ -127,7 +127,7 @@ throw new Error('配置エラー: ' + e.message)                                
 
 /**
  * 選択された要素を整列する汎用関数
- * @param {string} alignmentType - 整列タイプ (LEFT, CENTER, RIGHT, TOP, MIDDLE, BOTTOM, HORIZONTAL, VERTICAL)
+ * @param {string} alignmentType - 整列タイプ (LEFT, CENTER, RIGHT, TOP, MIDDLE, BOTTOM)
  */
 function alignElements(alignmentType) {
   try {
@@ -143,42 +143,40 @@ function alignElements(alignmentType) {
       throw new Error('要素を選択してください');
     }
 
-    // 整列タイプに応じた処理（PageElementRangeに対して実行）
-    switch(alignmentType) {
-      case 'LEFT':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.LEFT);
-        break;
-      case 'CENTER':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
-        break;
-      case 'RIGHT':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.RIGHT);
-        break;
-      case 'TOP':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.TOP);
-        break;
-      case 'MIDDLE':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
-        break;
-      case 'BOTTOM':
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.BOTTOM);
-        break;
-      case 'HORIZONTAL':
-        // 複数選択時のみ有効
-        if (elements.length < 2) {
-          throw new Error('水平方向に等間隔配置するには2つ以上の要素を選択してください');
-        }
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
-        break;
-      case 'VERTICAL':
-        // 複数選択時のみ有効
-        if (elements.length < 2) {
-          throw new Error('垂直方向に等間隔配置するには2つ以上の要素を選択してください');
-        }
-        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
-        break;
-      default:
-        throw new Error('不明な整列タイプ: ' + alignmentType);
+    // スライドのサイズを取得
+    var slide = selection.getCurrentPage();
+    var pageWidth = slide.getPageWidth();
+    var pageHeight = slide.getPageHeight();
+
+    // 各要素に対して整列を実行
+    for (var i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      var width = element.getWidth();
+      var height = element.getHeight();
+
+      // 整列タイプに応じた位置計算
+      switch(alignmentType) {
+        case 'LEFT':
+          element.setLeft(0);
+          break;
+        case 'CENTER':
+          element.setLeft((pageWidth - width) / 2);
+          break;
+        case 'RIGHT':
+          element.setLeft(pageWidth - width);
+          break;
+        case 'TOP':
+          element.setTop(0);
+          break;
+        case 'MIDDLE':
+          element.setTop((pageHeight - height) / 2);
+          break;
+        case 'BOTTOM':
+          element.setTop(pageHeight - height);
+          break;
+        default:
+          throw new Error('不明な整列タイプ: ' + alignmentType);
+      }
     }
 
     return '整列完了';
@@ -227,18 +225,4 @@ function alignMiddle() {
  */
 function alignBottom() {
   return alignElements('BOTTOM');
-}
-
-/**
- * 水平方向に整列
- */
-function alignHorizontal() {
-  return alignElements('HORIZONTAL');
-}
-
-/**
- * 垂直方向に整列
- */
-function alignVertical() {
-  return alignElements('VERTICAL');
 }

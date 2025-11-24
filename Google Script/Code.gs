@@ -143,25 +143,25 @@ function alignElements(alignmentType) {
       throw new Error('要素を選択してください');
     }
 
-    // 整列タイプに応じた処理
+    // 整列タイプに応じた処理（PageElementRangeに対して実行）
     switch(alignmentType) {
       case 'LEFT':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.LEFT);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.LEFT);
         break;
       case 'CENTER':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.HORIZONTAL_CENTER);
         break;
       case 'RIGHT':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.RIGHT);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.RIGHT);
         break;
       case 'TOP':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.TOP);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.TOP);
         break;
       case 'MIDDLE':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.VERTICAL_CENTER);
         break;
       case 'BOTTOM':
-        elements[0].alignOnPage(SlidesApp.AlignmentPosition.BOTTOM);
+        pageElementRange.alignOnPage(SlidesApp.AlignmentPosition.BOTTOM);
         break;
       case 'HORIZONTAL':
         // 複数選択時のみ有効

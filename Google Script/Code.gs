@@ -143,39 +143,86 @@ function alignElements(alignmentType) {
       throw new Error('要素を選択してください');
     }
 
-    // プレゼンテーションのサイズを取得
-    var presentation = SlidesApp.getActivePresentation();
-    var pageWidth = presentation.getPageWidth();
-    var pageHeight = presentation.getPageHeight();
+    // 基準位置を計算
+    var referenceValue = null;
 
-    // 各要素に対して整列を実行
+    for (var i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      var left = element.getLeft();
+      var top = element.getTop();
+      var width = element.getWidth();
+      var height = element.getHeight();
+
+      var value;
+      switch(alignmentType) {
+        case 'LEFT':
+          value = left;
+          if (referenceValue === null || value < referenceValue) {
+            referenceValue = value;
+          }
+          break;
+        case 'CENTER':
+          value = left + width / 2;
+          if (referenceValue === null) {
+            referenceValue = value;
+          } else {
+            referenceValue = (referenceValue + value) / 2;
+          }
+          break;
+        case 'RIGHT':
+          value = left + width;
+          if (referenceValue === null || value > referenceValue) {
+            referenceValue = value;
+          }
+          break;
+        case 'TOP':
+          value = top;
+          if (referenceValue === null || value < referenceValue) {
+            referenceValue = value;
+          }
+          break;
+        case 'MIDDLE':
+          value = top + height / 2;
+          if (referenceValue === null) {
+            referenceValue = value;
+          } else {
+            referenceValue = (referenceValue + value) / 2;
+          }
+          break;
+        case 'BOTTOM':
+          value = top + height;
+          if (referenceValue === null || value > referenceValue) {
+            referenceValue = value;
+          }
+          break;
+      }
+    }
+
+    // 基準位置に揃える
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i];
       var width = element.getWidth();
       var height = element.getHeight();
 
-      // 整列タイプに応じた位置計算
       switch(alignmentType) {
         case 'LEFT':
-          element.setLeft(0);
+          element.setLeft(referenceValue);
           break;
         case 'CENTER':
-          element.setLeft((pageWidth - width) / 2);
+          element.setLeft(referenceValue - width / 2);
           break;
         case 'RIGHT':
-          element.setLeft(pageWidth - width);
+          element.setLeft(referenceValue - width);
           break;
         case 'TOP':
-          element.setTop(0);
+          element.setTop(referenceValue);
           break;
         case 'MIDDLE':
-          element.setTop((pageHeight - height) / 2);
+          element.setTop(referenceValue - height / 2);
           break;
         case 'BOTTOM':
-          element.setTop(pageHeight - height);
+          element.setTop(referenceValue - height);
           break;
-        default:
-          throw new Error('不明な整列タイプ: ' + alignmentType);
       }
     }
 

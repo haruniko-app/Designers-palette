@@ -143,10 +143,10 @@ function alignElements(alignmentType) {
       throw new Error('要素を選択してください');
     }
 
-    // スライドのサイズを取得
-    var slide = selection.getCurrentPage();
-    var pageWidth = slide.getPageWidth();
-    var pageHeight = slide.getPageHeight();
+    // プレゼンテーションのサイズを取得
+    var presentation = SlidesApp.getActivePresentation();
+    var pageWidth = presentation.getPageWidth();
+    var pageHeight = presentation.getPageHeight();
 
     // 各要素に対して整列を実行
     for (var i = 0; i < elements.length; i++) {

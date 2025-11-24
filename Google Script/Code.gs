@@ -5,7 +5,7 @@ SlidesApp.getUi().createMenu('AI画像ツール').addItem('ツールを起動', 
 }
 
 function showSidebar() {
-var html = HtmlService.createHtmlOutputFromFile('Sidebar').setTitle('AI画像拡張ツール').setWidth(340);
+var html = HtmlService.createHtmlOutputFromFile('Sidebar').setTitle('Slide AI Tool').setWidth(340);
 SlidesApp.getUi().showSidebar(html)                                                                           ;
 }
 

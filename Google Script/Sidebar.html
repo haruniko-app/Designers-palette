@@ -259,44 +259,38 @@
                     <div class="info-box">選択した要素をスライド内で整列します。画像、図形、テキストなど、すべての要素に対応しています。</div>
                     <div class="control-label">左右に配置</div>
                     <div class="btn-group">
-                        <div class="btn-opt" onclick="alignElement('left')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('left')" style="display:flex;align-items:center;justify-content:center;" title="左揃え">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M4 22H2V2h2v20zM22 7H6v3h16V7zm-6 7H6v3h10v-3z"/>
                             </svg>
-                            左
                         </div>
-                        <div class="btn-opt" onclick="alignElement('center')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('center')" style="display:flex;align-items:center;justify-content:center;" title="中央揃え（横）">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M11 2h2v20h-2V2zm10 5H3v3h18V7zm-4 7H7v3h10v-3z"/>
                             </svg>
-                            中央（横）
                         </div>
-                        <div class="btn-opt" onclick="alignElement('right')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('right')" style="display:flex;align-items:center;justify-content:center;" title="右揃え">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20 2h2v20h-2V2zM2 10h16V7H2v3zm6 7h10v-3H8v3z"/>
                             </svg>
-                            右
                         </div>
                     </div>
                     <div class="control-label" style="margin-top:15px;">上下に配置</div>
                     <div class="btn-group">
-                        <div class="btn-opt" onclick="alignElement('top')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('top')" style="display:flex;align-items:center;justify-content:center;" title="上揃え">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M22 2v2H2V2h20zM7 22h3V6H7v16zm7-6h3V6h-3v10z"/>
                             </svg>
-                            上
                         </div>
-                        <div class="btn-opt" onclick="alignElement('middle')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('middle')" style="display:flex;align-items:center;justify-content:center;" title="中央揃え（縦）">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M22 11v2H2v-2h20zM7 22h3V2H7v20zm7-4h3V6h-3v12z"/>
                             </svg>
-                            中央（縦）
                         </div>
-                        <div class="btn-opt" onclick="alignElement('bottom')" style="display:flex;align-items:center;gap:6px;">
+                        <div class="btn-opt" onclick="alignElement('bottom')" style="display:flex;align-items:center;justify-content:center;" title="下揃え">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M22 22H2v-2h20v2zM10 2H7v16h3V2zm7 6h-3v10h3V8z"/>
                             </svg>
-                            下
                         </div>
                     </div>
                     <div id="alignStatus" style="font-size:11px; color:#5f6368; margin-top:10px; text-align:center;"></div>

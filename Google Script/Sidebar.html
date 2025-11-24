@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet">
+    <style>
+      body { font-family: 'Roboto', sans-serif; font-size: 13px; color: #202124; margin: 0; padding: 0; background-color: #fff; display: flex; flex-direction: column; height: 100vh; }
+      
+      /* Preview Area */
+      .preview-container { 
+        background-color: #f1f3f4; padding: 20px; display: flex; justify-content: center; align-items: center; 
+        border-bottom: 1px solid #dadce0; flex-shrink: 0; position: relative; min-height: 200px; 
+      }
+      canvas { 
+        max-width: 100%; max-height: 250px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); background-color: #fff; 
+        background-image: linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%); background-size: 20px 20px; 
+        display: none; /* 初期は非表示 */
+      }
+      
+      /* Placeholder Message (Initial State) */
+      #placeholder {
+        text-align: center; color: #5f6368; font-size: 13px; line-height: 1.6;
+        display: flex; flex-direction: column; align-items: center;
+      }
+      .placeholder-icon { width: 48px; height: 48px; margin-bottom: 10px; opacity: 0.5; fill: #5f6368; }
+      
+      /* Loading Overlay (Only on Preview) */
+      #loadingOverlay {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255,255,255,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center;
+        z-index: 10; display: none;
+      }
+      .spinner {
+        border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%;
+        width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 10px;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .loading-text { font-size: 12px; font-weight: 500; color: #1a73e8; }
+
+      /* Main Content */
+      .main-content { flex: 1; overflow-y: auto; opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
+      .main-content.active { opacity: 1; pointer-events: auto; }
+      
+      /* Accordion */
+      .section { border-bottom: 1px solid #dadce0; }
+      .section-header { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; transition: background 0.2s; }
+      .section-header:hover { background-color: #f1f3f4; }
+      .section-title { font-weight: 500; flex: 1; font-size: 14px; }
+      .arrow-icon { width: 20px; height: 20px; fill: #5f6368; margin-right: 10px; transform: rotate(-90deg); transition: transform 0.2s; }
+      .section.open .arrow-icon { transform: rotate(0deg); }
+      .section-content { display: none; padding: 8px 16px 16px 16px; }
+      .section.open .section-content { display: block; }
+      
+      /* Controls */
+      .control-label { display: block; color: #5f6368; font-size: 12px; margin-bottom: 8px; }
+      .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .input-wrapper { display: flex; align-items: center; border-bottom: 1px solid #5f6368; }
+      input[type="number"], textarea { border: none; outline: none; width: 100%; font-size: 13px; background: transparent; }
+      input[type="range"] { width: 100%; accent-color: #1a73e8; margin-top: 5px; cursor: pointer; }
+      textarea { border: 1px solid #dadce0; border-radius: 4px; padding: 8px; height: 60px; resize: none; margin-top: 5px; }
+      
+      /* Buttons */
+      .action-btn { background: #fff; border: 1px solid #dadce0; color: #1a73e8; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 8px; font-weight: 500; }
+      .action-btn:hover { background: #f8fbff; border-color: #c2dbfe; }
+      .primary-btn { background: #1a73e8; color: #fff; border: none; }
+      .primary-btn:hover { background: #1765cc; }
+      
+      .btn-group { display: flex; border: 1px solid #dadce0; border-radius: 4px; overflow: hidden; margin-bottom: 10px;}
+      .btn-opt { flex: 1; text-align: center; padding: 8px; cursor: pointer; font-size: 12px; background: #fff; border-right: 1px solid #dadce0; }
+      .btn-opt.selected { background: #e8f0fe; color: #1967d2; font-weight: 500; }
+      
+      .footer { padding: 16px; border-top: 1px solid #dadce0; display: flex; justify-content: flex-end; }
+      
+      .info-box { background-color: #e8f0fe; border: 1px solid #d2e3fc; color: #185abc; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 12px; line-height: 1.4; }
+      
+      .retry-group { display: flex; gap: 10px; margin-top: 10px; }
+      .retry-btn { flex: 1; background: #f1f3f4; color: #333; border: 1px solid #dadce0; }
+      .confirm-btn { flex: 1; background: #e6f4ea; color: #188038; border: 1px solid #188038; }
+
+      .control-row { margin-bottom: 12px; }
+      .control-row .control-label { display: flex; justify-content: space-between; }
+      .val-disp { font-weight: bold; color: #1a73e8; cursor: pointer; }
+      .val-disp:hover { text-decoration: underline; }
+      .divider { border: none; border-top: 1px dashed #dadce0; margin: 15px 0; }
+    </style>
+  </head>
+  <body>
+    <div class="preview-container">
+      <div id="placeholder">
+        <svg class="placeholder-icon" viewBox="0 0 24 24"><path
+            d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" /></svg>
+        <div>スライド上の画像を選択してください</div>
+        <div
+          style="font-size:11px; margin-top:5px; color:#999;">自動的に読み込まれます</div>
+      </div>
+
+      <canvas id="previewCanvas"></canvas>
+
+      <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">読み込み中...</div>
+      </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+
+      <div class="section open" id="sec-crop">
+        <div class="section-header" onclick="toggleSection('sec-crop')">
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path
+              d="M7 10l5 5 5-5z" /></svg><span
+            class="section-title">トリミング確定</span>
+        </div>
+        <div class="section-content">
+          <div class="info-box">現在のトリミング範囲で画像を切り抜き、見えていない部分を削除します。</div>
+          <div id="cropStatus"
+            style="font-size:12px; color:#666; margin-bottom:5px;">-</div>
+          <button class="action-btn" id="cropBtn" onclick="performCrop()"
+            disabled>トリミングを実行して確定</button>
+        </div>
+      </div>
+
+      <div class="section" id="sec-extend">
+        <div class="section-header" onclick="toggleSection('sec-extend')">
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path
+              d="M7 10l5 5 5-5z" /></svg><span
+            class="section-title">AI画像拡張</span>
+        </div>
+        <div class="section-content">
+          <div class="control-label">拡張サイズ (%)</div>
+          <div class="grid-inputs">
+            <div><div class="control-label">横</div><div
+                class="input-wrapper"><input type="number" id="numW" value="0"
+                  min="0" max="100" oninput="syncSlider('w', this.value)"><span
+                  class="unit">%</span></div><input type="range" id="rangeW"
+                min="0" max="100" value="0"
+                oninput="syncNum('w', this.value)"></div>
+            <div><div class="control-label">縦</div><div
+                class="input-wrapper"><input type="number" id="numH" value="0"
+                  min="0" max="100" oninput="syncSlider('h', this.value)"><span
+                  class="unit">%</span></div><input type="range" id="rangeH"
+                min="0" max="100" value="0"
+                oninput="syncNum('h', this.value)"></div>
+          </div>
+          <button class="action-btn" id="generateBtn"
+            onclick="callCloudAI('extend')">生成を実行</button>
+          <div id="postGenButtons" class="retry-group" style="display:none;">
+            <button class="action-btn retry-btn"
+              onclick="callCloudAI('extend')">再生成</button>
+            <button class="action-btn confirm-btn"
+              onclick="confirmAndContinue()">確定して次へ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-upscale">
+        <div class="section-header" onclick="toggleSection('sec-upscale')">
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path
+              d="M7 10l5 5 5-5z" /></svg><span
+            class="section-title">AI高画質化</span>
+        </div>
+        <div class="section-content">
+          <div class="control-label">倍率</div>
+          <div class="btn-group"><div class="btn-opt selected">2倍</div></div>
+          <button class="action-btn" id="upscaleBtn"
+            onclick="callCloudAI('upscale')">高画質化を実行</button>
+        </div>
+      </div>
+
+      <div class="section" id="sec-color">
+        <div class="section-header" onclick="toggleSection('sec-color')">
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path
+              d="M7 10l5 5 5-5z" /></svg><span class="section-title">色調調整</span>
+        </div>
+        <div class="section-content">
+          <div class="control-row"><div class="control-label">明るさ <span
+                class="val-disp" id="val_brightness"
+                onclick="resetVal('brightness', 100)">100</span></div><input
+              type="range" id="brightnessRange" min="0" max="200" value="100"
+              oninput="syncColor('brightness')"></div>
+          <div class="control-row"><div class="control-label">コントラスト <span
+                class="val-disp" id="val_contrast"
+                onclick="resetVal('contrast', 100)">100</span></div><input
+              type="range" id="contrastRange" min="0" max="200" value="100"
+              oninput="syncColor('contrast')"></div>
+          <div class="control-row"><div class="control-label">彩度 <span
+                class="val-disp" id="val_saturate"
+                onclick="resetVal('saturate', 100)">100</span></div><input
+              type="range" id="saturateRange" min="0" max="200" value="100"
+              oninput="syncColor('saturate')"></div>
+          <div class="control-row"><div class="control-label">色相 <span
+                class="val-disp" id="val_hue"
+                onclick="resetVal('hue', 0)">0</span></div><input type="range"
+              id="hueRange" min="0" max="360" value="0"
+              oninput="syncColor('hue')"></div>
+          <hr class="divider">
+          <div class="control-row"><div class="control-label"
+              style="color:#d93025;">赤 <span class="val-disp" id="val_colorR"
+                onclick="resetVal('colorR', 0)">0</span></div><input
+              type="range" id="colorRRange" min="-100" max="100" value="0"
+              oninput="syncColor('colorR')"></div>
+          <div class="control-row"><div class="control-label"
+              style="color:#188038;">緑 <span class="val-disp" id="val_colorG"
+                onclick="resetVal('colorG', 0)">0</span></div><input
+              type="range" id="colorGRange" min="-100" max="100" value="0"
+              oninput="syncColor('colorG')"></div>
+          <div class="control-row"><div class="control-label"
+              style="color:#1a73e8;">青 <span class="val-disp" id="val_colorB"
+                onclick="resetVal('colorB', 0)">0</span></div><input
+              type="range" id="colorBRange" min="-100" max="100" value="0"
+              oninput="syncColor('colorB')"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-effect">
+        <div class="section-header" onclick="toggleSection('sec-effect')">
+          <svg class="arrow-icon" viewBox="0 0 24 24"><path
+              d="M7 10l5 5 5-5z" /></svg><span
+            class="section-title">エフェクト</span>
+        </div>
+        <div class="section-content">
+          <div class="control-row"><div class="control-label">ぼかし <span
+                class="val-disp" id="val_blur"
+                onclick="resetVal('blur', 0)">0</span></div><input type="range"
+              id="blurRange" min="0" max="50" value="0"
+              oninput="syncVal('blur')"></div>
+          <div class="control-row"><div class="control-label">モザイク <span
+                class="val-disp" id="val_pixelate"
+                onclick="resetVal('pixelate', 0)">0</span></div><input
+              type="range" id="pixelateRange" min="0" max="100" value="0"
+              oninput="syncVal('pixelate')"></div>
+          <hr class="divider">
+          <div class="control-row"><div class="control-label">モノクロ <span
+                class="val-disp" id="val_grayscale"
+                onclick="resetVal('grayscale', 0)">0</span></div><input
+              type="range" id="grayscaleRange" min="0" max="100" value="0"
+              oninput="syncVal('grayscale')"></div>
+          <div class="control-row"><div class="control-label">セピア <span
+                class="val-disp" id="val_sepia"
+                onclick="resetVal('sepia', 0)">0</span></div><input type="range"
+              id="sepiaRange" min="0" max="100" value="0"
+              oninput="syncVal('sepia')"></div>
+          <div class="control-row"><div class="control-label">周辺減光 <span
+                class="val-disp" id="val_vignette"
+                onclick="resetVal('vignette', 0)">0</span></div><input
+              type="range" id="vignetteRange" min="0" max="100" value="0"
+              oninput="syncVal('vignette')"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="action-btn primary-btn" id="applyBtn"
+        onclick="applyToSlide()" disabled>スライドに適用</button>
+    </div>
+
+    <script>
+      // ==========================================
+      // ✅ 設定済みURL
+      // ==========================================
+      const CLOUD_FUNCTION_URL = "https://generate-image-1017901325674.us-central1.run.app"; 
+      // ==========================================
+
+      var canvas = document.getElementById('previewCanvas');
+      var ctx = canvas.getContext('2d');
+      var originalImg = new Image();
+      var isImageLoaded = false;
+      var aiResultImg = null;
+      var currentCropInfo = null;
+      var currentImageId = null;
+      
+      var state = { 
+        extW: 0, extH: 0, upscaleFactor: '2x', 
+        brightness: 100, contrast: 100, saturate: 100, hue: 0,
+        colorR: 0, colorG: 0, colorB: 0,
+        blur: 0, pixelate: 0, grayscale: 0, sepia: 0, vignette: 0
+      };
+
+      // --- Auto Poll ---
+      window.onload = function() {
+        // 1.5秒ごとに選択状態をチェック
+        setInterval(checkAndFetch, 200);
+      };
+
+      function checkAndFetch() {
+        // 軽量チェック関数を呼ぶ
+        google.script.run.withSuccessHandler(function(id) {
+          if (id !== currentImageId) {
+             if (id) {
+               // 新しい画像が選択された -> 読み込み開始
+               currentImageId = id;
+               fetchImage();
+             } else {
+               // 選択解除 -> リセット
+               currentImageId = null;
+               resetToPlaceholder();
+             }
+          }
+        }).checkSelection();
+      }
+      
+      function fetchImage() {
+        showLoadingOverlay("画像を読み込んでいます...");
+        google.script.run.withSuccessHandler(onImageLoaded).withFailureHandler(onError).getSelectedImage();
+      }
+
+      function onImageLoaded(data) {
+        currentCropInfo = data.cropInfo;
+        // トリミングUI更新
+        var statusDiv = document.getElementById('cropStatus');
+        var cropBtn = document.getElementById('cropBtn');
+        if (currentCropInfo && ((currentCropInfo.leftOffset > 0) || (currentCropInfo.rightOffset > 0) || (currentCropInfo.topOffset > 0) || (currentCropInfo.bottomOffset > 0))) {
+          statusDiv.textContent = "現在の状態: トリミングされています"; statusDiv.style.color = "#188038"; cropBtn.disabled = false;
+        } else {
+          statusDiv.textContent = "現在の状態: トリミングされていません (全体表示)"; statusDiv.style.color = "#666"; cropBtn.disabled = true;
+        }
+        loadBase64(data.base64);
+      }
+
+      function loadBase64(base64Data) {
+        originalImg.onload = function() {
+          isImageLoaded = true; aiResultImg = null;
+          
+          // UIリセット
+          document.getElementById('rangeW').value = 0; document.getElementById('numW').value = 0;
+          document.getElementById('rangeH').value = 0; document.getElementById('numH').value = 0;
+          resetAllParams();
+          updateStateFromUI(); updatePreview(); 
+          
+          // 表示切り替え
+          hideLoadingOverlay();
+          document.getElementById('placeholder').style.display = 'none';
+          document.getElementById('previewCanvas').style.display = 'block';
+          document.getElementById('mainContent').classList.add('active');
+          
+          document.getElementById('applyBtn').disabled = false;
+          document.getElementById('generateBtn').style.display = 'block';
+          document.getElementById('postGenButtons').style.display = 'none';
+        };
+        originalImg.src = base64Data;
+      }
+
+      function onError(e) {
+        // エラー時は何もしない（ポーリング継続のため）か、ログのみ
+        console.log("Load error: " + e.message);
+        hideLoadingOverlay();
+      }
+
+      function resetToPlaceholder() {
+        isImageLoaded = false;
+        document.getElementById('placeholder').style.display = 'flex';
+        document.getElementById('previewCanvas').style.display = 'none';
+        document.getElementById('mainContent').classList.remove('active');
+        document.getElementById('applyBtn').disabled = true;
+      }
+
+      // --- Loading Control ---
+      function showLoadingOverlay(msg) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        document.getElementById('loadingText').textContent = msg;
+      }
+      function hideLoadingOverlay() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }
+      
+      // --- Reset Button (Manual) ---
+      function resetAndLoad() {
+        currentImageId = null; // 強制再読み込み
+        checkAndFetch();
+      }
+
+      // --- Standard Functions (Same as before) ---
+      function syncVal(key) {
+        var val = document.getElementById(key + 'Range').value;
+        state[key] = parseInt(val);
+        document.getElementById('val_' + key).textContent = val;
+        updatePreview();
+      }
+      function syncColor(key) { syncVal(key); }
+      function resetVal(key, def) {
+        state[key] = def;
+        document.getElementById(key + 'Range').value = def;
+        document.getElementById('val_' + key).textContent = def;
+        updatePreview();
+      }
+      function resetAllParams() {
+        ['brightness','contrast','saturate'].forEach(k => resetVal(k, 100));
+        ['hue','colorR','colorG','colorB','blur','pixelate','grayscale','sepia','vignette'].forEach(k => resetVal(k, 0));
+      }
+      function updateStateFromUI() { state.extW = parseInt(document.getElementById('rangeW').value); state.extH = parseInt(document.getElementById('rangeH').value); }
+      function syncSlider(axis, val) { document.getElementById('range' + axis.toUpperCase()).value = val; updateStateFromUI(); updatePreview(); }
+      function syncNum(axis, val) { document.getElementById('num' + axis.toUpperCase()).value = val; updateStateFromUI(); updatePreview(); }
+      
+      function updatePreview() {
+        if (!isImageLoaded && !aiResultImg) return;
+        var baseImg = aiResultImg ? aiResultImg : originalImg;
+        var tempCanvas = document.createElement('canvas');
+        var tCtx = tempCanvas.getContext('2d');
+        if (!aiResultImg && (state.extW > 0 || state.extH > 0)) {
+          var addW = originalImg.width * (state.extW / 100) * 2; var addH = originalImg.height * (state.extH / 100) * 2;
+          tempCanvas.width = originalImg.width + addW; tempCanvas.height = originalImg.height + addH;
+          tCtx.fillStyle = '#ffffff'; tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+          tCtx.drawImage(originalImg, addW/2, addH/2);
+        } else {
+          tempCanvas.width = baseImg.width; tempCanvas.height = baseImg.height;
+          tCtx.drawImage(baseImg, 0, 0);
+        }
+        applyAllEffects(tempCanvas); drawFinal(tempCanvas);
+      }
+
+      function applyAllEffects(tgtCanvas) {
+        var ctx = tgtCanvas.getContext('2d'); var w = tgtCanvas.width; var h = tgtCanvas.height;
+        if (state.pixelate > 0) {
+          var rate = 1 - (state.pixelate * 0.009); if (rate < 0.02) rate = 0.02; var sw = w * rate; var sh = h * rate;
+          ctx.imageSmoothingEnabled = false; var sm = document.createElement('canvas'); sm.width = sw; sm.height = sh;
+          sm.getContext('2d').drawImage(tgtCanvas, 0, 0, sw, sh); ctx.clearRect(0,0,w,h); ctx.drawImage(sm, 0, 0, sw, sh, 0, 0, w, h);
+        }
+        if (state.colorR !== 0 || state.colorG !== 0 || state.colorB !== 0) {
+          var imageData = ctx.getImageData(0, 0, w, h); var data = imageData.data;
+          var r = state.colorR, g = state.colorG, b = state.colorB;
+          for (var i = 0; i < data.length; i += 4) {
+            data[i] = Math.min(255, Math.max(0, data[i] + r)); data[i+1] = Math.min(255, Math.max(0, data[i+1] + g)); data[i+2] = Math.min(255, Math.max(0, data[i+2] + b));
+          }
+          ctx.putImageData(imageData, 0, 0);
+        }
+        var filters = [];
+        if (state.blur > 0) filters.push(`blur(${state.blur/2}px)`);
+        if (state.grayscale > 0) filters.push(`grayscale(${state.grayscale}%)`);
+        if (state.sepia > 0) filters.push(`sepia(${state.sepia}%)`);
+        if (state.brightness != 100) filters.push(`brightness(${state.brightness}%)`);
+        if (state.contrast != 100) filters.push(`contrast(${state.contrast}%)`);
+        if (state.saturate != 100) filters.push(`saturate(${state.saturate}%)`);
+        if (state.hue != 0) filters.push(`hue-rotate(${state.hue}deg)`);
+        if (filters.length > 0) {
+          var copy = document.createElement('canvas'); copy.width = w; copy.height = h; copy.getContext('2d').drawImage(tgtCanvas, 0, 0);
+          ctx.save(); ctx.filter = filters.join(' '); ctx.clearRect(0, 0, w, h); ctx.drawImage(copy, 0, 0); ctx.restore();
+        }
+        if (state.vignette > 0) {
+           var cx = w / 2; var cy = h / 2; var maxR = Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2));
+           var grd = ctx.createRadialGradient(cx, cy, w * 0.2, cx, cy, maxR);
+           grd.addColorStop(0, "rgba(0,0,0,0)");
+           var darkness = (state.vignette / 100) * 0.9;
+           grd.addColorStop(1, "rgba(0,0,0," + darkness + ")");
+           ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+        }
+      }
+
+      function drawFinal(srcCanvas) {
+        canvas.width = srcCanvas.width; canvas.height = srcCanvas.height;
+        var ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(srcCanvas, 0, 0);
+      }
+
+      function performCrop() {
+        if (!isImageLoaded || !currentCropInfo) return;
+        showLoadingOverlay("トリミングを実行中...");
+        var w = originalImg.width; var h = originalImg.height;
+        var left = w * (currentCropInfo.leftOffset || 0); var top = h * (currentCropInfo.topOffset || 0);
+        var right = w * (currentCropInfo.rightOffset || 0); var bottom = h * (currentCropInfo.bottomOffset || 0);
+        var cropW = w - left - right; var cropH = h - top - bottom;
+        if (cropW <= 0 || cropH <= 0) { hideLoadingOverlay(); alert("トリミング範囲が無効です"); return; }
+        var cropCanvas = document.createElement('canvas'); cropCanvas.width = cropW; cropCanvas.height = cropH;
+        var cCtx = cropCanvas.getContext('2d'); cCtx.drawImage(originalImg, left, top, cropW, cropH, 0, 0, cropW, cropH);
+        var newBase64 = cropCanvas.toDataURL('image/png');
+        currentCropInfo = null; document.getElementById('cropStatus').textContent = "トリミング適用済み"; document.getElementById('cropBtn').disabled = true;
+        loadBase64(newBase64);
+      }
+
+      function callCloudAI(mode) {
+        if (mode === 'extend' && state.extW === 0 && state.extH === 0) { alert("拡張サイズを入力してください"); return; }
+        showLoadingOverlay(mode === 'upscale' ? 'AI高画質化中(2倍)...' : 'AI生成中...');
+        var rawBase64 = (aiResultImg && mode === 'upscale') ? aiResultImg.src : originalImg.src;
+        fetch(CLOUD_FUNCTION_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: mode, image: rawBase64, expand_w: state.extW, expand_h: state.extH, prompt: "", upscale_factor: '2x' })
+        }).then(res => res.json()).then(data => {
+          if (data.error) throw new Error(data.error);
+          var newImg = new Image();
+          newImg.onload = function() {
+            aiResultImg = newImg;
+            if(mode === 'extend') {
+               document.getElementById('rangeW').value = 0; document.getElementById('numW').value = 0;
+               document.getElementById('rangeH').value = 0; document.getElementById('numH').value = 0;
+               updateStateFromUI();
+               document.getElementById('generateBtn').style.display = 'none';
+               document.getElementById('postGenButtons').style.display = 'flex';
+            }
+            updatePreview(); hideLoadingOverlay();
+          };
+          newImg.src = data.result_image;
+        }).catch(err => { console.error(err); alert("AIエラー: " + err.message); hideLoadingOverlay(); });
+      }
+
+      function confirmAndContinue() { if (!aiResultImg) return; loadBase64(aiResultImg.src); }
+      function applyToSlide() {
+        showLoadingOverlay('スライドに配置中...');
+        var maxDim = 3840; var w = canvas.width; var h = canvas.height; var scale = Math.min(1, Math.min(maxDim / w, maxDim / h));
+        var outputCanvas = document.createElement('canvas'); outputCanvas.width = w * scale; outputCanvas.height = h * scale;
+        var oCtx = outputCanvas.getContext('2d'); oCtx.imageSmoothingEnabled = true; oCtx.imageSmoothingQuality = 'high';
+        oCtx.drawImage(canvas, 0, 0, outputCanvas.width, outputCanvas.height);
+        var data = outputCanvas.toDataURL('image/jpeg', 0.85);
+        google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e) => { 
+             console.log("Retry with lower quality..."); var lowData = outputCanvas.toDataURL('image/jpeg', 0.7);
+             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { alert("エラー: 画像が大きすぎます"); hideLoadingOverlay(); }).replaceImage(lowData);
+        }).replaceImage(data);
+      }
+      function toggleSection(id) { document.getElementById(id).classList.toggle('open'); }
+    </script>
+  </body>
+</html>

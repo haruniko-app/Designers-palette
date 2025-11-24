@@ -13,7 +13,8 @@
   "runtimeVersion": "V8",
   "oauthScopes": [
     "https://www.googleapis.com/auth/presentations.currentonly",
-    "https://www.googleapis.com/auth/presentations"
+    "https://www.googleapis.com/auth/presentations",
+    "https://www.googleapis.com/auth/script.container.ui"
   ],
   "addOns": {
     "common": {

@@ -134,8 +134,8 @@ def generate_image(request):
             paste_y = add_h // 2
             base_canvas.paste(original_pil, (paste_x, paste_y))
 
-            # マスク作成：小さめのマージンで境界をAIに任せる
-            margin = 8  # AIが自然にブレンドできる最小限のマージン
+            # マスク作成：広めのマージンでスムーズなブレンディング
+            margin = 16  # ブレンディングゾーンを広げて自然な融合を実現
             mask_canvas = Image.new("L", (new_w, new_h), 255)
             draw = ImageDraw.Draw(mask_canvas)
             draw.rectangle(
@@ -152,14 +152,23 @@ def generate_image(request):
             vertex_mask_img = VertexImage(buff_mask.getvalue())
 
             model = ImageGenerationModel.from_pretrained("imagegeneration@006")
-            # Phase 2: プロンプト改善案A - 境界のシームレスなブレンドを強調
-            full_prompt = "Perfect outpainting with seamless blending. Continue the image naturally with no visible edges, borders, or seams. Match existing style, colors, lighting, and details perfectly. Coherent extension. " + prompt_text
+            # 改善されたプロンプト: 境界の自然な融合を最優先
+            full_prompt = (
+                "Professional seamless image outpainting. Natural continuation with invisible boundaries. "
+                "Smooth gradient blending at edges. No visible seams, lines, or borders. "
+                "Perfect color matching and lighting consistency. Photorealistic quality. "
+                "Extend patterns, textures, and elements naturally. " + prompt_text
+            )
+
+            # ネガティブプロンプト: 境界線や不自然な要素を除外
+            negative_prompt = "visible seam, border line, edge line, hard boundary, discontinuity, color mismatch, lighting difference, visible transition"
 
             images = model.edit_image(
                 base_image=vertex_base_img,
                 mask=vertex_mask_img,
                 prompt=full_prompt,
-                guidance_scale=50,
+                negative_prompt=negative_prompt,
+                guidance_scale=35,  # 自然な融合を優先（50 → 35に下げる）
                 number_of_images=1
             )
             result_bytes = images[0]._image_bytes

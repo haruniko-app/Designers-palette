@@ -34,3 +34,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Google Apps Script - clasp
+# .clasp.json は環境によって異なるため、バージョン管理しない
+Google Script/.clasp.json

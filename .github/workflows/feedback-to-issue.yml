@@ -1,0 +1,56 @@
+name: Create Issue from Feedback
+
+on:
+  repository_dispatch:
+    types: [user-feedback]
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const payload = context.payload.client_payload;
+
+            const labels = ['user-feedback'];
+            if (payload.issueType === 'bug') labels.push('bug');
+            if (payload.issueType === 'feature') labels.push('enhancement');
+            if (payload.issueType === 'performance') labels.push('performance');
+            if (payload.issueType === 'ui') labels.push('ui/ux');
+
+            const body = `
+## Issue Type
+${payload.issueType || 'Not specified'}
+
+## Affected Features
+${payload.features || 'Not specified'}
+
+## Description
+${payload.description || 'No description provided'}
+
+## Expected Behavior
+${payload.expected || 'Not specified'}
+
+## Environment
+- **Browser:** ${payload.browser || 'Not specified'}
+- **Source:** ${payload.source || 'web'}
+- **Submitted:** ${payload.timestamp || new Date().toISOString()}
+
+## Contact
+${payload.email ? `Email: ${payload.email}` : 'No contact provided'}
+
+---
+*This issue was automatically created from user feedback.*
+            `.trim();
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Feedback] ${payload.issueType}: ${(payload.description || '').substring(0, 50)}...`,
+              body: body,
+              labels: labels
+            });

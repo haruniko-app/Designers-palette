@@ -298,6 +298,56 @@
             margin: 0;
         }
 
+        /* Utility Grid */
+        .utility-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .utility-category h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .utility-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .utility-category li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .utility-category li:last-child {
+            border-bottom: none;
+        }
+
+        .utility-benefit {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .utility-benefit p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .utility-benefit strong {
+            color: var(--text);
+        }
+
         .cta-section {
             text-align: center;
             padding: 80px 40px;
@@ -359,6 +409,9 @@
             .showcase:nth-child(even) {
                 direction: ltr;
             }
+            .utility-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 600px) {
@@ -372,6 +425,8 @@
             .section-header { margin-bottom: 48px; }
             .section-header h2 { font-size: 24px; }
             .features-grid { grid-template-columns: 1fr; gap: 40px; }
+            .utility-grid { grid-template-columns: 1fr; }
+            .utility-benefit { padding: 20px; }
             .cta-section { padding: 80px 20px; }
         }
     </style>
@@ -589,6 +644,65 @@
                     <li>カスタム間隔設定</li>
                 </ul>
             </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="section">
+        <div class="section-header">
+            <h2>オールインワン デザインパレット</h2>
+            <p>必要なデザインツールをひとつのサイドバーに集約。メニューを探し回る必要はもうありません。</p>
+        </div>
+
+        <div class="utility-grid">
+            <div class="utility-category">
+                <h3>カラー＆スタイル</h3>
+                <ul>
+                    <li>スペクトラム付きカラーピッカー</li>
+                    <li>RGBスライダー＆数値入力</li>
+                    <li>最近使った色の履歴</li>
+                    <li>塗り・線・文字色の一括管理</li>
+                    <li>線の太さ・破線スタイル</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>整列＆レイアウト</h3>
+                <ul>
+                    <li>6方向の整列</li>
+                    <li>複数の基準オプション</li>
+                    <li>均等配置</li>
+                    <li>ピクセル単位の間隔指定</li>
+                    <li>スライド境界へのスナップ</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>サイズ＆変形</h3>
+                <ul>
+                    <li>正確な寸法入力</li>
+                    <li>アスペクト比ロック</li>
+                    <li>オブジェクト間のサイズ統一</li>
+                    <li>プリセット比率（1:1, 16:9等）</li>
+                    <li>回転＆反転コントロール</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>テキスト＆オブジェクト</h3>
+                <ul>
+                    <li>フォント選択＆サイズ調整</li>
+                    <li>行間＆段落間隔</li>
+                    <li>グループ化 / 解除</li>
+                    <li>レイヤー順序の変更</li>
+                    <li>画像調整＆エフェクト</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="utility-benefit">
+            <p><strong>なぜ統合パレットが重要なのか：</strong> 深いメニュー階層をたどる時間をなくしましょう。Designer's Paletteは、よく使うツールを常に見えるサイドバーにまとめました。デザイナーの実際のワークフローに合わせて設計されています。</p>
         </div>
     </section>
 

@@ -303,6 +303,56 @@
             margin: 0;
         }
 
+        /* Utility Grid */
+        .utility-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .utility-category h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .utility-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .utility-category li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .utility-category li:last-child {
+            border-bottom: none;
+        }
+
+        .utility-benefit {
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .utility-benefit p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .utility-benefit strong {
+            color: var(--text);
+        }
+
         /* CTA Section */
         .cta-section {
             text-align: center;
@@ -367,6 +417,9 @@
             .showcase:nth-child(even) {
                 direction: ltr;
             }
+            .utility-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 600px) {
@@ -380,6 +433,8 @@
             .section-header { margin-bottom: 48px; }
             .section-header h2 { font-size: 24px; }
             .features-grid { grid-template-columns: 1fr; gap: 40px; }
+            .utility-grid { grid-template-columns: 1fr; }
+            .utility-benefit { padding: 20px; }
             .cta-section { padding: 80px 20px; }
         }
     </style>
@@ -597,6 +652,65 @@
                     <li>Custom spacing control</li>
                 </ul>
             </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="section">
+        <div class="section-header">
+            <h2>All-in-One Design Palette</h2>
+            <p>Essential design tools unified in one sidebar. No more hunting through menus.</p>
+        </div>
+
+        <div class="utility-grid">
+            <div class="utility-category">
+                <h3>Color & Style</h3>
+                <ul>
+                    <li>Visual color picker with spectrum</li>
+                    <li>RGB sliders with numeric input</li>
+                    <li>Recent colors history</li>
+                    <li>Fill, stroke, text color control</li>
+                    <li>Stroke weight & dash styles</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>Alignment & Layout</h3>
+                <ul>
+                    <li>6-direction alignment</li>
+                    <li>Multiple reference options</li>
+                    <li>Even distribution</li>
+                    <li>Precise pixel spacing</li>
+                    <li>Snap to slide bounds</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>Size & Transform</h3>
+                <ul>
+                    <li>Exact dimension input</li>
+                    <li>Aspect ratio lock</li>
+                    <li>Match size across objects</li>
+                    <li>Preset ratios (1:1, 16:9, etc.)</li>
+                    <li>Rotate & flip controls</li>
+                </ul>
+            </div>
+
+            <div class="utility-category">
+                <h3>Text & Objects</h3>
+                <ul>
+                    <li>Font selection & sizing</li>
+                    <li>Line & paragraph spacing</li>
+                    <li>Group / ungroup</li>
+                    <li>Layer ordering</li>
+                    <li>Image adjustments & effects</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="utility-benefit">
+            <p><strong>Why a unified palette matters:</strong> Stop wasting time navigating nested menus. Designer's Palette brings the tools you use most into a single, always-visible sidebar — designed for the way designers actually work.</p>
         </div>
     </section>
 

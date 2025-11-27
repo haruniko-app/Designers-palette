@@ -1478,7 +1478,7 @@
           .withFailureHandler(function(e) {
             // 選択なしの場合は無視
           })
-          .getSelectedElementColors();
+          .getSelectedElementColors(currentLang);
       }
 
       function updateColorPanelFromState() {
@@ -1505,7 +1505,7 @@
       function fetchImage() {
         showLoadingOverlay(t('msg_loading_image'));
         document.getElementById('errorMessage').style.display = 'none';
-        google.script.run.withSuccessHandler(onImageLoaded).withFailureHandler(onError).getSelectedImage();
+        google.script.run.withSuccessHandler(onImageLoaded).withFailureHandler(onError).getSelectedImage(currentLang);
       }
 
       function onImageLoaded(data) {
@@ -1722,8 +1722,8 @@
         var data = outputCanvas.toDataURL('image/jpeg', 0.85);
         google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e) => {
              console.log("Retry with lower quality..."); var lowData = outputCanvas.toDataURL('image/jpeg', 0.7);
-             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { showToast(t('msg_image_too_large'), "error"); hideLoadingOverlay(); }).replaceImage(lowData);
-        }).replaceImage(data);
+             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { showToast(t('msg_image_too_large'), "error"); hideLoadingOverlay(); }).replaceImage(lowData, currentLang);
+        }).replaceImage(data, currentLang);
       }
 
       function downloadImage() {
@@ -1849,6 +1849,11 @@
         initColorPanel();
         loadStyleHistory();
         applyTranslations(); // i18n
+        // 初期読み込み: サイドバーを開いた時点で選択中の要素の色を取得（少し遅延）
+        setTimeout(function() {
+          loadSelectedElementColors();
+          loadSelectedElementSizeAndPosition();
+        }, 300);
       };
 
       function initColorPanel() {
@@ -1886,17 +1891,17 @@
           colorState.fillColor = null;
           document.getElementById('fillBox').classList.add('none');
           document.getElementById('fillPreview').style.background = '';
-          google.script.run.setFillColor(null);
+          google.script.run.setFillColor(null, 1, currentLang);
         } else if (colorState.activeTarget === 'stroke') {
           colorState.strokeColor = null;
           document.getElementById('strokeBox').classList.add('none');
           document.getElementById('strokePreview').style.borderColor = '';
-          google.script.run.setStrokeColor(null);
+          google.script.run.setStrokeColor(null, 1, currentLang);
         } else if (colorState.activeTarget === 'highlight') {
           colorState.highlightColor = null;
           document.getElementById('highlightTarget').classList.add('none');
           document.getElementById('highlightBg').style.background = '';
-          google.script.run.setTextBackgroundColor(null);
+          google.script.run.setTextBackgroundColor(null, currentLang);
         }
       }
 
@@ -1935,9 +1940,9 @@
         if (funcName) {
           if (useAlpha) {
             var alpha = colorState.alpha / 100;
-            google.script.run[funcName](hexColor, alpha);
+            google.script.run[funcName](hexColor, alpha, currentLang);
           } else {
-            google.script.run[funcName](hexColor);
+            google.script.run[funcName](hexColor, currentLang);
           }
         }
       }
@@ -2202,7 +2207,7 @@
               btn.classList.remove('active');
             })
             .withFailureHandler(function(e) { showToast(e.message, 'error'); btn.classList.remove('active'); })
-            .getSelectedElementColors();
+            .getSelectedElementColors(currentLang);
         }
       }
 
@@ -2217,7 +2222,7 @@
 
       function applyStrokeStyle() {
         colorState.strokeWeight = parseFloat(document.getElementById('strokeWeight').value) || 1;
-        google.script.run.setStrokeStyle(colorState.strokeWeight, colorState.strokeDashStyle);
+        google.script.run.setStrokeStyle(colorState.strokeWeight, colorState.strokeDashStyle, currentLang);
       }
 
       // ==========================================
@@ -2228,7 +2233,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setElementPositionX(x);
+          .setElementPositionX(x, currentLang);
       }
 
       function applyPositionY() {
@@ -2236,7 +2241,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setElementPositionY(y);
+          .setElementPositionY(y, currentLang);
       }
 
       // ==========================================
@@ -2248,7 +2253,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setElementWidth(width, keepRatio);
+          .setElementWidth(width, keepRatio, currentLang);
       }
 
       function applyHeight() {
@@ -2257,7 +2262,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setElementHeight(height, keepRatio);
+          .setElementHeight(height, keepRatio, currentLang);
       }
 
       function matchWidth() {
@@ -2286,7 +2291,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setElementAspectRatio(widthRatio, heightRatio);
+          .setElementAspectRatio(widthRatio, heightRatio, currentLang);
       }
 
       // ==========================================
@@ -2297,7 +2302,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setHorizontalSpacing(spacing);
+          .setHorizontalSpacing(spacing, currentLang);
       }
 
       function setVerticalSpacing() {
@@ -2305,7 +2310,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setVerticalSpacing(spacing);
+          .setVerticalSpacing(spacing, currentLang);
       }
 
       // ==========================================
@@ -2317,7 +2322,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .duplicateHorizontal(count, spacing);
+          .duplicateHorizontal(count, spacing, currentLang);
       }
 
       function duplicateVertical() {
@@ -2326,7 +2331,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .duplicateVertical(count, spacing);
+          .duplicateVertical(count, spacing, currentLang);
       }
 
       function duplicateGrid() {
@@ -2335,7 +2340,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .duplicateGrid(count, spacing);
+          .duplicateGrid(count, spacing, currentLang);
       }
 
       // ==========================================
@@ -2345,31 +2350,31 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .rotateElement(90);
+          .rotateElement(90, currentLang);
       }
       function rotate90CCW() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .rotateElement(-90);
+          .rotateElement(-90, currentLang);
       }
       function rotate180() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .rotateElement(180);
+          .rotateElement(180, currentLang);
       }
       function flipHorizontal() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .flipHorizontal();
+          .flipHorizontal(currentLang);
       }
       function flipVertical() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .flipVertical();
+          .flipVertical(currentLang);
       }
 
       // ==========================================
@@ -2379,25 +2384,25 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .bringToFront();
+          .bringToFront(currentLang);
       }
       function bringForward() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .bringForward();
+          .bringForward(currentLang);
       }
       function sendBackward() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .sendBackward();
+          .sendBackward(currentLang);
       }
       function sendToBack() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .sendToBack();
+          .sendToBack(currentLang);
       }
 
       // ==========================================
@@ -2407,13 +2412,13 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .groupElements();
+          .groupElements(currentLang);
       }
       function ungroupElements() {
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .ungroupElements();
+          .ungroupElements(currentLang);
       }
 
       // ==========================================
@@ -2431,7 +2436,7 @@
             currentElementAttrs = null;
             updateSimilarButtons(null);
           })
-          .getSelectedElementAttributes();
+          .getSelectedElementAttributes(currentLang);
       }
 
       function updateSimilarButtons(attrs) {
@@ -2444,7 +2449,7 @@
         var btnStrokeWeight = document.getElementById('btnSimilarStrokeWeight');
 
         if (!attrs) {
-          statusDiv.textContent = 'オブジェクトを選択してください';
+          statusDiv.textContent = 'Select an object';
           btnFill.disabled = true;
           btnStroke.disabled = true;
           btnTextColor.disabled = true;
@@ -2460,7 +2465,7 @@
           return;
         }
 
-        statusDiv.textContent = attrs.elementType + ' を選択中';
+        statusDiv.textContent = attrs.elementType + ' selected';
 
         // 塗りつぶし色
         if (attrs.fillColor) {
@@ -2525,7 +2530,7 @@
           .withFailureHandler(function(e) {
             showToast(e.message, 'error');
           })
-          .selectSimilarElements(matchType);
+          .selectSimilarElements(matchType, currentLang);
       }
 
       // ==========================================
@@ -2564,7 +2569,7 @@
           .withFailureHandler(function(e) {
             showToast(e.message, 'error');
           })
-          .copyElementStyle();
+          .copyElementStyle(currentLang);
       }
 
       function renderStyleHistory() {
@@ -2614,7 +2619,7 @@
           .withFailureHandler(function(e) {
             showToast(e.message, 'error');
           })
-          .applyElementStyle(style, { all: true });
+          .applyElementStyle(style, { all: true }, currentLang);
       }
 
       function removeStyleFromHistory(index) {
@@ -2640,7 +2645,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setTextFont(textState.font);
+          .setTextFont(textState.font, currentLang);
       }
 
       function applyFontSize() {
@@ -2648,7 +2653,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setTextFontSize(textState.size);
+          .setTextFontSize(textState.size, currentLang);
       }
 
       function toggleTextStyle(style) {
@@ -2663,7 +2668,7 @@
         google.script.run
           .withSuccessHandler(function(r) { console.log('成功:', r); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          [funcName](textState[style]);
+          [funcName](textState[style], currentLang);
       }
 
       function setLineSpacing(value) {

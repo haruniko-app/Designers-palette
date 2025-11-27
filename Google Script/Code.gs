@@ -1,19 +1,154 @@
 // Code.gs (v41.0 軽量監視・高速化版)
 
+// 多言語メッセージ辞書
+var MESSAGES = {
+  ja: {
+    auth_complete: '承認完了',
+    complete: '完了',
+    align_complete_slide: '整列完了（スライド基準）',
+    align_complete: '整列完了',
+    select_multiple: '複数の要素を選択してください',
+    ref_slide: 'スライド基準',
+    ref_first: '最初の要素基準',
+    ref_last: '最後の要素基準',
+    distribute_h_complete: '水平方向に均等配置完了',
+    distribute_v_complete: '垂直方向に均等配置完了',
+    fill_color_set: '塗りつぶし色を設定しました',
+    stroke_color_set: '枠線色を設定しました',
+    stroke_style_set: '枠線スタイルを設定しました',
+    width_set: '幅を設定しました',
+    height_set: '高さを設定しました',
+    x_set: 'X座標を設定しました',
+    y_set: 'Y座標を設定しました',
+    width_matched: '幅を揃えました',
+    height_matched: '高さを揃えました',
+    size_matched: 'サイズを揃えました',
+    aspect_changed: 'アスペクト比を変更しました',
+    h_spacing_set: '水平間隔を設定しました',
+    v_spacing_set: '垂直間隔を設定しました',
+    h_duplicated: '水平方向に複製しました',
+    v_duplicated: '垂直方向に複製しました',
+    grid_duplicated: 'グリッド状に複製しました',
+    rotated: '回転しました',
+    flipped_h: '水平方向に反転しました',
+    flipped_v: '垂直方向に反転しました',
+    order_front: '最前面に移動しました',
+    order_forward: '1つ前面に移動しました',
+    order_backward: '1つ背面に移動しました',
+    order_back: '最背面に移動しました',
+    grouped: 'グループ化しました',
+    ungrouped: 'グループを解除しました',
+    font_set: 'フォントを設定しました',
+    font_size_set: 'フォントサイズを設定しました',
+    bold_set: '太字を設定しました',
+    italic_set: '斜体を設定しました',
+    underline_set: '下線を設定しました',
+    strikethrough_set: '取り消し線を設定しました',
+    line_spacing_set: '行間を設定しました',
+    paragraph_spacing_set: '段落間隔を設定しました',
+    text_color_set: 'テキスト色を設定しました',
+    text_bg_set: 'テキスト背景色を設定しました',
+    style_applied: '個のオブジェクトにスタイルを適用しました',
+    guide_v_added: '垂直ガイドを追加しました',
+    guide_h_added: '水平ガイドを追加しました',
+    guide_cleared: 'ガイドをクリアしました'
+  },
+  en: {
+    auth_complete: 'Authorization complete',
+    complete: 'Complete',
+    align_complete_slide: 'Aligned (slide reference)',
+    align_complete: 'Aligned',
+    select_multiple: 'Please select multiple elements',
+    ref_slide: 'slide reference',
+    ref_first: 'first element reference',
+    ref_last: 'last element reference',
+    distribute_h_complete: 'Distributed horizontally',
+    distribute_v_complete: 'Distributed vertically',
+    fill_color_set: 'Fill color set',
+    stroke_color_set: 'Stroke color set',
+    stroke_style_set: 'Stroke style set',
+    width_set: 'Width set',
+    height_set: 'Height set',
+    x_set: 'X position set',
+    y_set: 'Y position set',
+    width_matched: 'Width matched',
+    height_matched: 'Height matched',
+    size_matched: 'Size matched',
+    aspect_changed: 'Aspect ratio changed',
+    h_spacing_set: 'Horizontal spacing set',
+    v_spacing_set: 'Vertical spacing set',
+    h_duplicated: 'Duplicated horizontally',
+    v_duplicated: 'Duplicated vertically',
+    grid_duplicated: 'Duplicated in grid',
+    rotated: 'Rotated',
+    flipped_h: 'Flipped horizontally',
+    flipped_v: 'Flipped vertically',
+    order_front: 'Moved to front',
+    order_forward: 'Moved forward',
+    order_backward: 'Moved backward',
+    order_back: 'Moved to back',
+    grouped: 'Grouped',
+    ungrouped: 'Ungrouped',
+    font_set: 'Font set',
+    font_size_set: 'Font size set',
+    bold_set: 'Bold set',
+    italic_set: 'Italic set',
+    underline_set: 'Underline set',
+    strikethrough_set: 'Strikethrough set',
+    line_spacing_set: 'Line spacing set',
+    paragraph_spacing_set: 'Paragraph spacing set',
+    text_color_set: 'Text color set',
+    text_bg_set: 'Text background color set',
+    style_applied: ' objects styled',
+    guide_v_added: 'Vertical guide added',
+    guide_h_added: 'Horizontal guide added',
+    guide_cleared: 'Guides cleared'
+  }
+};
+
+function msg(key, lang) {
+  lang = lang || 'ja';
+  return MESSAGES[lang][key] || MESSAGES['ja'][key] || key;
+}
+
 // 承認用テスト関数（エディターから実行可能）
-function testAuth() {
+function testAuth(lang) {
   var presentation = SlidesApp.getActivePresentation();
   Logger.log('プレゼンテーション名: ' + presentation.getName());
-  return '承認完了';
+  return lang === 'en' ? 'Authorization complete' : '承認完了';
 }
 
 function onOpen() {
-SlidesApp.getUi().createMenu('Designer\'s Palette').addItem('開く', 'showSidebar').addToUi();
+  SlidesApp.getUi().createMenu('Designer\'s Palette')
+    .addItem('日本語版を開く', 'showSidebarJa')
+    .addItem('Open English Version', 'showSidebarEn')
+    .addToUi();
 }
 
 function showSidebar() {
-var html = HtmlService.createHtmlOutputFromFile('Sidebar').setTitle('Designer\'s Palette').setWidth(340);
-SlidesApp.getUi().showSidebar(html);
+  showSidebarJa();
+}
+
+function showSidebarJa() {
+  var html = HtmlService.createHtmlOutputFromFile('Sidebar')
+    .setTitle('Designer\'s Palette')
+    .setWidth(340);
+  // Inject language parameter
+  var content = html.getContent();
+  content = content.replace('let currentLang = \'ja\';', 'let currentLang = \'ja\'; localStorage.setItem(\'dp_lang\', \'ja\');');
+  html.setContent(content);
+  SlidesApp.getUi().showSidebar(html);
+}
+
+function showSidebarEn() {
+  var html = HtmlService.createHtmlOutputFromFile('Sidebar')
+    .setTitle('Designer\'s Palette')
+    .setWidth(340);
+  // Inject language parameter
+  var content = html.getContent();
+  content = content.replace('let currentLang = \'ja\';', 'let currentLang = \'en\'; localStorage.setItem(\'dp_lang\', \'en\');');
+  html.setContent(content);
+  SlidesApp.getUi().showSidebar(html);
 }
 
 /**
@@ -56,6 +191,30 @@ return null                  ;
 }
 }
 
+/**
+ * 選択要素のサイズと位置を取得
+ */
+function getSelectedElementSizeAndPosition() {
+  try {
+    var selection = SlidesApp.getActivePresentation().getSelection();
+    var pageElementRange = selection.getPageElementRange();
+    if (!pageElementRange) return null;
+
+    var elements = pageElementRange.getPageElements();
+    if (elements.length === 0) return null;
+
+    var element = elements[0];
+    return {
+      x: Math.round(element.getLeft()),
+      y: Math.round(element.getTop()),
+      width: Math.round(element.getWidth()),
+      height: Math.round(element.getHeight())
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
 // --- 以下は既存の関数 (一部トリミング取得ロジックを含む) ---
 
 function findElementRecursive(elements, targetId) {
@@ -75,23 +234,23 @@ if (foundOld) return foundOld                                        ;
 return null                                                          ;
 }
 
-function getSelectedImage() {
+function getSelectedImage(lang) {
 try {
 var selection = SlidesApp.getActivePresentation().getSelection()            ;
 var pageElementRange = selection.getPageElementRange()                      ;
 if (!pageElementRange || pageElementRange.getPageElements().length === 0) {
-throw new Error('画像を選択してください。');
+throw new Error(lang === 'en' ? 'Please select an image.' : '画像を選択してください。');
 }
 var element = pageElementRange.getPageElements()[0]                         ;
 if (element.getPageElementType() !== SlidesApp.PageElementType.IMAGE) {
-throw new Error('選択された要素は画像ではありません。');
+throw new Error(lang === 'en' ? 'Selected element is not an image.' : '選択された要素は画像ではありません。');
 }
 
 var image = element.asImage() ;
 var blob = image.getBlob()    ;
 
 if (blob.getBytes().length > 10 * 1024 * 1024) {
-throw new Error('画像サイズが大きすぎます（10MB以下推奨）。');
+throw new Error(lang === 'en' ? 'Image size is too large (10MB or less recommended).' : '画像サイズが大きすぎます（10MB以下推奨）。');
 }
 
 var base64 = Utilities.base64Encode(blob.getBytes()) ;
@@ -108,7 +267,7 @@ if (apiElement && apiElement.image && apiElement.image.imageProperties && apiEle
 cropInfo = apiElement.image.imageProperties.cropProperties                                                                   ;
 }
 } catch (e) {
-console.warn("トリミング情報取得失敗: " + e.message)                                                              ;
+console.warn("Failed to get crop info: " + e.message)                                                              ;
 }
 
 return {
@@ -123,7 +282,7 @@ throw new Error(e.message)                                     ;
 }
 }
 
-function replaceImage(base64Data) {
+function replaceImage(base64Data, lang) {
 try {
 var contentType = base64Data.substring(5, base64Data.indexOf(';'));
 var extension = contentType.split('/')[1];
@@ -139,9 +298,9 @@ elements[0].asImage().replace(blob)                                             
 var slide = SlidesApp.getActivePresentation().getSelection().getCurrentPage()                      ;
 slide.insertImage(blob)                                                                            ;
 }
-return "完了";
+return lang === 'en' ? "Complete" : "完了";
 } catch (e) {
-throw new Error('配置エラー: ' + e.message)                                                   ;
+throw new Error((lang === 'en' ? 'Placement error: ' : '配置エラー: ') + e.message)                ;
 }
 }
 
@@ -153,8 +312,10 @@ throw new Error('配置エラー: ' + e.message)                                
  * 選択された要素を整列する汎用関数
  * @param {string} alignmentType - 整列タイプ (left, center, right, top, middle, bottom)
  * @param {string} referenceType - 基準タイプ (first, last, largest, smallest, slide)
+ * @param {string} lang - 言語コード (ja, en)
  */
-function alignElements(alignmentType, referenceType) {
+function alignElements(alignmentType, referenceType, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
@@ -163,11 +324,11 @@ function alignElements(alignmentType, referenceType) {
     // スライド基準の場合は要素選択不要
     if (referenceType === 'slide') {
       if (!pageElementRange) {
-        throw new Error('要素を選択してください');
+        throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
       }
       var elements = pageElementRange.getPageElements();
       if (elements.length === 0) {
-        throw new Error('要素を選択してください');
+        throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
       }
 
       // スライドサイズを取得
@@ -202,20 +363,20 @@ function alignElements(alignmentType, referenceType) {
             break;
         }
       }
-      return '整列完了（スライド基準）';
+      return msg('align_complete_slide', lang);
     }
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     if (elements.length === 1) {
-      return '複数の要素を選択してください';
+      return msg('select_multiple', lang);
     }
 
     // 基準要素を決定
@@ -316,13 +477,20 @@ function alignElements(alignmentType, referenceType) {
       }
     }
 
-    var refLabels = {
+    var refLabels = lang === 'en' ? {
+      'first': 'first element',
+      'last': 'last element',
+      'largest': 'largest element',
+      'smallest': 'smallest element'
+    } : {
       'first': '最初の要素',
       'last': '最後の要素',
       'largest': '最大の要素',
       'smallest': '最小の要素'
     };
-    return '整列完了（' + (refLabels[referenceType] || '基準') + '）';
+    var baseMsg = lang === 'en' ? 'Aligned (' : '整列完了（';
+    var suffix = lang === 'en' ? ')' : '）';
+    return baseMsg + (refLabels[referenceType] || (lang === 'en' ? 'reference' : '基準')) + suffix;
   } catch (e) {
     throw new Error(e.message);
   }
@@ -372,19 +540,21 @@ function alignBottom() {
 
 /**
  * 水平方向に均等配置
+ * @param {string} lang - 言語コード (ja, en)
  */
-function distributeHorizontally() {
+function distributeHorizontally(lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length < 3) {
-      throw new Error('均等配置には3つ以上の要素を選択してください');
+      throw new Error(lang === 'en' ? 'Select 3 or more elements to distribute' : '均等配置には3つ以上の要素を選択してください');
     }
 
     // 要素を左端順にソート
@@ -421,7 +591,7 @@ function distributeHorizontally() {
       currentLeft += sortedElements[i].width + spacing;
     }
 
-    return '水平方向に均等配置完了';
+    return msg('distribute_h_complete', lang);
   } catch (e) {
     throw new Error(e.message);
   }
@@ -429,19 +599,21 @@ function distributeHorizontally() {
 
 /**
  * 垂直方向に均等配置
+ * @param {string} lang - 言語コード (ja, en)
  */
-function distributeVertically() {
+function distributeVertically(lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length < 3) {
-      throw new Error('均等配置には3つ以上の要素を選択してください');
+      throw new Error(lang === 'en' ? 'Select 3 or more elements to distribute' : '均等配置には3つ以上の要素を選択してください');
     }
 
     // 要素を上端順にソート
@@ -478,7 +650,7 @@ function distributeVertically() {
       currentTop += sortedElements[i].height + spacing;
     }
 
-    return '垂直方向に均等配置完了';
+    return msg('distribute_v_complete', lang);
   } catch (e) {
     throw new Error(e.message);
   }
@@ -492,18 +664,18 @@ function distributeVertically() {
  * 選択された要素の色情報を取得
  * @returns {Object} 塗りと線の色情報
  */
-function getSelectedElementColors() {
+function getSelectedElementColors(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var element = elements[0];
@@ -531,19 +703,30 @@ function getSelectedElementColors() {
 
       // 塗りつぶし色を取得
       var fill = shape.getFill();
-      if (fill.getType() === SlidesApp.FillType.SOLID) {
+      var fillType = fill.getType();
+      if (fillType === SlidesApp.FillType.SOLID) {
         var solidFill = fill.getSolidFill();
         if (solidFill) {
           result.fillAlpha = solidFill.getAlpha();
           var color = solidFill.getColor();
-          if (color.getColorType() === SlidesApp.ColorType.RGB) {
+          var colorType = color.getColorType();
+          if (colorType === SlidesApp.ColorType.RGB) {
             result.fillColor = rgbColorToHex(color.asRgbColor());
-          } else if (color.getColorType() === SlidesApp.ColorType.THEME) {
-            // テーマカラーの場合はRGBに変換を試みる
+          } else if (colorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
             try {
-              result.fillColor = rgbColorToHex(color.asRgbColor());
+              var themeColor = color.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedColor = scheme.getConcreteColor(themeColor.getThemeColorType());
+              result.fillColor = rgbColorToHex(resolvedColor.asRgbColor());
             } catch(e) {
-              result.fillColor = '#CCCCCC'; // フォールバック
+              // フォールバック: 直接RGBとして取得を試みる
+              try {
+                result.fillColor = rgbColorToHex(color.asRgbColor());
+              } catch(e2) {
+                result.fillColor = '#CCCCCC';
+              }
             }
           }
         }
@@ -557,13 +740,23 @@ function getSelectedElementColors() {
           var lineSolidFill = lineFill.getSolidFill();
           result.strokeAlpha = lineSolidFill.getAlpha();
           var lineColor = lineSolidFill.getColor();
-          if (lineColor.getColorType() === SlidesApp.ColorType.RGB) {
+          var lineColorType = lineColor.getColorType();
+          if (lineColorType === SlidesApp.ColorType.RGB) {
             result.strokeColor = rgbColorToHex(lineColor.asRgbColor());
-          } else if (lineColor.getColorType() === SlidesApp.ColorType.THEME) {
+          } else if (lineColorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
             try {
-              result.strokeColor = rgbColorToHex(lineColor.asRgbColor());
+              var lineThemeColor = lineColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedLineColor = scheme.getConcreteColor(lineThemeColor.getThemeColorType());
+              result.strokeColor = rgbColorToHex(resolvedLineColor.asRgbColor());
             } catch(e) {
-              result.strokeColor = '#000000';
+              try {
+                result.strokeColor = rgbColorToHex(lineColor.asRgbColor());
+              } catch(e2) {
+                result.strokeColor = '#000000';
+              }
             }
           }
         }
@@ -691,18 +884,18 @@ function getSelectedElementColors() {
  * @param {string} hexColor - HEX形式の色（#RRGGBB）またはnull（透明）
  * @param {number} alpha - 透明度（0-1、1が不透明）省略時は1
  */
-function setFillColor(hexColor, alpha) {
+function setFillColor(hexColor, alpha, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     // alphaのデフォルト値は1（不透明）
@@ -726,10 +919,10 @@ function setFillColor(hexColor, alpha) {
     }
 
     if (count === 0) {
-      throw new Error('塗りつぶし可能な要素がありません');
+      throw new Error(lang === 'en' ? 'No fillable elements' : '塗りつぶし可能な要素がありません');
     }
 
-    return '塗りつぶし色を設定しました';
+    return lang === 'en' ? 'Fill color set' : '塗りつぶし色を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -740,18 +933,18 @@ function setFillColor(hexColor, alpha) {
  * @param {string} hexColor - HEX形式の色（#RRGGBB）またはnull（透明）
  * @param {number} alpha - 透明度（0-1、1が不透明）省略時は1
  */
-function setStrokeColor(hexColor, alpha) {
+function setStrokeColor(hexColor, alpha, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     // alphaのデフォルト値は1（不透明）
@@ -792,10 +985,10 @@ function setStrokeColor(hexColor, alpha) {
     }
 
     if (count === 0) {
-      throw new Error('枠線を設定可能な要素がありません');
+      throw new Error(lang === 'en' ? 'No elements with stroke' : '枠線を設定可能な要素がありません');
     }
 
-    return '枠線色を設定しました';
+    return lang === 'en' ? 'Stroke color set' : '枠線色を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -806,18 +999,18 @@ function setStrokeColor(hexColor, alpha) {
  * @param {number} weight - 線の太さ（ポイント）
  * @param {string} dashStyle - 線のスタイル（SOLID, DOT, DASH, DASH_DOT, LONG_DASH, LONG_DASH_DOT）
  */
-function setStrokeStyle(weight, dashStyle) {
+function setStrokeStyle(weight, dashStyle, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('要素を選択してください');
+      throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
     }
 
     var dashStyleEnum = SlidesApp.DashStyle[dashStyle] || SlidesApp.DashStyle.SOLID;
@@ -848,10 +1041,10 @@ function setStrokeStyle(weight, dashStyle) {
     }
 
     if (count === 0) {
-      throw new Error('枠線を設定可能な要素がありません');
+      throw new Error(lang === 'en' ? 'No elements with stroke' : '枠線を設定可能な要素がありません');
     }
 
-    return '枠線スタイルを設定しました';
+    return lang === 'en' ? 'Stroke style set' : '枠線スタイルを設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -916,11 +1109,11 @@ function checkElementForColor() {
  * @param {number} width - 幅（ポイント）
  * @param {boolean} keepRatio - 縦横比を維持するか
  */
-function setElementWidth(width, keepRatio) {
+function setElementWidth(width, keepRatio, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
@@ -933,7 +1126,7 @@ function setElementWidth(width, keepRatio) {
         element.setWidth(width);
       }
     }
-    return '幅を設定しました';
+    return lang === 'en' ? 'Width set' : '幅を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -944,11 +1137,11 @@ function setElementWidth(width, keepRatio) {
  * @param {number} height - 高さ（ポイント）
  * @param {boolean} keepRatio - 縦横比を維持するか
  */
-function setElementHeight(height, keepRatio) {
+function setElementHeight(height, keepRatio, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
@@ -961,7 +1154,47 @@ function setElementHeight(height, keepRatio) {
         element.setHeight(height);
       }
     }
-    return '高さを設定しました';
+    return lang === 'en' ? 'Height set' : '高さを設定しました';
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+/**
+ * 要素のX座標を設定
+ * @param {number} x - X座標（ポイント）
+ */
+function setElementPositionX(x, lang) {
+  try {
+    var selection = SlidesApp.getActivePresentation().getSelection();
+    var pageElementRange = selection.getPageElementRange();
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
+
+    var elements = pageElementRange.getPageElements();
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].setLeft(x);
+    }
+    return lang === 'en' ? 'X position set' : 'X座標を設定しました';
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+/**
+ * 要素のY座標を設定
+ * @param {number} y - Y座標（ポイント）
+ */
+function setElementPositionY(y, lang) {
+  try {
+    var selection = SlidesApp.getActivePresentation().getSelection();
+    var pageElementRange = selection.getPageElementRange();
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
+
+    var elements = pageElementRange.getPageElements();
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].setTop(y);
+    }
+    return lang === 'en' ? 'Y position set' : 'Y座標を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1019,15 +1252,17 @@ function getReferenceElement(elements, referenceType) {
 /**
  * 選択要素の幅を揃える
  * @param {string} referenceType - 基準タイプ
+ * @param {string} lang - 言語コード (ja, en)
  */
-function matchElementsWidth(referenceType) {
+function matchElementsWidth(referenceType, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     var ref = getReferenceElement(elements, referenceType);
     var targetWidth = ref.element.getWidth();
@@ -1038,8 +1273,12 @@ function matchElementsWidth(referenceType) {
       }
     }
 
-    var refLabels = { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
-    return '幅を揃えました（' + (refLabels[referenceType] || '基準') + '）';
+    var refLabels = lang === 'en' ?
+      { 'first': 'first element', 'last': 'last element', 'largest': 'largest element', 'smallest': 'smallest element' } :
+      { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
+    var baseMsg = lang === 'en' ? 'Width matched (' : '幅を揃えました（';
+    var suffix = lang === 'en' ? ')' : '）';
+    return baseMsg + (refLabels[referenceType] || (lang === 'en' ? 'reference' : '基準')) + suffix;
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1048,15 +1287,17 @@ function matchElementsWidth(referenceType) {
 /**
  * 選択要素の高さを揃える
  * @param {string} referenceType - 基準タイプ
+ * @param {string} lang - 言語コード (ja, en)
  */
-function matchElementsHeight(referenceType) {
+function matchElementsHeight(referenceType, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     var ref = getReferenceElement(elements, referenceType);
     var targetHeight = ref.element.getHeight();
@@ -1067,8 +1308,12 @@ function matchElementsHeight(referenceType) {
       }
     }
 
-    var refLabels = { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
-    return '高さを揃えました（' + (refLabels[referenceType] || '基準') + '）';
+    var refLabels = lang === 'en' ?
+      { 'first': 'first element', 'last': 'last element', 'largest': 'largest element', 'smallest': 'smallest element' } :
+      { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
+    var baseMsg = lang === 'en' ? 'Height matched (' : '高さを揃えました（';
+    var suffix = lang === 'en' ? ')' : '）';
+    return baseMsg + (refLabels[referenceType] || (lang === 'en' ? 'reference' : '基準')) + suffix;
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1077,15 +1322,17 @@ function matchElementsHeight(referenceType) {
 /**
  * 選択要素のサイズを揃える
  * @param {string} referenceType - 基準タイプ
+ * @param {string} lang - 言語コード (ja, en)
  */
-function matchElementsSize(referenceType) {
+function matchElementsSize(referenceType, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     var ref = getReferenceElement(elements, referenceType);
     var targetWidth = ref.element.getWidth();
@@ -1098,8 +1345,12 @@ function matchElementsSize(referenceType) {
       }
     }
 
-    var refLabels = { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
-    return 'サイズを揃えました（' + (refLabels[referenceType] || '基準') + '）';
+    var refLabels = lang === 'en' ?
+      { 'first': 'first element', 'last': 'last element', 'largest': 'largest element', 'smallest': 'smallest element' } :
+      { 'first': '最初の要素', 'last': '最後の要素', 'largest': '最大の要素', 'smallest': '最小の要素' };
+    var baseMsg = lang === 'en' ? 'Size matched (' : 'サイズを揃えました（';
+    var suffix = lang === 'en' ? ')' : '）';
+    return baseMsg + (refLabels[referenceType] || (lang === 'en' ? 'reference' : '基準')) + suffix;
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1110,11 +1361,11 @@ function matchElementsSize(referenceType) {
  * @param {number} widthRatio - 幅の比率
  * @param {number} heightRatio - 高さの比率
  */
-function setElementAspectRatio(widthRatio, heightRatio) {
+function setElementAspectRatio(widthRatio, heightRatio, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
@@ -1130,7 +1381,7 @@ function setElementAspectRatio(widthRatio, heightRatio) {
       element.setWidth(newWidth);
       element.setHeight(newHeight);
     }
-    return 'アスペクト比を変更しました';
+    return lang === 'en' ? 'Aspect ratio changed' : 'アスペクト比を変更しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1144,14 +1395,14 @@ function setElementAspectRatio(widthRatio, heightRatio) {
  * 水平方向の間隔を設定
  * @param {number} spacing - 間隔（ポイント）
  */
-function setHorizontalSpacing(spacing) {
+function setHorizontalSpacing(spacing, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     // 左端順にソート
     var sortedElements = [];
@@ -1171,7 +1422,7 @@ function setHorizontalSpacing(spacing) {
       currentLeft += sortedElements[i].width + spacing;
     }
 
-    return '水平間隔を設定しました';
+    return lang === 'en' ? 'Horizontal spacing set' : '水平間隔を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1181,14 +1432,14 @@ function setHorizontalSpacing(spacing) {
  * 垂直方向の間隔を設定
  * @param {number} spacing - 間隔（ポイント）
  */
-function setVerticalSpacing(spacing) {
+function setVerticalSpacing(spacing, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     // 上端順にソート
     var sortedElements = [];
@@ -1208,7 +1459,7 @@ function setVerticalSpacing(spacing) {
       currentTop += sortedElements[i].height + spacing;
     }
 
-    return '垂直間隔を設定しました';
+    return lang === 'en' ? 'Vertical spacing set' : '垂直間隔を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1223,11 +1474,11 @@ function setVerticalSpacing(spacing) {
  * @param {number} count - 複製数
  * @param {number} spacing - 間隔（ポイント）
  */
-function duplicateHorizontal(count, spacing) {
+function duplicateHorizontal(count, spacing, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     var slide = selection.getCurrentPage().asSlide();
@@ -1245,7 +1496,7 @@ function duplicateHorizontal(count, spacing) {
       }
     }
 
-    return '水平方向に複製しました';
+    return lang === 'en' ? 'Duplicated horizontally' : '水平方向に複製しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1256,11 +1507,11 @@ function duplicateHorizontal(count, spacing) {
  * @param {number} count - 複製数
  * @param {number} spacing - 間隔（ポイント）
  */
-function duplicateVertical(count, spacing) {
+function duplicateVertical(count, spacing, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
 
@@ -1277,7 +1528,7 @@ function duplicateVertical(count, spacing) {
       }
     }
 
-    return '垂直方向に複製しました';
+    return lang === 'en' ? 'Duplicated vertically' : '垂直方向に複製しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1288,11 +1539,11 @@ function duplicateVertical(count, spacing) {
  * @param {number} count - 1行あたりの複製数
  * @param {number} spacing - 間隔（ポイント）
  */
-function duplicateGrid(count, spacing) {
+function duplicateGrid(count, spacing, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
 
@@ -1314,7 +1565,7 @@ function duplicateGrid(count, spacing) {
       }
     }
 
-    return 'グリッド状に複製しました';
+    return lang === 'en' ? 'Duplicated in grid' : 'グリッド状に複製しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1328,11 +1579,11 @@ function duplicateGrid(count, spacing) {
  * 要素を回転
  * @param {number} degrees - 回転角度（度）
  */
-function rotateElement(degrees) {
+function rotateElement(degrees, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
@@ -1341,7 +1592,7 @@ function rotateElement(degrees) {
       element.setRotation(currentRotation + degrees);
     }
 
-    return '回転しました';
+    return lang === 'en' ? 'Rotated' : '回転しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1350,11 +1601,11 @@ function rotateElement(degrees) {
 /**
  * 水平方向に反転
  */
-function flipHorizontal() {
+function flipHorizontal(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var presentationId = SlidesApp.getActivePresentation().getId();
     var elements = pageElementRange.getPageElements();
@@ -1386,7 +1637,7 @@ function flipHorizontal() {
       Slides.Presentations.batchUpdate({ requests: requests }, presentationId);
     }
 
-    return '水平方向に反転しました';
+    return lang === 'en' ? 'Flipped horizontally' : '水平方向に反転しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1395,11 +1646,11 @@ function flipHorizontal() {
 /**
  * 垂直方向に反転
  */
-function flipVertical() {
+function flipVertical(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var presentationId = SlidesApp.getActivePresentation().getId();
     var elements = pageElementRange.getPageElements();
@@ -1430,7 +1681,7 @@ function flipVertical() {
       Slides.Presentations.batchUpdate({ requests: requests }, presentationId);
     }
 
-    return '垂直方向に反転しました';
+    return lang === 'en' ? 'Flipped vertically' : '垂直方向に反転しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1443,18 +1694,18 @@ function flipVertical() {
 /**
  * 最前面へ移動
  */
-function bringToFront() {
+function bringToFront(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
       elements[i].bringToFront();
     }
 
-    return '最前面に移動しました';
+    return lang === 'en' ? 'Moved to front' : '最前面に移動しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1463,18 +1714,18 @@ function bringToFront() {
 /**
  * 1つ前面へ移動
  */
-function bringForward() {
+function bringForward(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
       elements[i].bringForward();
     }
 
-    return '1つ前面に移動しました';
+    return lang === 'en' ? 'Moved forward' : '1つ前面に移動しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1483,18 +1734,18 @@ function bringForward() {
 /**
  * 1つ背面へ移動
  */
-function sendBackward() {
+function sendBackward(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
       elements[i].sendBackward();
     }
 
-    return '1つ背面に移動しました';
+    return lang === 'en' ? 'Moved backward' : '1つ背面に移動しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1503,18 +1754,18 @@ function sendBackward() {
 /**
  * 最背面へ移動
  */
-function sendToBack() {
+function sendToBack(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
       elements[i].sendToBack();
     }
 
-    return '最背面に移動しました';
+    return lang === 'en' ? 'Moved to back' : '最背面に移動しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1527,19 +1778,19 @@ function sendToBack() {
 /**
  * 要素をグループ化
  */
-function groupElements() {
+function groupElements(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
-    if (elements.length < 2) throw new Error('2つ以上の要素を選択してください');
+    if (elements.length < 2) throw new Error(lang === 'en' ? 'Select 2 or more elements' : '2つ以上の要素を選択してください');
 
     var slide = selection.getCurrentPage().asSlide();
     slide.group(elements);
 
-    return 'グループ化しました';
+    return lang === 'en' ? 'Grouped' : 'グループ化しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1548,11 +1799,11 @@ function groupElements() {
 /**
  * グループを解除
  */
-function ungroupElements() {
+function ungroupElements(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
-    if (!pageElementRange) throw new Error('要素を選択してください');
+    if (!pageElementRange) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
 
     var elements = pageElementRange.getPageElements();
     for (var i = 0; i < elements.length; i++) {
@@ -1562,7 +1813,7 @@ function ungroupElements() {
       }
     }
 
-    return 'グループを解除しました';
+    return lang === 'en' ? 'Ungrouped' : 'グループを解除しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1611,13 +1862,13 @@ function getSelectedTextRange() {
  * テキストフォントを設定
  * @param {string} fontFamily - フォント名
  */
-function setTextFont(fontFamily) {
+function setTextFont(fontFamily, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setFontFamily(fontFamily);
-    return 'フォントを設定しました';
+    return lang === 'en' ? 'Font set' : 'フォントを設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1627,13 +1878,13 @@ function setTextFont(fontFamily) {
  * テキストサイズを設定
  * @param {number} size - フォントサイズ（ポイント）
  */
-function setTextFontSize(size) {
+function setTextFontSize(size, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setFontSize(size);
-    return 'フォントサイズを設定しました';
+    return lang === 'en' ? 'Font size set' : 'フォントサイズを設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1643,13 +1894,13 @@ function setTextFontSize(size) {
  * 太字を設定
  * @param {boolean} bold - 太字にするか
  */
-function setTextBold(bold) {
+function setTextBold(bold, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setBold(bold);
-    return '太字を設定しました';
+    return lang === 'en' ? 'Bold set' : '太字を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1659,13 +1910,13 @@ function setTextBold(bold) {
  * 斜体を設定
  * @param {boolean} italic - 斜体にするか
  */
-function setTextItalic(italic) {
+function setTextItalic(italic, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setItalic(italic);
-    return '斜体を設定しました';
+    return lang === 'en' ? 'Italic set' : '斜体を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1675,13 +1926,13 @@ function setTextItalic(italic) {
  * 下線を設定
  * @param {boolean} underline - 下線を付けるか
  */
-function setTextUnderline(underline) {
+function setTextUnderline(underline, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setUnderline(underline);
-    return '下線を設定しました';
+    return lang === 'en' ? 'Underline set' : '下線を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1691,13 +1942,13 @@ function setTextUnderline(underline) {
  * 取り消し線を設定
  * @param {boolean} strikethrough - 取り消し線を付けるか
  */
-function setTextStrikethrough(strikethrough) {
+function setTextStrikethrough(strikethrough, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setStrikethrough(strikethrough);
-    return '取り消し線を設定しました';
+    return lang === 'en' ? 'Strikethrough set' : '取り消し線を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1706,8 +1957,10 @@ function setTextStrikethrough(strikethrough) {
 /**
  * 行間を設定
  * @param {number} spacing - 行間倍率（1, 1.15, 1.5, 2など）
+ * @param {string} lang - 言語コード (ja, en)
  */
-function setLineSpacing(spacing) {
+function setLineSpacing(spacing, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var selectionType = selection.getSelectionType();
@@ -1717,14 +1970,14 @@ function setLineSpacing(spacing) {
       shape = selection.getPageElementRange().getPageElements()[0].asShape();
     } else if (selectionType === SlidesApp.SelectionType.PAGE_ELEMENT) {
       var elements = selection.getPageElementRange().getPageElements();
-      if (elements.length === 0) throw new Error('要素を選択してください');
+      if (elements.length === 0) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
       var element = elements[0];
       if (element.getPageElementType() !== SlidesApp.PageElementType.SHAPE) {
-        throw new Error('テキストボックスを選択してください');
+        throw new Error(lang === 'en' ? 'Please select a text box' : 'テキストボックスを選択してください');
       }
       shape = element.asShape();
     } else {
-      throw new Error('テキストボックスを選択してください');
+      throw new Error(lang === 'en' ? 'Please select a text box' : 'テキストボックスを選択してください');
     }
 
     var textRange = shape.getText();
@@ -1736,7 +1989,7 @@ function setLineSpacing(spacing) {
       style.setLineSpacing(spacing * 100); // Google Slidesでは100が1行
     }
 
-    return '行間を ' + spacing + ' に設定しました';
+    return lang === 'en' ? 'Line spacing set to ' + spacing : '行間を ' + spacing + ' に設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1746,8 +1999,10 @@ function setLineSpacing(spacing) {
  * 段落の前後の間隔を設定
  * @param {number} before - 段落前のスペース（ポイント）
  * @param {number} after - 段落後のスペース（ポイント）
+ * @param {string} lang - 言語コード (ja, en)
  */
-function setParagraphSpacing(before, after) {
+function setParagraphSpacing(before, after, lang) {
+  lang = lang || 'ja';
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var selectionType = selection.getSelectionType();
@@ -1757,14 +2012,14 @@ function setParagraphSpacing(before, after) {
       shape = selection.getPageElementRange().getPageElements()[0].asShape();
     } else if (selectionType === SlidesApp.SelectionType.PAGE_ELEMENT) {
       var elements = selection.getPageElementRange().getPageElements();
-      if (elements.length === 0) throw new Error('要素を選択してください');
+      if (elements.length === 0) throw new Error(lang === 'en' ? 'Please select an element' : '要素を選択してください');
       var element = elements[0];
       if (element.getPageElementType() !== SlidesApp.PageElementType.SHAPE) {
-        throw new Error('テキストボックスを選択してください');
+        throw new Error(lang === 'en' ? 'Please select a text box' : 'テキストボックスを選択してください');
       }
       shape = element.asShape();
     } else {
-      throw new Error('テキストボックスを選択してください');
+      throw new Error(lang === 'en' ? 'Please select a text box' : 'テキストボックスを選択してください');
     }
 
     var textRange = shape.getText();
@@ -1777,7 +2032,7 @@ function setParagraphSpacing(before, after) {
       style.setSpaceBelow(after);
     }
 
-    return '段落間隔を設定しました';
+    return msg('paragraph_spacing_set', lang);
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1787,13 +2042,13 @@ function setParagraphSpacing(before, after) {
  * テキスト色を設定
  * @param {string} hexColor - HEX形式の色
  */
-function setTextColor(hexColor) {
+function setTextColor(hexColor, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     textRange.getTextStyle().setForegroundColor(hexColor);
-    return 'テキスト色を設定しました';
+    return lang === 'en' ? 'Text color set' : 'テキスト色を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1803,17 +2058,17 @@ function setTextColor(hexColor) {
  * テキスト背景色（ハイライト）を設定
  * @param {string} hexColor - HEX形式の色またはnull（透明）
  */
-function setTextBackgroundColor(hexColor) {
+function setTextBackgroundColor(hexColor, lang) {
   try {
     var textRange = getSelectedTextRange();
-    if (!textRange) throw new Error('テキストを選択してください');
+    if (!textRange) throw new Error(lang === 'en' ? 'Please select text' : 'テキストを選択してください');
 
     if (hexColor === null) {
       textRange.getTextStyle().setBackgroundColorTransparent();
     } else {
       textRange.getTextStyle().setBackgroundColor(hexColor);
     }
-    return 'テキスト背景色を設定しました';
+    return lang === 'en' ? 'Text background color set' : 'テキスト背景色を設定しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -1831,18 +2086,18 @@ function setTextBackgroundColor(hexColor) {
  * 選択中のオブジェクトの属性を取得
  * @returns {Object} オブジェクトの属性情報
  */
-function getSelectedElementAttributes() {
+function getSelectedElementAttributes(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var element = elements[0];
@@ -1868,9 +2123,26 @@ function getSelectedElementAttributes() {
       if (fill.getType() === SlidesApp.FillType.SOLID) {
         var solidFill = fill.getSolidFill();
         if (solidFill) {
-          try {
-            attrs.fillColor = rgbColorToHex(solidFill.getColor().asRgbColor());
-          } catch(e) {}
+          var fillColor = solidFill.getColor();
+          var fillColorType = fillColor.getColorType();
+          if (fillColorType === SlidesApp.ColorType.RGB) {
+            try {
+              attrs.fillColor = rgbColorToHex(fillColor.asRgbColor());
+            } catch(e) {}
+          } else if (fillColorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
+            try {
+              var themeColor = fillColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedColor = scheme.getConcreteColor(themeColor.getThemeColorType());
+              attrs.fillColor = rgbColorToHex(resolvedColor.asRgbColor());
+            } catch(e) {
+              try {
+                attrs.fillColor = rgbColorToHex(fillColor.asRgbColor());
+              } catch(e2) {}
+            }
+          }
         }
       }
 
@@ -1879,9 +2151,26 @@ function getSelectedElementAttributes() {
       if (border.isVisible()) {
         var lineFill = border.getLineFill();
         if (lineFill.getFillType() === SlidesApp.LineFillType.SOLID) {
-          try {
-            attrs.strokeColor = rgbColorToHex(lineFill.getSolidFill().getColor().asRgbColor());
-          } catch(e) {}
+          var strokeColor = lineFill.getSolidFill().getColor();
+          var strokeColorType = strokeColor.getColorType();
+          if (strokeColorType === SlidesApp.ColorType.RGB) {
+            try {
+              attrs.strokeColor = rgbColorToHex(strokeColor.asRgbColor());
+            } catch(e) {}
+          } else if (strokeColorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
+            try {
+              var strokeThemeColor = strokeColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedStrokeColor = scheme.getConcreteColor(strokeThemeColor.getThemeColorType());
+              attrs.strokeColor = rgbColorToHex(resolvedStrokeColor.asRgbColor());
+            } catch(e) {
+              try {
+                attrs.strokeColor = rgbColorToHex(strokeColor.asRgbColor());
+              } catch(e2) {}
+            }
+          }
         }
         attrs.strokeWeight = border.getWeight();
         attrs.strokeDashStyle = border.getDashStyle().toString();
@@ -1956,18 +2245,18 @@ function getSelectedElementAttributes() {
  * @param {string} matchType - 検索タイプ (fillColor, strokeColor, textColor, fontFamily, fontSize, strokeWeight)
  * @returns {Object} 検索結果情報
  */
-function selectSimilarElements(matchType) {
+function selectSimilarElements(matchType, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('基準となるオブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select a base object' : '基準オブジェクトを選択してください');
     }
 
     var selectedElements = pageElementRange.getPageElements();
     if (selectedElements.length === 0) {
-      throw new Error('基準となるオブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select a base object' : '基準オブジェクトを選択してください');
     }
 
     // 基準オブジェクトの属性を取得
@@ -2004,7 +2293,7 @@ function selectSimilarElements(matchType) {
     }
 
     if (targetValue === null || targetValue === undefined) {
-      throw new Error('選択したオブジェクトにこの属性がありません');
+      throw new Error(lang === 'en' ? 'Selected object does not have this attribute' : '選択されたオブジェクトにはこの属性がありません');
     }
 
     for (var i = 0; i < allElements.length; i++) {
@@ -2039,7 +2328,7 @@ function selectSimilarElements(matchType) {
     }
 
     if (matchedElements.length === 0) {
-      return { count: 0, message: '一致するオブジェクトが見つかりませんでした' };
+      return { count: 0, message: lang === 'en' ? 'No matching objects found' : '一致するオブジェクトが見つかりませんでした' };
     }
 
     // 一致する要素を選択
@@ -2052,7 +2341,16 @@ function selectSimilarElements(matchType) {
       }
     }
 
-    var typeLabels = {
+    var typeLabelsEn = {
+      'fillColor': 'fill color',
+      'strokeColor': 'stroke color',
+      'textColor': 'text color',
+      'fontFamily': 'font',
+      'fontSize': 'font size',
+      'strokeWeight': 'stroke weight'
+    };
+
+    var typeLabelsJa = {
       'fillColor': '塗りつぶし色',
       'strokeColor': '枠線色',
       'textColor': '文字色',
@@ -2061,9 +2359,13 @@ function selectSimilarElements(matchType) {
       'strokeWeight': '枠線の太さ'
     };
 
+    var message = lang === 'en'
+      ? 'Selected ' + matchedElements.length + ' objects with same ' + typeLabelsEn[matchType]
+      : typeLabelsJa[matchType] + 'が同じオブジェクトを ' + matchedElements.length + ' 個選択しました';
+
     return {
       count: matchedElements.length,
-      message: typeLabels[matchType] + 'が同じオブジェクトを ' + matchedElements.length + ' 個選択しました'
+      message: message
     };
   } catch (e) {
     throw new Error(e.message);
@@ -2095,9 +2397,26 @@ function getElementAttributes(element) {
       if (fill.getType() === SlidesApp.FillType.SOLID) {
         var solidFill = fill.getSolidFill();
         if (solidFill) {
-          try {
-            attrs.fillColor = rgbColorToHex(solidFill.getColor().asRgbColor());
-          } catch(e) {}
+          var fillColor = solidFill.getColor();
+          var fillColorType = fillColor.getColorType();
+          if (fillColorType === SlidesApp.ColorType.RGB) {
+            try {
+              attrs.fillColor = rgbColorToHex(fillColor.asRgbColor());
+            } catch(e) {}
+          } else if (fillColorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
+            try {
+              var themeColor = fillColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedColor = scheme.getConcreteColor(themeColor.getThemeColorType());
+              attrs.fillColor = rgbColorToHex(resolvedColor.asRgbColor());
+            } catch(e) {
+              try {
+                attrs.fillColor = rgbColorToHex(fillColor.asRgbColor());
+              } catch(e2) {}
+            }
+          }
         }
       }
 
@@ -2106,9 +2425,26 @@ function getElementAttributes(element) {
       if (border.isVisible()) {
         var lineFill = border.getLineFill();
         if (lineFill.getFillType() === SlidesApp.LineFillType.SOLID) {
-          try {
-            attrs.strokeColor = rgbColorToHex(lineFill.getSolidFill().getColor().asRgbColor());
-          } catch(e) {}
+          var strokeColor = lineFill.getSolidFill().getColor();
+          var strokeColorType = strokeColor.getColorType();
+          if (strokeColorType === SlidesApp.ColorType.RGB) {
+            try {
+              attrs.strokeColor = rgbColorToHex(strokeColor.asRgbColor());
+            } catch(e) {}
+          } else if (strokeColorType === SlidesApp.ColorType.THEME) {
+            // テーマカラーの場合はカラースキームから解決
+            try {
+              var strokeThemeColor = strokeColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedStrokeColor = scheme.getConcreteColor(strokeThemeColor.getThemeColorType());
+              attrs.strokeColor = rgbColorToHex(resolvedStrokeColor.asRgbColor());
+            } catch(e) {
+              try {
+                attrs.strokeColor = rgbColorToHex(strokeColor.asRgbColor());
+              } catch(e2) {}
+            }
+          }
         }
         attrs.strokeWeight = border.getWeight();
       }
@@ -2178,18 +2514,18 @@ function getElementAttributes(element) {
  * 選択中のオブジェクトのスタイルを取得
  * @returns {Object} スタイル情報
  */
-function copyElementStyle() {
+function copyElementStyle(lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var element = elements[0];
@@ -2220,9 +2556,26 @@ function copyElementStyle() {
         var solidFill = fill.getSolidFill();
         if (solidFill) {
           try {
-            style.fillColor = rgbColorToHex(solidFill.getColor().asRgbColor());
+            var fillColor = solidFill.getColor();
+            var fillColorType = fillColor.getColorType();
+            if (fillColorType === SlidesApp.ColorType.RGB) {
+              style.fillColor = rgbColorToHex(fillColor.asRgbColor());
+            } else if (fillColorType === SlidesApp.ColorType.THEME) {
+              // テーマカラーの場合はカラースキームから解決
+              var themeColor = fillColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedColor = scheme.getConcreteColor(themeColor.getThemeColorType());
+              style.fillColor = rgbColorToHex(resolvedColor.asRgbColor());
+            }
             style.fillAlpha = solidFill.getAlpha();
-          } catch(e) {}
+          } catch(e) {
+            // フォールバック: 直接RGBとして取得を試みる
+            try {
+              style.fillColor = rgbColorToHex(solidFill.getColor().asRgbColor());
+              style.fillAlpha = solidFill.getAlpha();
+            } catch(e2) {}
+          }
         }
       }
 
@@ -2232,8 +2585,24 @@ function copyElementStyle() {
         var lineFill = border.getLineFill();
         if (lineFill.getFillType() === SlidesApp.LineFillType.SOLID) {
           try {
-            style.strokeColor = rgbColorToHex(lineFill.getSolidFill().getColor().asRgbColor());
-          } catch(e) {}
+            var strokeColor = lineFill.getSolidFill().getColor();
+            var strokeColorType = strokeColor.getColorType();
+            if (strokeColorType === SlidesApp.ColorType.RGB) {
+              style.strokeColor = rgbColorToHex(strokeColor.asRgbColor());
+            } else if (strokeColorType === SlidesApp.ColorType.THEME) {
+              // テーマカラーの場合はカラースキームから解決
+              var themeColor = strokeColor.asThemeColor();
+              var presentation = SlidesApp.getActivePresentation();
+              var scheme = presentation.getMasters()[0].getColorScheme();
+              var resolvedColor = scheme.getConcreteColor(themeColor.getThemeColorType());
+              style.strokeColor = rgbColorToHex(resolvedColor.asRgbColor());
+            }
+          } catch(e) {
+            // フォールバック
+            try {
+              style.strokeColor = rgbColorToHex(lineFill.getSolidFill().getColor().asRgbColor());
+            } catch(e2) {}
+          }
         }
         style.strokeWeight = border.getWeight();
         style.strokeDashStyle = border.getDashStyle().toString();
@@ -2322,18 +2691,18 @@ function copyElementStyle() {
  * @param {Object} options - 適用オプション（どの属性を適用するか）
  * @returns {string} 結果メッセージ
  */
-function applyElementStyle(style, options) {
+function applyElementStyle(style, options, lang) {
   try {
     var selection = SlidesApp.getActivePresentation().getSelection();
     var pageElementRange = selection.getPageElementRange();
 
     if (!pageElementRange) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var elements = pageElementRange.getPageElements();
     if (elements.length === 0) {
-      throw new Error('オブジェクトを選択してください');
+      throw new Error(lang === 'en' ? 'Select an object' : 'オブジェクトを選択してください');
     }
 
     var appliedCount = 0;
@@ -2464,7 +2833,9 @@ function applyElementStyle(style, options) {
       if (applied) appliedCount++;
     }
 
-    return appliedCount + '個のオブジェクトにスタイルを適用しました';
+    return lang === 'en'
+      ? 'Style applied to ' + appliedCount + ' object(s)'
+      : appliedCount + '個のオブジェクトにスタイルを適用しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -2477,23 +2848,27 @@ function applyElementStyle(style, options) {
 /**
  * ルーラー表示を切り替え（Slides APIでは直接制御不可、UIメッセージのみ）
  */
-function toggleRuler(show) {
+function toggleRuler(show, lang) {
   // Google Slides APIではルーラー表示の制御はサポートされていません
   // ユーザーに手動で設定するよう案内
-  return 'ルーラーは「表示」メニューから手動で切り替えてください';
+  return lang === 'en'
+    ? 'Please toggle ruler manually from the View menu'
+    : 'ルーラーは「表示」メニューから手動で切り替えてください';
 }
 
 /**
  * ガイド表示を切り替え（Slides APIでは直接制御不可）
  */
-function toggleGuides(show) {
-  return 'ガイドは「表示」メニューから手動で切り替えてください';
+function toggleGuides(show, lang) {
+  return lang === 'en'
+    ? 'Please toggle guides manually from the View menu'
+    : 'ガイドは「表示」メニューから手動で切り替えてください';
 }
 
 /**
  * 垂直ガイドを追加
  */
-function addVerticalGuide() {
+function addVerticalGuide(lang) {
   try {
     var presentationId = SlidesApp.getActivePresentation().getId();
     var selection = SlidesApp.getActivePresentation().getSelection();
@@ -2517,7 +2892,7 @@ function addVerticalGuide() {
       }]
     }, presentationId);
 
-    return '垂直ガイドを追加しました';
+    return lang === 'en' ? 'Vertical guide added' : '垂直ガイドを追加しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -2526,7 +2901,7 @@ function addVerticalGuide() {
 /**
  * 水平ガイドを追加
  */
-function addHorizontalGuide() {
+function addHorizontalGuide(lang) {
   try {
     var presentationId = SlidesApp.getActivePresentation().getId();
     var selection = SlidesApp.getActivePresentation().getSelection();
@@ -2550,7 +2925,7 @@ function addHorizontalGuide() {
       }]
     }, presentationId);
 
-    return '水平ガイドを追加しました';
+    return lang === 'en' ? 'Horizontal guide added' : '水平ガイドを追加しました';
   } catch (e) {
     throw new Error(e.message);
   }
@@ -2559,14 +2934,14 @@ function addHorizontalGuide() {
 /**
  * ガイド編集画面を開く（UIメッセージのみ）
  */
-function editGuides() {
-  return 'ガイドはスライド上で直接ドラッグして編集できます';
+function editGuides(lang) {
+  return lang === 'en' ? 'Guides can be edited by dragging directly on the slide' : 'ガイドはスライド上で直接ドラッグして編集できます';
 }
 
 /**
  * すべてのガイドをクリア
  */
-function clearGuides() {
+function clearGuides(lang) {
   try {
     var presentationId = SlidesApp.getActivePresentation().getId();
     var selection = SlidesApp.getActivePresentation().getSelection();
@@ -2590,9 +2965,9 @@ function clearGuides() {
 
     if (requests.length > 0) {
       Slides.Presentations.batchUpdate({ requests: requests }, presentationId);
-      return 'ガイドをクリアしました';
+      return lang === 'en' ? 'Guides cleared' : 'ガイドをクリアしました';
     } else {
-      return 'クリアするガイドがありません';
+      return lang === 'en' ? 'No guides to clear' : 'クリアするガイドがありません';
     }
   } catch (e) {
     throw new Error(e.message);

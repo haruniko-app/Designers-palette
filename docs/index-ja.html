@@ -69,11 +69,37 @@
             color: var(--text);
         }
 
+        /* Hero */
+        .hero-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8eaed 100%);
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(120, 120, 120, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(120, 120, 120, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(100, 100, 100, 0.02) 0%, transparent 30%),
+                linear-gradient(135deg, #f8f9fa 0%, #e8eaed 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 1;
+            pointer-events: none;
+        }
+
         .hero {
             padding: 180px 40px 120px;
             text-align: center;
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-icon {
@@ -349,13 +375,15 @@
         </div>
     </nav>
 
-    <section class="hero">
-        <img src="icon.png" alt="Designer's Palette" class="hero-icon">
-        <p class="hero-sub">FOR GOOGLE SLIDES™</p>
-        <h1>Designer's Palette</h1>
-        <p>プレゼンテーションのためのプロフェッショナルデザインツール。AI画像編集、精密な整列、高度なカラー管理。</p>
-        <a href="https://workspace.google.com/marketplace/" class="cta-btn">無料でインストール</a>
-    </section>
+    <div class="hero-section">
+        <section class="hero">
+            <img src="icon.png" alt="Designer's Palette" class="hero-icon">
+            <p class="hero-sub">FOR GOOGLE SLIDES™</p>
+            <h1>Designer's Palette</h1>
+            <p>プレゼンテーションのためのプロフェッショナルデザインツール。AI画像編集、精密な整列、高度なカラー管理。</p>
+            <a href="https://workspace.google.com/marketplace/" class="cta-btn">無料でインストール</a>
+        </section>
+    </div>
 
     <hr class="divider">
 

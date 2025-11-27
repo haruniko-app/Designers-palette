@@ -56,20 +56,20 @@ Marketplace SDK の「サポートリンク」セクションに以下のURLを�
 
 ### 利用規約の URL *（必須）
 ```
-https://haruniko-app.github.io/slide-ai-tool/terms-of-service.html
+https://haruniko-app.github.io/Designers-palette/terms-of-service.html
 ```
 日本語版:
 ```
-https://haruniko-app.github.io/slide-ai-tool/terms-of-service-ja.html
+https://haruniko-app.github.io/Designers-palette/terms-of-service-ja.html
 ```
 
 ### プライバシー ポリシーの URL *（必須）
 ```
-https://haruniko-app.github.io/slide-ai-tool/privacy-policy.html
+https://haruniko-app.github.io/Designers-palette/privacy-policy.html
 ```
 日本語版:
 ```
-https://haruniko-app.github.io/slide-ai-tool/privacy-policy-ja.html
+https://haruniko-app.github.io/Designers-palette/privacy-policy-ja.html
 ```
 
 ### セットアップの URL（任意）
@@ -84,21 +84,21 @@ https://haruniko-app.github.io/slide-ai-tool/privacy-policy-ja.html
 
 ### サポートの URL *（必須）
 ```
-https://haruniko-app.github.io/slide-ai-tool/support.html
+https://haruniko-app.github.io/Designers-palette/support.html
 ```
 または GitHub Issues を使用する場合:
 ```
-https://github.com/haruniko-app/slide-ai-tool/issues
+https://github.com/haruniko-app/Designers-palette/issues
 ```
 
 ### ヘルプの URL（任意）
 ```
-https://haruniko-app.github.io/slide-ai-tool/support.html
+https://haruniko-app.github.io/Designers-palette/support.html
 ```
 
 ### 問題の報告用 URL（任意）
 ```
-https://github.com/haruniko-app/slide-ai-tool/issues
+https://github.com/haruniko-app/Designers-palette/issues
 ```
 
 ### インストール後のヒント *（必須）

@@ -46,11 +46,23 @@
         }
 
         .nav-brand {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .nav-brand-title {
             font-size: 17px;
             font-weight: 600;
             color: var(--text);
-            text-decoration: none;
             letter-spacing: -0.3px;
+        }
+
+        .nav-brand-sub {
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
         }
 
         .nav-links {
@@ -361,7 +373,10 @@
 
     <nav class="nav">
         <div class="nav-inner">
-            <a href="index-ja.html" class="nav-brand">Designer's Palette</a>
+            <a href="index-ja.html" class="nav-brand">
+                <span class="nav-brand-title">Designer's Palette</span>
+                <span class="nav-brand-sub">FOR GOOGLE SLIDES™</span>
+            </a>
             <div class="nav-links">
                 <a href="index-ja.html">TOP</a>
                 <a href="support-ja.html">サポート</a>

@@ -28,10 +28,15 @@
 
       .standalone-content { background: #fff; border-radius: 8px; margin: 10px 0 0 0; }
 
-      .section { border-bottom: 1px solid #dadce0; }
+      .section { border-bottom: 1px solid #dadce0; transition: transform 0.15s, box-shadow 0.15s; }
+      .section.dragging { opacity: 0.8; transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; background: #fff; }
+      .section.drag-over { border-top: 2px solid #1a73e8; }
       .section-header { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; transition: background 0.2s; }
       .section-header:hover { background-color: #f1f3f4; }
       .section-title { font-weight: 500; flex: 1; font-size: 14px; color: #202124; }
+      .drag-handle { width: 16px; height: 16px; fill: #bdc1c6; margin-right: 6px; cursor: grab; flex-shrink: 0; }
+      .drag-handle:hover { fill: #5f6368; }
+      .drag-handle:active { cursor: grabbing; }
       .arrow-icon { width: 20px; height: 20px; fill: #5f6368; margin-right: 10px; transform: rotate(-90deg); transition: transform 0.2s; }
       .section.open .arrow-icon { transform: rotate(0deg); }
       .section-content { display: none; padding: 8px 16px 16px 16px; overflow: hidden; }
@@ -255,7 +260,7 @@
                     style="width:48px;height:48px;fill:#dadce0;"><path
                         d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" /></svg>
                 <div style="margin-top:10px;"
-                    id="placeholderText">スライド上の画像を選択してください</div>
+                    id="placeholderText" data-i18n="placeholder_title">スライド上の画像を選択してください</div>
                 <div id="errorMessage"></div>
             </div>
 
@@ -263,139 +268,139 @@
             <div id="loadingOverlay"><div class="spinner"></div><div
                     class="loading-text" id="loadingText">読み込み中...</div></div>
             <div class="reload-icon-btn" onclick="resetAndLoad()"
-                title="リセット"><svg width="18" height="18" viewBox="0 0 24 24"
+                title="リセット" data-i18n-title="tip_reset"><svg width="18" height="18" viewBox="0 0 24 24"
                     fill="#5f6368"><path
                         d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" /></svg></div>
             <div class="download-icon-btn" id="downloadBtn" onclick="downloadImage()"
-                title="画像をダウンロード"><svg width="18" height="18" viewBox="0 0 24 24"
+                title="画像をダウンロード" data-i18n-title="tip_download"><svg width="18" height="18" viewBox="0 0 24 24"
                     fill="#1a73e8"><path
                         d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z" /></svg></div>
         </div>
 
         <div class="main-content" id="mainContent">
-            <div class="section" id="sec-crop">
-                <div class="section-header"
-                    onclick="toggleSection('sec-crop')"><svg class="arrow-icon"
-                        viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">トリミング確定</span></div>
+            <div class="section" id="sec-crop" data-group="image">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-crop')"><path d="M7 10l5 5 5-5z" /></svg>
+                    <span class="section-title" onclick="toggleSection('sec-crop')" data-i18n="sec_crop">トリミング確定</span>
+                </div>
                 <div class="section-content">
                     <div
-                        class="info-box">現在のトリミング範囲で画像を切り抜き、見えていない部分を削除します。</div>
+                        class="info-box" data-i18n="info_crop">現在のトリミング範囲で画像を切り抜き、見えていない部分を削除します。</div>
                     <button class="action-btn" id="cropBtn"
-                        onclick="performCrop()" disabled>トリミングを実行して確定</button>
+                        onclick="performCrop()" disabled data-i18n="btn_crop">トリミングを実行して確定</button>
                 </div>
             </div>
-            <div class="section" id="sec-extend">
-                <div class="section-header"
-                    onclick="toggleSection('sec-extend')"><svg
-                        class="arrow-icon" viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">AI画像拡張</span></div>
+            <div class="section" id="sec-extend" data-group="image">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-extend')"><path d="M7 10l5 5 5-5z" /></svg>
+                    <span class="section-title" onclick="toggleSection('sec-extend')" data-i18n="sec_extend">AI画像拡張</span>
+                </div>
                 <div class="section-content">
-                    <div class="info-box">AIを使用して画像の周囲を描き足します。</div>
+                    <div class="info-box" data-i18n="info_extend">AIを使用して画像の周囲を描き足します。</div>
                     <div class="adjust-row">
-                        <span class="adjust-label">横</span>
+                        <span class="adjust-label" data-i18n="label_width">横</span>
                         <input type="range" id="rangeW" min="0" max="100" value="0" oninput="syncNum('w', this.value)">
                         <input type="number" class="color-input" id="numW" value="0" min="0" max="100" oninput="syncSlider('w', this.value)">
                         <span class="unit">%</span>
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label">縦</span>
+                        <span class="adjust-label" data-i18n="label_height">縦</span>
                         <input type="range" id="rangeH" min="0" max="100" value="0" oninput="syncNum('h', this.value)">
                         <input type="number" class="color-input" id="numH" value="0" min="0" max="100" oninput="syncSlider('h', this.value)">
                         <span class="unit">%</span>
                     </div>
                     <button class="action-btn" id="generateBtn"
-                        onclick="callCloudAI('extend')" disabled>生成を実行</button>
+                        onclick="callCloudAI('extend')" disabled data-i18n="btn_generate">生成を実行</button>
                     <div id="postGenButtons" class="retry-group"
                         style="display:none;">
                         <button class="action-btn retry-btn"
-                            onclick="callCloudAI('extend')">再生成</button>
+                            onclick="callCloudAI('extend')" data-i18n="btn_regenerate">再生成</button>
                     </div>
                 </div>
             </div>
-            <div class="section" id="sec-upscale">
-                <div class="section-header"
-                    onclick="toggleSection('sec-upscale')"><svg
-                        class="arrow-icon" viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">AI高画質化</span></div>
+            <div class="section" id="sec-upscale" data-group="image">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-upscale')"><path d="M7 10l5 5 5-5z" /></svg>
+                    <span class="section-title" onclick="toggleSection('sec-upscale')" data-i18n="sec_upscale">AI高画質化</span>
+                </div>
                 <div class="section-content">
                     <div
-                        class="info-box">AIを使用して画像の解像度を2倍に高め、ぼやけた輪郭をくっきりと補正します。</div>
+                        class="info-box" data-i18n="info_upscale">AIを使用して画像の解像度を2倍に高め、ぼやけた輪郭をくっきりと補正します。</div>
                     <button class="action-btn" id="upscaleBtn"
-                        onclick="callCloudAI('upscale')" disabled>高画質化を実行</button>
+                        onclick="callCloudAI('upscale')" disabled data-i18n="btn_upscale">高画質化を実行</button>
                 </div>
             </div>
-            <div class="section" id="sec-color">
-                <div class="section-header"
-                    onclick="toggleSection('sec-color')"><svg class="arrow-icon"
-                        viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">色調調整</span></div>
+            <div class="section" id="sec-color" data-group="image">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-color')"><path d="M7 10l5 5 5-5z" /></svg>
+                    <span class="section-title" onclick="toggleSection('sec-color')" data-i18n="sec_color">色調調整</span>
+                </div>
                 <div class="section-content">
                     <div class="adjust-row">
-                        <span class="adjust-label">明るさ</span>
+                        <span class="adjust-label" data-i18n="label_brightness">明るさ</span>
                         <input type="range" id="brightnessRange" min="0" max="200" value="100" oninput="syncColor('brightness')">
                         <input type="number" class="color-input" id="val_brightness" value="100" min="0" max="200" oninput="syncColorFromInput('brightness')">
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label" style="font-size:11px;letter-spacing:-0.5px;">コントラスト</span>
+                        <span class="adjust-label" style="font-size:11px;letter-spacing:-0.5px;" data-i18n="label_contrast">コントラスト</span>
                         <input type="range" id="contrastRange" min="0" max="200" value="100" oninput="syncColor('contrast')">
                         <input type="number" class="color-input" id="val_contrast" value="100" min="0" max="200" oninput="syncColorFromInput('contrast')">
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label">彩度</span>
+                        <span class="adjust-label" data-i18n="label_saturation">彩度</span>
                         <input type="range" id="saturateRange" min="0" max="200" value="100" oninput="syncColor('saturate')">
                         <input type="number" class="color-input" id="val_saturate" value="100" min="0" max="200" oninput="syncColorFromInput('saturate')">
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label">色相</span>
+                        <span class="adjust-label" data-i18n="label_hue">色相</span>
                         <input type="range" id="hueRange" min="0" max="360" value="0" oninput="syncColor('hue')">
                         <input type="number" class="color-input" id="val_hue" value="0" min="0" max="360" oninput="syncColorFromInput('hue')">
                     </div>
                     <hr class="divider">
                     <div class="adjust-row">
-                        <span class="adjust-label" style="color:#d93025;">赤</span>
+                        <span class="adjust-label" style="color:#d93025;" data-i18n="label_red">赤</span>
                         <input type="range" id="colorRRange" min="-100" max="100" value="0" oninput="syncColor('colorR')">
                         <input type="number" class="color-input" id="val_colorR" value="0" min="-100" max="100" oninput="syncColorFromInput('colorR')">
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label" style="color:#188038;">緑</span>
+                        <span class="adjust-label" style="color:#188038;" data-i18n="label_green">緑</span>
                         <input type="range" id="colorGRange" min="-100" max="100" value="0" oninput="syncColor('colorG')">
                         <input type="number" class="color-input" id="val_colorG" value="0" min="-100" max="100" oninput="syncColorFromInput('colorG')">
                     </div>
                     <div class="adjust-row">
-                        <span class="adjust-label" style="color:#1a73e8;">青</span>
+                        <span class="adjust-label" style="color:#1a73e8;" data-i18n="label_blue">青</span>
                         <input type="range" id="colorBRange" min="-100" max="100" value="0" oninput="syncColor('colorB')">
                         <input type="number" class="color-input" id="val_colorB" value="0" min="-100" max="100" oninput="syncColorFromInput('colorB')">
                     </div>
                 </div>
             </div>
-            <div class="section" id="sec-effect">
-                <div class="section-header"
-                    onclick="toggleSection('sec-effect')"><svg
-                        class="arrow-icon" viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">エフェクト</span></div>
+            <div class="section" id="sec-effect" data-group="image">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-effect')"><path d="M7 10l5 5 5-5z" /></svg>
+                    <span class="section-title" onclick="toggleSection('sec-effect')" data-i18n="sec_effect">エフェクト</span>
+                </div>
                 <div class="section-content">
                     <div class="btn-group-vertical">
                         <div class="btn-row"><div class="btn-opt selected"
-                                onclick="setEffect('none', this)">なし</div><div
+                                onclick="setEffect('none', this)" data-i18n="effect_none">なし</div><div
                                 class="btn-opt"
-                                onclick="setEffect('blur', this)">ぼかし</div><div
+                                onclick="setEffect('blur', this)" data-i18n="effect_blur">ぼかし</div><div
                                 class="btn-opt"
-                                onclick="setEffect('pixelate', this)">モザイク</div></div>
+                                onclick="setEffect('pixelate', this)" data-i18n="effect_pixelate">モザイク</div></div>
                         <div class="btn-row"><div class="btn-opt"
-                                onclick="setEffect('grayscale', this)">モノクロ</div><div
+                                onclick="setEffect('grayscale', this)" data-i18n="effect_grayscale">モノクロ</div><div
                                 class="btn-opt"
-                                onclick="setEffect('sepia', this)">セピア</div><div
+                                onclick="setEffect('sepia', this)" data-i18n="effect_sepia">セピア</div><div
                                 class="btn-opt"
-                                onclick="setEffect('vignette', this)">周辺減光</div></div>
+                                onclick="setEffect('vignette', this)" data-i18n="effect_vignette">周辺減光</div></div>
                     </div>
                     <div class="control-row" style="margin-top:10px;"><div
-                            class="control-label">強度 <span id="effectValLabel"
+                            class="control-label"><span data-i18n="label_intensity">強度</span> <span id="effectValLabel"
                                 style="float:right; color:#1a73e8;">0</span></div><div
                             class="input-wrapper"><input type="range"
                                 id="effectRange" min="0" max="100" value="0"
@@ -403,33 +408,34 @@
                 </div>
             </div>
             <div style="padding: 16px; border-top: 0;">
-                <button class="action-btn primary-btn" id="applyBtn" onclick="applyToSlide()" disabled style="margin-top: 0;">スライドに適用</button>
+                <button class="action-btn primary-btn" id="applyBtn" onclick="applyToSlide()" disabled style="margin-top: 0;" data-i18n="btn_apply">スライドに適用</button>
             </div>
         </div>
 
-        <div class="standalone-content">
+        <div class="standalone-content" id="utilityContent">
             <!-- カラーセクション -->
-            <div class="section" id="sec-color-panel">
-                <div class="section-header" onclick="toggleSection('sec-color-panel')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">カラー</span>
+            <div class="section" id="sec-color-panel" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-color-panel')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-color-panel')" data-i18n="sec_color_panel">カラー</span>
                 </div>
                 <div class="section-content">
                     <div class="color-target-switcher">
                         <div class="color-target-group shape-targets">
-                            <div class="color-target fill-target active" id="fillBox" onclick="setActiveTarget('fill')" data-label="塗り">
+                            <div class="color-target fill-target active" id="fillBox" onclick="setActiveTarget('fill')" data-label="塗り" data-i18n-label="target_fill">
                                 <div class="color-preview" id="fillPreview"></div>
                             </div>
-                            <div class="color-target stroke-target" id="strokeBox" onclick="setActiveTarget('stroke')" data-label="線">
+                            <div class="color-target stroke-target" id="strokeBox" onclick="setActiveTarget('stroke')" data-label="線" data-i18n-label="target_stroke">
                                 <div class="color-preview" id="strokePreview"></div>
                             </div>
                         </div>
                         <div class="color-target-group text-targets">
-                            <div class="color-target text-target" id="textColorTarget" onclick="setActiveTarget('text')" data-label="文字">
+                            <div class="color-target text-target" id="textColorTarget" onclick="setActiveTarget('text')" data-label="文字" data-i18n-label="target_text">
                                 <span class="text-icon">A</span>
                                 <div class="color-indicator" id="textColorBar"></div>
                             </div>
-                            <div class="color-target highlight-target none" id="highlightTarget" onclick="setActiveTarget('highlight')" data-label="蛍光ペン">
+                            <div class="color-target highlight-target none" id="highlightTarget" onclick="setActiveTarget('highlight')" data-label="蛍光ペン" data-i18n-label="target_highlight">
                                 <div class="highlight-preview" id="highlightBg">
                                     <span class="text-icon">A</span>
                                 </div>
@@ -437,23 +443,23 @@
                         </div>
                     </div>
                     <div class="quick-colors">
-                        <div class="quick-color none-btn" onclick="setNone()" title="なし"></div>
-                        <div class="quick-color white-btn" onclick="setQuickColor('#FFFFFF')" title="白"></div>
-                        <div class="quick-color black-btn" onclick="setQuickColor('#000000')" title="黒"></div>
-                        <div class="eyedropper-btn" id="eyedropperBtn" onclick="toggleEyedropper()" title="スポイト（選択要素から色を取得）">
+                        <div class="quick-color none-btn" onclick="setNone()" title="なし" data-i18n-title="tip_none"></div>
+                        <div class="quick-color white-btn" onclick="setQuickColor('#FFFFFF')" title="白" data-i18n-title="tip_white"></div>
+                        <div class="quick-color black-btn" onclick="setQuickColor('#000000')" title="黒" data-i18n-title="tip_black"></div>
+                        <div class="eyedropper-btn" id="eyedropperBtn" onclick="toggleEyedropper()" title="スポイト（選択要素から色を取得）" data-i18n-title="tip_eyedropper">
                             <svg viewBox="0 0 24 24"><path d="M20.71 5.63l-2.34-2.34a1 1 0 00-1.41 0l-3.12 3.12-1.41-1.41-1.42 1.41 1.42 1.42-8.32 8.32A2 2 0 003.46 18l-.71 2.12a.5.5 0 00.63.63L5.5 20.04a2 2 0 001.79-.65l8.32-8.32 1.41 1.41 1.41-1.41-1.41-1.41 3.12-3.12a1 1 0 00.07-1.41z"/></svg>
                         </div>
                     </div>
                     <div class="swatch-section">
-                        <div class="swatch-label">最近使用したカラー</div>
+                        <div class="swatch-label" data-i18n="label_recent_colors">最近使用したカラー</div>
                         <div class="recent-colors" id="recentColors"></div>
                     </div>
                     <div class="swatch-section">
-                        <div class="swatch-label">カラーパレット</div>
+                        <div class="swatch-label" data-i18n="label_color_palette">カラーパレット</div>
                         <div class="swatch-grid" id="swatchGrid"></div>
                     </div>
                     <div class="spectrum-section">
-                        <div class="swatch-label">カスタムカラー</div>
+                        <div class="swatch-label" data-i18n="label_custom_color">カスタムカラー</div>
                         <div class="spectrum-container">
                             <canvas id="colorSpectrum" width="276" height="120"></canvas>
                             <div class="spectrum-cursor" id="spectrumCursor"></div>
@@ -493,30 +499,31 @@
             </div>
 
             <!-- 枠線セクション -->
-            <div class="section" id="sec-stroke">
-                <div class="section-header" onclick="toggleSection('sec-stroke')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">枠線</span>
+            <div class="section" id="sec-stroke" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-stroke')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-stroke')" data-i18n="sec_stroke">枠線</span>
                 </div>
                 <div class="section-content">
                     <div class="stroke-row">
-                        <span class="stroke-label">太さ</span>
+                        <span class="stroke-label" data-i18n="label_thickness">太さ</span>
                         <input type="number" class="stroke-weight-input" id="strokeWeight" value="1" min="0" max="100" step="0.5" onchange="applyStrokeStyle()">
                         <span class="stroke-weight-unit">pt</span>
                     </div>
                     <div class="stroke-row" style="margin-bottom: 0;">
-                        <span class="stroke-label">種類</span>
+                        <span class="stroke-label" data-i18n="label_type">種類</span>
                         <div class="stroke-dash-options">
-                            <div class="dash-option selected" data-dash="SOLID" onclick="setDashStyle('SOLID', this); applyStrokeStyle();" title="実線">
+                            <div class="dash-option selected" data-dash="SOLID" onclick="setDashStyle('SOLID', this); applyStrokeStyle();" title="実線" data-i18n-title="tip_solid">
                                 <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4"/></svg>
                             </div>
-                            <div class="dash-option" data-dash="DASH" onclick="setDashStyle('DASH', this); applyStrokeStyle();" title="破線">
+                            <div class="dash-option" data-dash="DASH" onclick="setDashStyle('DASH', this); applyStrokeStyle();" title="破線" data-i18n-title="tip_dash">
                                 <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="8,4"/></svg>
                             </div>
-                            <div class="dash-option" data-dash="DOT" onclick="setDashStyle('DOT', this); applyStrokeStyle();" title="点線">
+                            <div class="dash-option" data-dash="DOT" onclick="setDashStyle('DOT', this); applyStrokeStyle();" title="点線" data-i18n-title="tip_dot">
                                 <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="2,4"/></svg>
                             </div>
-                            <div class="dash-option" data-dash="DASH_DOT" onclick="setDashStyle('DASH_DOT', this); applyStrokeStyle();" title="一点鎖線">
+                            <div class="dash-option" data-dash="DASH_DOT" onclick="setDashStyle('DASH_DOT', this); applyStrokeStyle();" title="一点鎖線" data-i18n-title="tip_dash_dot">
                                 <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="8,4,2,4"/></svg>
                             </div>
                         </div>
@@ -525,14 +532,15 @@
             </div>
 
             <!-- テキストセクション -->
-            <div class="section" id="sec-text">
-                <div class="section-header" onclick="toggleSection('sec-text')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">テキスト</span>
+            <div class="section" id="sec-text" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-text')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-text')" data-i18n="sec_text">テキスト</span>
                 </div>
                 <div class="section-content">
                     <div class="text-row">
-                        <span class="text-label">フォント</span>
+                        <span class="text-label" data-i18n="label_font">フォント</span>
                         <select class="font-select" id="fontSelect" onchange="applyFont()">
                             <option value="Arial">Arial</option>
                             <option value="Arial Black">Arial Black</option>
@@ -552,12 +560,12 @@
                         </select>
                     </div>
                     <div class="text-row">
-                        <span class="text-label">サイズ</span>
+                        <span class="text-label" data-i18n="label_size">サイズ</span>
                         <input type="number" class="font-size-input" id="fontSizeInput" value="14" min="1" max="400" step="1" onchange="applyFontSize()">
                         <span class="font-size-unit">pt</span>
                     </div>
                     <div class="text-row">
-                        <span class="text-label">スタイル</span>
+                        <span class="text-label" data-i18n="label_style">スタイル</span>
                         <div class="text-style-buttons">
                             <button class="text-style-btn bold" id="btnBold" onclick="toggleTextStyle('bold')">B</button>
                             <button class="text-style-btn italic" id="btnItalic" onclick="toggleTextStyle('italic')">I</button>
@@ -567,24 +575,24 @@
                     </div>
                     <!-- 行間・段落間隔 -->
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
-                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">行間・段落</div>
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;" data-i18n="label_paragraph">行間・段落</div>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="#5f6368"><path d="M6 7h2.5L5 3.5 1.5 7H4v10H1.5L5 20.5 8.5 17H6V7zm4-2v2h12V5H10zm0 14h12v-2H10v2zm0-6h12v-2H10v2z"/></svg>
-                            <span style="font-size: 11px; color: #5f6368; width: 35px;">行間</span>
+                            <span style="font-size: 11px; color: #5f6368; width: 35px;" data-i18n="label_line_spacing">行間</span>
                             <input type="number" id="lineSpacing" value="1" min="0.5" max="5" step="0.1" style="width: 55px; padding: 5px 6px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;" onchange="applyLineSpacing()">
                             <div style="display: flex; gap: 4px;">
-                                <div class="line-spacing-btn" onclick="setLineSpacing(1)" title="1行">1</div>
-                                <div class="line-spacing-btn" onclick="setLineSpacing(1.15)" title="1.15行">1.15</div>
-                                <div class="line-spacing-btn" onclick="setLineSpacing(1.5)" title="1.5行">1.5</div>
-                                <div class="line-spacing-btn" onclick="setLineSpacing(2)" title="2行">2</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1)" title="1">1</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1.15)" title="1.15">1.15</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1.5)" title="1.5">1.5</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(2)" title="2">2</div>
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="#5f6368" style="flex-shrink: 0;"><path d="M10 5h12v2H10V5zm0 12h12v2H10v-2zm-6 0h2v2H4v-2zm0-12h2v2H4V5zm0 6h2v2H4v-2zm6 0h12v2H10v-2z"/></svg>
-                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap;">段落前</span>
+                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap;" data-i18n="label_before_para">段落前</span>
                             <input type="number" id="spaceBefore" value="0" min="0" max="100" step="1" style="width: 40px; padding: 4px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px; text-align: right;" onchange="applyParagraphSpacing()">
                             <span style="font-size: 10px; color: #5f6368;">pt</span>
-                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap; margin-left: 8px;">段落後</span>
+                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap; margin-left: 8px;" data-i18n="label_after_para">段落後</span>
                             <input type="number" id="spaceAfter" value="0" min="0" max="100" step="1" style="width: 40px; padding: 4px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px; text-align: right;" onchange="applyParagraphSpacing()">
                             <span style="font-size: 10px; color: #5f6368;">pt</span>
                         </div>
@@ -593,10 +601,11 @@
             </div>
 
             <!-- 整列セクション（間隔をマージ） -->
-            <div class="section" id="sec-align">
-                <div class="section-header" onclick="toggleSection('sec-align')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">整列</span>
+            <div class="section" id="sec-align" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-align')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-align')" data-i18n="sec_align">整列</span>
                 </div>
                 <div class="section-content">
                     <div class="btn-group" style="margin-top:0; flex-wrap:wrap; gap:4px;">
@@ -629,20 +638,20 @@
                     <div id="alignStatus" style="font-size:11px; color:#5f6368; margin-top:10px; text-align:center;"></div>
                     <!-- 均等間隔配置 -->
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
-                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">均等間隔配置</div>
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;" data-i18n="label_even_spacing">均等間隔配置</div>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <span style="font-size: 12px; color: #5f6368;">間隔</span>
+                            <span style="font-size: 12px; color: #5f6368;" data-i18n="label_spacing">間隔</span>
                             <input type="number" id="spacingValue" value="10" min="0" step="1" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
                             <span style="font-size: 11px; color: #5f6368;">px</span>
                         </div>
                         <div class="spacing-buttons">
                             <button class="action-btn icon-btn" onclick="setHorizontalSpacing()">
                                 <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zm-5 7h2v2h-2v-2z" fill="currentColor"/></svg>
-                                水平
+                                <span data-i18n="btn_horizontal">水平</span>
                             </button>
                             <button class="action-btn icon-btn" onclick="setVerticalSpacing()">
                                 <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 4h16v4H4V4zm0 12h16v4H4v-4zm7-5h2v2h-2v-2z" fill="currentColor"/></svg>
-                                垂直
+                                <span data-i18n="btn_vertical">垂直</span>
                             </button>
                         </div>
                     </div>
@@ -650,50 +659,60 @@
             </div>
 
             <!-- 図形セクション（サイズ + 回転・反転） -->
-            <div class="section" id="sec-shape">
-                <div class="section-header" onclick="toggleSection('sec-shape')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">図形</span>
+            <div class="section" id="sec-shape" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-shape')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-shape')" data-i18n="sec_shape">図形</span>
                 </div>
                 <div class="section-content">
+                    <!-- 位置 (X/Y座標) -->
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                        <span style="font-size: 12px; color: #5f6368;">幅</span>
+                        <span style="font-size: 12px; color: #5f6368;">X</span>
+                        <input type="number" id="positionX" value="0" step="1" onchange="applyPositionX()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 12px; color: #5f6368;">Y</span>
+                        <input type="number" id="positionY" value="0" step="1" onchange="applyPositionY()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 11px; color: #5f6368;">px</span>
+                    </div>
+                    <!-- サイズ (幅/高さ) -->
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 12px; color: #5f6368;" data-i18n="label_width">幅</span>
                         <input type="number" id="sizeWidth" value="100" min="1" step="1" onchange="applyWidth()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
-                        <span style="font-size: 12px; color: #5f6368;">高さ</span>
+                        <span style="font-size: 12px; color: #5f6368;" data-i18n="label_height">高さ</span>
                         <input type="number" id="sizeHeight" value="100" min="1" step="1" onchange="applyHeight()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
                         <span style="font-size: 11px; color: #5f6368;">px</span>
                     </div>
                     <div class="size-row">
                         <label class="checkbox-label">
                             <input type="checkbox" id="keepAspectRatio" checked>
-                            <span>縦横比を維持</span>
+                            <span data-i18n="label_keep_aspect">縦横比を維持</span>
                         </label>
                     </div>
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
-                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">サイズを揃える</div>
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;" data-i18n="label_match_size">サイズを揃える</div>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                            <span style="font-size: 12px; color: #5f6368;">基準:</span>
+                            <span style="font-size: 12px; color: #5f6368;" data-i18n="label_reference">基準:</span>
                             <select id="alignReference" style="flex: 1; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; background: #fff;">
-                                <option value="first">最初に選択した要素</option>
-                                <option value="last">最後に選択した要素</option>
-                                <option value="largest">最大の要素</option>
-                                <option value="smallest">最小の要素</option>
+                                <option value="first" data-i18n="opt_first">最初に選択した要素</option>
+                                <option value="last" data-i18n="opt_last">最後に選択した要素</option>
+                                <option value="largest" data-i18n="opt_largest">最大の要素</option>
+                                <option value="smallest" data-i18n="opt_smallest">最小の要素</option>
                             </select>
                         </div>
                         <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
-                            <div class="btn-opt" onclick="matchWidth()" style="display:flex;align-items:center;justify-content:center;" title="幅を揃える">
+                            <div class="btn-opt" onclick="matchWidth()" style="display:flex;align-items:center;justify-content:center;" title="幅を揃える" data-i18n-title="tip_match_width">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4H2v16h2V4zm18 0h-2v16h2V4zM9 7h6v4H9V7zm0 6h6v4H9v-4z"/></svg>
                             </div>
-                            <div class="btn-opt" onclick="matchHeight()" style="display:flex;align-items:center;justify-content:center;" title="高さを揃える">
+                            <div class="btn-opt" onclick="matchHeight()" style="display:flex;align-items:center;justify-content:center;" title="高さを揃える" data-i18n-title="tip_match_height">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2v2h16V2H4zm0 18v2h16v-2H4zM7 9v6h4V9H7zm6 0v6h4V9h-4z"/></svg>
                             </div>
-                            <div class="btn-opt" onclick="matchSize()" style="display:flex;align-items:center;justify-content:center;" title="サイズを揃える">
+                            <div class="btn-opt" onclick="matchSize()" style="display:flex;align-items:center;justify-content:center;" title="サイズを揃える" data-i18n-title="tip_match_both">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4H2v16h2V4zm18 0h-2v16h2V4zM4 2v2h16V2H4zm0 18v2h16v-2H4zM8 8h8v8H8V8z"/></svg>
                             </div>
                         </div>
                     </div>
                     <div class="aspect-section">
-                        <div class="aspect-label">アスペクト比に変形</div>
+                        <div class="aspect-label" data-i18n="label_aspect_ratio">アスペクト比に変形</div>
                         <div class="aspect-grid">
                             <button class="aspect-btn" onclick="setAspectRatio(1, 1)" title="1:1 正方形">
                                 <div class="aspect-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
@@ -739,7 +758,7 @@
                     </div>
                     <!-- 回転・反転 -->
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
-                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">回転・反転</div>
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;" data-i18n="label_rotation_flip">回転・反転</div>
                         <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
                             <div class="btn-opt" onclick="rotate90CW()" style="display:flex;align-items:center;justify-content:center;gap:2px;padding:4px 8px;" title="90° 右回転">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
@@ -765,16 +784,17 @@
             </div>
 
             <!-- 連続複製セクション -->
-            <div class="section" id="sec-duplicate">
-                <div class="section-header" onclick="toggleSection('sec-duplicate')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">連続複製</span>
+            <div class="section" id="sec-duplicate" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-duplicate')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-duplicate')" data-i18n="sec_duplicate">連続複製</span>
                 </div>
                 <div class="section-content">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                        <span style="font-size: 12px; color: #5f6368;">個数</span>
+                        <span style="font-size: 12px; color: #5f6368;" data-i18n="label_count">個数</span>
                         <input type="number" id="duplicateCount" value="3" min="1" max="50" step="1" style="width: 50px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
-                        <span style="font-size: 12px; color: #5f6368;">間隔</span>
+                        <span style="font-size: 12px; color: #5f6368;" data-i18n="label_spacing">間隔</span>
                         <input type="number" id="duplicateSpacing" value="20" min="0" step="1" style="width: 50px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
                         <span style="font-size: 11px; color: #5f6368;">px</span>
                     </div>
@@ -793,10 +813,11 @@
             </div>
 
             <!-- 順序セクション -->
-            <div class="section" id="sec-order">
-                <div class="section-header" onclick="toggleSection('sec-order')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">順序</span>
+            <div class="section" id="sec-order" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-order')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-order')" data-i18n="sec_order">順序</span>
                 </div>
                 <div class="section-content">
                     <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
@@ -817,82 +838,459 @@
             </div>
 
             <!-- グループセクション -->
-            <div class="section" id="sec-group">
-                <div class="section-header" onclick="toggleSection('sec-group')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">グループ</span>
+            <div class="section" id="sec-group" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-group')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-group')" data-i18n="sec_group">グループ</span>
                 </div>
                 <div class="section-content">
                     <div class="group-buttons">
                         <button class="action-btn wide-btn" onclick="groupElements()">
                             <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm8-2h8v8h-8v-8zm2 2v4h4v-4h-4z" fill="currentColor"/></svg>
-                            グループ化
+                            <span data-i18n="btn_group">グループ化</span>
                         </button>
                         <button class="action-btn wide-btn" onclick="ungroupElements()">
                             <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm8-2h8v8h-8v-8zm2 2v4h4v-4h-4zM1 1l22 22" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-                            グループ解除
+                            <span data-i18n="btn_ungroup">グループ解除</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- 共通選択セクション -->
-            <div class="section" id="sec-similar">
-                <div class="section-header" onclick="toggleSection('sec-similar')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">共通選択</span>
+            <div class="section" id="sec-similar" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-similar')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-similar')" data-i18n="sec_similar">共通選択</span>
                 </div>
                 <div class="section-content">
-                    <div class="info-box">選択中のオブジェクトと同じ属性を持つオブジェクトを一括選択します</div>
-                    <div id="similarAttrs" style="font-size:12px; color:#5f6368; margin-bottom:10px;">オブジェクトを選択してください</div>
+                    <div class="info-box" data-i18n="info_similar">選択中のオブジェクトと同じ属性を持つオブジェクトを一括選択します</div>
+                    <div id="similarAttrs" style="font-size:12px; color:#5f6368; margin-bottom:10px;" data-i18n="label_select_object">オブジェクトを選択してください</div>
                     <div class="similar-buttons" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarFill" onclick="selectSimilar('fillColor')" disabled>
-                            <span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#ccc;vertical-align:middle;margin-right:4px;" id="previewFill"></span>塗りつぶし色
+                            <span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#ccc;vertical-align:middle;margin-right:4px;" id="previewFill"></span><span data-i18n="similar_fill_color">塗りつぶし色</span>
                         </button>
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarStroke" onclick="selectSimilar('strokeColor')" disabled>
-                            <span style="display:inline-block;width:12px;height:12px;border:2px solid #ccc;border-radius:2px;vertical-align:middle;margin-right:4px;box-sizing:border-box;" id="previewStroke"></span>枠線色
+                            <span style="display:inline-block;width:12px;height:12px;border:2px solid #ccc;border-radius:2px;vertical-align:middle;margin-right:4px;box-sizing:border-box;" id="previewStroke"></span><span data-i18n="similar_stroke_color">枠線色</span>
                         </button>
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarTextColor" onclick="selectSimilar('textColor')" disabled>
-                            <span style="color:#ccc;font-weight:bold;margin-right:4px;" id="previewTextColor">A</span>文字色
+                            <span style="color:#ccc;font-weight:bold;margin-right:4px;" id="previewTextColor">A</span><span data-i18n="similar_text_color">文字色</span>
                         </button>
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarFont" onclick="selectSimilar('fontFamily')" disabled>
-                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFont">Aa</span>フォント
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFont">Aa</span><span data-i18n="similar_font">フォント</span>
                         </button>
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarFontSize" onclick="selectSimilar('fontSize')" disabled>
-                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFontSize">--</span>pt
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFontSize">--</span><span data-i18n="similar_font_size">pt</span>
                         </button>
                         <button class="action-btn" style="margin-top:0;" id="btnSimilarStrokeWeight" onclick="selectSimilar('strokeWeight')" disabled>
-                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewStrokeWeight">--</span>pt枠
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewStrokeWeight">--</span><span data-i18n="similar_stroke_weight">pt枠</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- 書式・スタイルコピー履歴セクション -->
-            <div class="section" id="sec-style-history">
-                <div class="section-header" onclick="toggleSection('sec-style-history')">
-                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-                    <span class="section-title">書式・スタイルコピー履歴</span>
+            <div class="section" id="sec-style-history" data-group="utility">
+                <div class="section-header">
+                    <svg class="drag-handle" viewBox="0 0 24 24" onmousedown="event.stopPropagation()"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" onclick="toggleSection('sec-style-history')"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title" onclick="toggleSection('sec-style-history')" data-i18n="sec_style_history">書式履歴</span>
                 </div>
                 <div class="section-content">
                     <button class="action-btn" onclick="copyCurrentStyle()" style="margin-top:0;">
                         <svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:4px;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/></svg>
-                        選択中のスタイルをコピー
+                        <span data-i18n="btn_copy_style">選択中のスタイルをコピー</span>
                     </button>
                     <div id="styleHistoryList" style="margin-top:10px;max-height:200px;overflow-y:auto;">
-                        <div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;">履歴がありません</div>
+                        <div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;" data-i18n="label_no_history">履歴がありません</div>
                     </div>
-                    <button class="action-btn" onclick="clearStyleHistory()" style="margin-top:8px;font-size:11px;padding:6px;color:#5f6368;">履歴をクリア</button>
+                    <button class="action-btn" onclick="clearStyleHistory()" style="margin-top:8px;font-size:11px;padding:6px;color:#5f6368;" data-i18n="btn_clear_history">履歴をクリア</button>
                 </div>
             </div>
 
         </div>
         </div>
 
+        <!-- フィードバックボタン -->
+        <div style="padding: 12px 16px; border-top: 1px solid #dadce0; background: #fafafa;">
+            <button onclick="openFeedback()" style="width: 100%; padding: 10px; background: none; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; color: #5f6368; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12zM11 5h2v4h-2zm0 6h2v2h-2z"/></svg>
+                <span data-i18n="btn_feedback">問題を報告 / フィードバック</span>
+            </button>
+        </div>
+
         <!-- トースト通知 -->
         <div id="toast" class="toast"></div>
 
         <script>
+      // ==========================================
+      // 国際化 (i18n) システム
+      // ==========================================
+      const LANG_DATA = {
+        ja: {
+          // セクションタイトル
+          sec_crop: 'トリミング確定',
+          sec_extend: 'AI画像拡張',
+          sec_upscale: 'AI高画質化',
+          sec_color: '色調調整',
+          sec_effect: 'エフェクト',
+          sec_color_panel: 'カラー',
+          sec_stroke: '枠線',
+          sec_text: 'テキスト',
+          sec_align: '整列',
+          sec_shape: '図形',
+          sec_duplicate: '連続複製',
+          sec_order: '順序',
+          sec_group: 'グループ',
+          sec_similar: '共通選択',
+          sec_style_history: '書式履歴',
+          // プレースホルダー
+          placeholder_title: '画像を選択してください',
+          placeholder_desc: 'スライド上の画像をクリックすると、ここに表示されます。',
+          // ボタン
+          btn_crop: 'トリミングを実行して確定',
+          btn_generate: '生成を実行',
+          btn_regenerate: '再生成',
+          btn_upscale: '高画質化を実行',
+          btn_apply: 'スライドに適用',
+          btn_group: 'グループ化',
+          btn_ungroup: 'グループ解除',
+          btn_copy_style: '選択中のスタイルをコピー',
+          btn_clear_history: '履歴をクリア',
+          btn_feedback: '問題を報告 / フィードバック',
+          btn_horizontal: '水平',
+          btn_vertical: '垂直',
+          // ラベル
+          label_width: '横',
+          label_height: '縦',
+          label_brightness: '明るさ',
+          label_contrast: 'コントラスト',
+          label_saturation: '彩度',
+          label_hue: '色相',
+          label_red: '赤',
+          label_green: '緑',
+          label_blue: '青',
+          label_intensity: '強度',
+          label_thickness: '太さ',
+          label_type: '種類',
+          label_font: 'フォント',
+          label_size: 'サイズ',
+          label_style: 'スタイル',
+          label_line_spacing: '行間',
+          label_paragraph: '行間・段落',
+          label_before_para: '段落前',
+          label_after_para: '段落後',
+          label_spacing: '間隔',
+          label_even_spacing: '均等間隔配置',
+          label_position: '位置',
+          label_size_wh: 'サイズ',
+          label_rotation: '回転',
+          label_flip: '反転',
+          label_offset: 'オフセット',
+          label_count: '数',
+          label_direction: '方向',
+          label_recent_colors: '最近使用したカラー',
+          label_color_palette: 'カラーパレット',
+          label_custom_color: 'カスタムカラー',
+          label_no_history: '履歴がありません',
+          label_select_object: 'オブジェクトを選択してください',
+          label_keep_aspect: '縦横比を維持',
+          label_match_size: 'サイズを揃える',
+          label_reference: '基準:',
+          opt_first: '最初に選択した要素',
+          opt_last: '最後に選択した要素',
+          opt_largest: '最大の要素',
+          opt_smallest: '最小の要素',
+          tip_match_width: '幅を揃える',
+          tip_match_height: '高さを揃える',
+          tip_match_both: '両方を揃える',
+          label_rotation_flip: '回転・反転',
+          label_aspect_ratio: 'アスペクト比に変形',
+          // 色ターゲット
+          target_fill: '塗り',
+          target_stroke: '線',
+          target_text: '文字',
+          target_highlight: '蛍光ペン',
+          // ツールチップ
+          tip_reset: 'リセット',
+          tip_download: '画像をダウンロード',
+          tip_eyedropper: 'スポイト（選択要素から色を取得）',
+          tip_none: 'なし',
+          tip_white: '白',
+          tip_black: '黒',
+          tip_solid: '実線',
+          tip_dash: '破線',
+          tip_dot: '点線',
+          tip_dash_dot: '一点鎖線',
+          tip_align_left: '左揃え',
+          tip_align_center: '中央揃え（横）',
+          tip_align_right: '右揃え',
+          tip_align_top: '上揃え',
+          tip_align_middle: '中央揃え（縦）',
+          tip_align_bottom: '下揃え',
+          tip_distribute_h: '水平方向に均等配置',
+          tip_distribute_v: '垂直方向に均等配置',
+          tip_rotate_left: '左に90度回転',
+          tip_rotate_right: '右に90度回転',
+          tip_flip_h: '左右反転',
+          tip_flip_v: '上下反転',
+          tip_bring_front: '最前面へ',
+          tip_bring_forward: '前面へ',
+          tip_send_backward: '背面へ',
+          tip_send_back: '最背面へ',
+          // エフェクト
+          effect_none: 'なし',
+          effect_blur: 'ぼかし',
+          effect_pixelate: 'モザイク',
+          effect_grayscale: 'モノクロ',
+          effect_sepia: 'セピア',
+          effect_vignette: '周辺減光',
+          // 情報ボックス
+          info_crop: '現在のトリミング範囲で画像を切り抜き、見えていない部分を削除します。',
+          info_extend: 'AIを使用して画像の周囲を描き足します。',
+          info_upscale: 'AIを使用して画像の解像度を2倍に高め、ぼやけた輪郭をくっきりと補正します。',
+          info_similar: '選択中のオブジェクトと同じ属性を持つオブジェクトを一括選択します',
+          // 共通選択ボタン
+          similar_fill: '塗り',
+          similar_stroke: '線',
+          similar_text: '文字',
+          similar_font: 'フォント',
+          similar_fill_color: '塗りつぶし色',
+          similar_stroke_color: '枠線色',
+          similar_text_color: '文字色',
+          similar_font_size: 'pt',
+          similar_stroke_weight: 'pt枠',
+          // 複製方向
+          dir_right: '右',
+          dir_down: '下',
+          dir_left: '左',
+          dir_up: '上',
+          // メッセージ
+          msg_loading: '処理中...',
+          msg_loading_image: '画像を読み込んでいます...',
+          msg_cropping: 'トリミングを実行中...',
+          msg_crop_invalid: 'トリミング範囲が無効です',
+          msg_enter_extend_size: '拡張サイズを入力してください',
+          msg_ai_upscale: 'AI高画質化中(2倍)...',
+          msg_ai_generating: 'AI生成中...',
+          msg_ai_error: 'AIエラー: ',
+          msg_applying: 'スライドに配置中...',
+          msg_image_too_large: '画像が大きすぎます',
+          msg_image_not_loaded: '画像が読み込まれていません',
+          msg_style_copied: 'スタイルをコピーしました',
+          msg_history_cleared: '履歴をクリアしました',
+          msg_success: '完了しました',
+          msg_error: 'エラーが発生しました',
+          msg_aligning: '整列中...',
+          msg_distributing: '均等配置中...'
+        },
+        en: {
+          // Section titles
+          sec_crop: 'Crop',
+          sec_extend: 'AI Extend',
+          sec_upscale: 'AI Upscale',
+          sec_color: 'Color Adjust',
+          sec_effect: 'Effects',
+          sec_color_panel: 'Color',
+          sec_stroke: 'Stroke',
+          sec_text: 'Text',
+          sec_align: 'Align',
+          sec_shape: 'Shape',
+          sec_duplicate: 'Duplicate',
+          sec_order: 'Order',
+          sec_group: 'Group',
+          sec_similar: 'Common Select',
+          sec_style_history: 'Style History',
+          // Placeholder
+          placeholder_title: 'Select an image',
+          placeholder_desc: 'Click an image on the slide to display it here.',
+          // Buttons
+          btn_crop: 'Apply Crop',
+          btn_generate: 'Generate',
+          btn_regenerate: 'Regenerate',
+          btn_upscale: 'Upscale',
+          btn_apply: 'Apply to Slide',
+          btn_group: 'Group',
+          btn_ungroup: 'Ungroup',
+          btn_copy_style: 'Copy Current Style',
+          btn_clear_history: 'Clear History',
+          btn_feedback: 'Report Issue / Feedback',
+          btn_horizontal: 'Horizontal',
+          btn_vertical: 'Vertical',
+          // Labels
+          label_width: 'Width',
+          label_height: 'Height',
+          label_brightness: 'Brightness',
+          label_contrast: 'Contrast',
+          label_saturation: 'Saturation',
+          label_hue: 'Hue',
+          label_red: 'Red',
+          label_green: 'Green',
+          label_blue: 'Blue',
+          label_intensity: 'Intensity',
+          label_thickness: 'Weight',
+          label_type: 'Type',
+          label_font: 'Font',
+          label_size: 'Size',
+          label_style: 'Style',
+          label_line_spacing: 'Line',
+          label_paragraph: 'Line & Paragraph',
+          label_before_para: 'Before',
+          label_after_para: 'After',
+          label_spacing: 'Spacing',
+          label_even_spacing: 'Even Spacing',
+          label_position: 'Position',
+          label_size_wh: 'Size',
+          label_rotation: 'Rotation',
+          label_flip: 'Flip',
+          label_offset: 'Offset',
+          label_count: 'Count',
+          label_direction: 'Direction',
+          label_recent_colors: 'Recent Colors',
+          label_color_palette: 'Color Palette',
+          label_custom_color: 'Custom Color',
+          label_no_history: 'No history',
+          label_select_object: 'Select an object',
+          label_keep_aspect: 'Keep aspect ratio',
+          label_match_size: 'Match Size',
+          label_reference: 'Reference:',
+          opt_first: 'First selected',
+          opt_last: 'Last selected',
+          opt_largest: 'Largest element',
+          opt_smallest: 'Smallest element',
+          tip_match_width: 'Match width',
+          tip_match_height: 'Match height',
+          tip_match_both: 'Match both',
+          label_rotation_flip: 'Rotate & Flip',
+          label_aspect_ratio: 'Transform Aspect Ratio',
+          // Color targets
+          target_fill: 'Fill',
+          target_stroke: 'Stroke',
+          target_text: 'Text',
+          target_highlight: 'Highlight',
+          // Tooltips
+          tip_reset: 'Reset',
+          tip_download: 'Download Image',
+          tip_eyedropper: 'Eyedropper (pick color from element)',
+          tip_none: 'None',
+          tip_white: 'White',
+          tip_black: 'Black',
+          tip_solid: 'Solid',
+          tip_dash: 'Dashed',
+          tip_dot: 'Dotted',
+          tip_dash_dot: 'Dash-dot',
+          tip_align_left: 'Align Left',
+          tip_align_center: 'Center (H)',
+          tip_align_right: 'Align Right',
+          tip_align_top: 'Align Top',
+          tip_align_middle: 'Center (V)',
+          tip_align_bottom: 'Align Bottom',
+          tip_distribute_h: 'Distribute Horizontally',
+          tip_distribute_v: 'Distribute Vertically',
+          tip_rotate_left: 'Rotate Left 90°',
+          tip_rotate_right: 'Rotate Right 90°',
+          tip_flip_h: 'Flip Horizontal',
+          tip_flip_v: 'Flip Vertical',
+          tip_bring_front: 'Bring to Front',
+          tip_bring_forward: 'Bring Forward',
+          tip_send_backward: 'Send Backward',
+          tip_send_back: 'Send to Back',
+          // Effects
+          effect_none: 'None',
+          effect_blur: 'Blur',
+          effect_pixelate: 'Pixelate',
+          effect_grayscale: 'Grayscale',
+          effect_sepia: 'Sepia',
+          effect_vignette: 'Vignette',
+          // Info boxes
+          info_crop: 'Crop the image to the current trim area and remove hidden parts.',
+          info_extend: 'Use AI to extend the image boundaries.',
+          info_upscale: 'Use AI to double the resolution and sharpen blurry edges.',
+          info_similar: 'Select all objects with the same attributes as the selected object.',
+          // Similar select buttons
+          similar_fill: 'Fill',
+          similar_stroke: 'Stroke',
+          similar_text: 'Text',
+          similar_font: 'Font',
+          similar_fill_color: 'Fill Color',
+          similar_stroke_color: 'Stroke Color',
+          similar_text_color: 'Text Color',
+          similar_font_size: 'pt',
+          similar_stroke_weight: 'pt stroke',
+          // Duplicate directions
+          dir_right: 'Right',
+          dir_down: 'Down',
+          dir_left: 'Left',
+          dir_up: 'Up',
+          // Messages
+          msg_loading: 'Processing...',
+          msg_loading_image: 'Loading image...',
+          msg_cropping: 'Cropping...',
+          msg_crop_invalid: 'Invalid crop area',
+          msg_enter_extend_size: 'Please enter extend size',
+          msg_ai_upscale: 'AI Upscaling (2x)...',
+          msg_ai_generating: 'AI Generating...',
+          msg_ai_error: 'AI Error: ',
+          msg_applying: 'Applying to slide...',
+          msg_image_too_large: 'Image is too large',
+          msg_image_not_loaded: 'Image not loaded',
+          msg_style_copied: 'Style copied',
+          msg_history_cleared: 'History cleared',
+          msg_success: 'Complete',
+          msg_error: 'An error occurred',
+          msg_aligning: 'Aligning...',
+          msg_distributing: 'Distributing...'
+        }
+      };
+
+      // 現在の言語（URLパラメータまたはlocalStorageから取得）
+      let currentLang = 'ja';
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var langParam = params.get('lang');
+        if (langParam && LANG_DATA[langParam]) {
+          currentLang = langParam;
+        } else {
+          var saved = localStorage.getItem('dp_lang');
+          if (saved && LANG_DATA[saved]) {
+            currentLang = saved;
+          }
+        }
+        localStorage.setItem('dp_lang', currentLang);
+      })();
+
+      // 翻訳関数
+      function t(key) {
+        return LANG_DATA[currentLang][key] || LANG_DATA['ja'][key] || key;
+      }
+
+      // ページ内のテキストを翻訳
+      function applyTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n');
+          // option要素の場合はtextContentではなくinnerTextを使用
+          if (el.tagName === 'OPTION') {
+            el.text = t(key);
+          } else {
+            el.textContent = t(key);
+          }
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n-title');
+          el.setAttribute('title', t(key));
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n-placeholder');
+          el.setAttribute('placeholder', t(key));
+        });
+        document.querySelectorAll('[data-i18n-label]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n-label');
+          el.setAttribute('data-label', t(key));
+        });
+      }
+
       // ==========================================
       // ✅ 設定済みURL
       // ==========================================
@@ -938,6 +1336,7 @@
             if (id !== lastElementId) {
               lastElementId = id;
               loadSelectedElementColors();
+              loadSelectedElementSizeAndPosition();
               updateSimilarPanel(); // 類似オブジェクト選択パネルも更新
             }
         }).withFailureHandler(function(e) {
@@ -958,6 +1357,22 @@
         }).withFailureHandler(function(e) {
             console.log("Image polling error: " + e.message);
         }).checkSelectionForImage();
+      }
+
+      function loadSelectedElementSizeAndPosition() {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result) {
+              document.getElementById('positionX').value = result.x;
+              document.getElementById('positionY').value = result.y;
+              document.getElementById('sizeWidth').value = result.width;
+              document.getElementById('sizeHeight').value = result.height;
+            }
+          })
+          .withFailureHandler(function(e) {
+            console.log('Error getting size/position:', e.message);
+          })
+          .getSelectedElementSizeAndPosition();
       }
 
       function loadSelectedElementColors() {
@@ -1088,7 +1503,7 @@
       }
 
       function fetchImage() {
-        showLoadingOverlay("画像を読み込んでいます...");
+        showLoadingOverlay(t('msg_loading_image'));
         document.getElementById('errorMessage').style.display = 'none';
         google.script.run.withSuccessHandler(onImageLoaded).withFailureHandler(onError).getSelectedImage();
       }
@@ -1274,18 +1689,18 @@
       }
       function drawFinal(srcCanvas) { canvas.width = srcCanvas.width; canvas.height = srcCanvas.height; var ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(srcCanvas, 0, 0); }
       function performCrop() {
-        if (!isImageLoaded || !currentCropInfo) return; showLoadingOverlay("トリミングを実行中...");
+        if (!isImageLoaded || !currentCropInfo) return; showLoadingOverlay(t('msg_cropping'));
         var w = originalImg.width; var h = originalImg.height;
         var left = w * (currentCropInfo.leftOffset || 0); var top = h * (currentCropInfo.topOffset || 0);
         var right = w * (currentCropInfo.rightOffset || 0); var bottom = h * (currentCropInfo.bottomOffset || 0);
         var cropW = w - left - right; var cropH = h - top - bottom;
-        if (cropW <= 0 || cropH <= 0) { hideLoadingOverlay(); showToast("トリミング範囲が無効です", "error"); return; }
+        if (cropW <= 0 || cropH <= 0) { hideLoadingOverlay(); showToast(t('msg_crop_invalid'), "error"); return; }
         var cropCanvas = document.createElement('canvas'); cropCanvas.width = cropW; cropCanvas.height = cropH; var cCtx = cropCanvas.getContext('2d'); cCtx.drawImage(originalImg, left, top, cropW, cropH, 0, 0, cropW, cropH);
         var newBase64 = cropCanvas.toDataURL('image/png'); currentCropInfo = null; document.getElementById('cropBtn').disabled = true; loadBase64(newBase64);
       }
       function callCloudAI(mode) {
-        if (mode === 'extend' && state.extW === 0 && state.extH === 0) { showToast("拡張サイズを入力してください", "error"); return; }
-        showLoadingOverlay(mode === 'upscale' ? 'AI高画質化中(2倍)...' : 'AI生成中...');
+        if (mode === 'extend' && state.extW === 0 && state.extH === 0) { showToast(t('msg_enter_extend_size'), "error"); return; }
+        showLoadingOverlay(mode === 'upscale' ? t('msg_ai_upscale') : t('msg_ai_generating'));
         var rawBase64 = (aiResultImg && mode === 'upscale') ? aiResultImg.src : originalImg.src;
         fetch(CLOUD_FUNCTION_URL, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1297,23 +1712,23 @@
             if(mode === 'extend') { document.getElementById('generateBtn').style.display = 'none'; document.getElementById('postGenButtons').style.display = 'flex'; }
             updatePreview(); hideLoadingOverlay();
           }; newImg.src = data.result_image;
-        }).catch(err => { console.error(err); showToast("AIエラー: " + err.message, "error"); hideLoadingOverlay(); });
+        }).catch(err => { console.error(err); showToast(t('msg_ai_error') + err.message, "error"); hideLoadingOverlay(); });
       }
       function applyToSlide() {
-        showLoadingOverlay('スライドに配置中...');
+        showLoadingOverlay(t('msg_applying'));
         var maxDim = 3840; var w = canvas.width; var h = canvas.height; var scale = Math.min(1, Math.min(maxDim / w, maxDim / h));
         var outputCanvas = document.createElement('canvas'); outputCanvas.width = w * scale; outputCanvas.height = h * scale; var oCtx = outputCanvas.getContext('2d'); oCtx.imageSmoothingEnabled = true; oCtx.imageSmoothingQuality = 'high';
         oCtx.drawImage(canvas, 0, 0, outputCanvas.width, outputCanvas.height);
         var data = outputCanvas.toDataURL('image/jpeg', 0.85);
         google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e) => {
              console.log("Retry with lower quality..."); var lowData = outputCanvas.toDataURL('image/jpeg', 0.7);
-             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { showToast("画像が大きすぎます", "error"); hideLoadingOverlay(); }).replaceImage(lowData);
+             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { showToast(t('msg_image_too_large'), "error"); hideLoadingOverlay(); }).replaceImage(lowData);
         }).replaceImage(data);
       }
 
       function downloadImage() {
         if (!isImageLoaded && !aiResultImg) {
-          showToast('画像が読み込まれていません', 'error');
+          showToast(t('msg_image_not_loaded'), 'error');
           return;
         }
 
@@ -1337,7 +1752,7 @@
       // ==========================================
       function alignElement(type) {
         var statusEl = document.getElementById('alignStatus');
-        statusEl.textContent = '整列中...';
+        statusEl.textContent = t('msg_aligning');
         statusEl.style.color = '#1a73e8';
 
         // 整列セクションは常にスライド基準
@@ -1356,7 +1771,7 @@
               statusEl.textContent = '';
             }, 3000);
           })
-          .alignElements(type, 'slide');
+          .alignElements(type, 'slide', currentLang);
       }
 
       // ==========================================
@@ -1364,7 +1779,7 @@
       // ==========================================
       function distributeElement(direction) {
         var statusEl = document.getElementById('alignStatus');
-        statusEl.textContent = '均等配置中...';
+        statusEl.textContent = t('msg_distributing');
         statusEl.style.color = '#1a73e8';
 
         var functionName = '';
@@ -1376,7 +1791,7 @@
             functionName = 'distributeVertically';
             break;
           default:
-            statusEl.textContent = '不明な配置タイプ';
+            statusEl.textContent = currentLang === 'en' ? 'Unknown type' : '不明な配置タイプ';
             statusEl.style.color = '#d93025';
             return;
         }
@@ -1396,7 +1811,7 @@
               statusEl.textContent = '';
             }, 3000);
           })
-          [functionName]();
+          [functionName](currentLang);
       }
 
       // ==========================================
@@ -1433,6 +1848,7 @@
         restoreSectionStates();
         initColorPanel();
         loadStyleHistory();
+        applyTranslations(); // i18n
       };
 
       function initColorPanel() {
@@ -1805,6 +2221,25 @@
       }
 
       // ==========================================
+      // 位置変更機能
+      // ==========================================
+      function applyPositionX() {
+        var x = parseFloat(document.getElementById('positionX').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setElementPositionX(x);
+      }
+
+      function applyPositionY() {
+        var y = parseFloat(document.getElementById('positionY').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setElementPositionY(y);
+      }
+
+      // ==========================================
       // サイズ変更機能
       // ==========================================
       function applyWidth() {
@@ -1830,21 +2265,21 @@
         google.script.run
           .withSuccessHandler(function(r) { showToast(r, 'success'); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .matchElementsWidth(reference);
+          .matchElementsWidth(reference, currentLang);
       }
       function matchHeight() {
         var reference = document.getElementById('alignReference').value;
         google.script.run
           .withSuccessHandler(function(r) { showToast(r, 'success'); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .matchElementsHeight(reference);
+          .matchElementsHeight(reference, currentLang);
       }
       function matchSize() {
         var reference = document.getElementById('alignReference').value;
         google.script.run
           .withSuccessHandler(function(r) { showToast(r, 'success'); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .matchElementsSize(reference);
+          .matchElementsSize(reference, currentLang);
       }
 
       function setAspectRatio(widthRatio, heightRatio) {
@@ -2124,7 +2559,7 @@
             }
             saveStyleHistory();
             renderStyleHistory();
-            showToast('スタイルをコピーしました', 'success');
+            showToast(t('msg_style_copied'), 'success');
           })
           .withFailureHandler(function(e) {
             showToast(e.message, 'error');
@@ -2135,7 +2570,7 @@
       function renderStyleHistory() {
         var container = document.getElementById('styleHistoryList');
         if (styleHistory.length === 0) {
-          container.innerHTML = '<div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;">履歴がありません</div>';
+          container.innerHTML = '<div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;">' + t('label_no_history') + '</div>';
           return;
         }
 
@@ -2192,7 +2627,7 @@
         styleHistory = [];
         saveStyleHistory();
         renderStyleHistory();
-        showToast('履歴をクリアしました', 'info');
+        showToast(t('msg_history_cleared'), 'info');
       }
 
       // ==========================================
@@ -2241,7 +2676,7 @@
         google.script.run
           .withSuccessHandler(function(r) { showToast(r, 'success'); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setLineSpacing(spacing);
+          .setLineSpacing(spacing, currentLang);
       }
 
       function applyParagraphSpacing() {
@@ -2250,7 +2685,138 @@
         google.script.run
           .withSuccessHandler(function(r) { showToast(r, 'success'); })
           .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-          .setParagraphSpacing(before, after);
+          .setParagraphSpacing(before, after, currentLang);
+      }
+
+      // ==========================================
+      // ドラッグ＆ドロップによるセクション並び替え
+      // ==========================================
+      var draggedSection = null;
+      var draggedGroup = null;
+
+      function initDragAndDrop() {
+        // セクションにドロップ先としてのイベントを設定
+        var sections = document.querySelectorAll('.section[data-group]');
+        sections.forEach(function(section) {
+          section.addEventListener('dragover', handleDragOver);
+          section.addEventListener('dragenter', handleDragEnter);
+          section.addEventListener('dragleave', handleDragLeave);
+          section.addEventListener('drop', handleDrop);
+        });
+
+        // ヘッダー部分のみをドラッグ可能にする
+        var headers = document.querySelectorAll('.section-header');
+        headers.forEach(function(header) {
+          header.setAttribute('draggable', 'true');
+          header.addEventListener('dragstart', handleDragStart);
+          header.addEventListener('dragend', handleDragEnd);
+        });
+
+        // 保存された順序を復元
+        loadSectionOrder();
+      }
+
+      function handleDragStart(e) {
+        // ヘッダーの親要素（section）を取得
+        var section = this.closest('.section');
+        if (!section) return;
+
+        draggedSection = section;
+        draggedGroup = section.getAttribute('data-group');
+        section.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', section.id);
+      }
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }
+
+      function handleDragEnter(e) {
+        e.preventDefault();
+        if (this !== draggedSection && this.getAttribute('data-group') === draggedGroup) {
+          this.classList.add('drag-over');
+        }
+      }
+
+      function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('drag-over');
+
+        if (this !== draggedSection && this.getAttribute('data-group') === draggedGroup) {
+          var parent = this.parentNode;
+          var allSections = Array.from(parent.querySelectorAll('.section[data-group="' + draggedGroup + '"]'));
+          var draggedIdx = allSections.indexOf(draggedSection);
+          var targetIdx = allSections.indexOf(this);
+
+          if (draggedIdx < targetIdx) {
+            parent.insertBefore(draggedSection, this.nextSibling);
+          } else {
+            parent.insertBefore(draggedSection, this);
+          }
+          saveSectionOrder();
+        }
+      }
+
+      function handleDragEnd(e) {
+        // ヘッダーから呼ばれるので、親のsectionからdraggingを削除
+        var section = this.closest('.section');
+        if (section) {
+          section.classList.remove('dragging');
+        }
+        document.querySelectorAll('.section').forEach(function(s) {
+          s.classList.remove('drag-over');
+        });
+        draggedSection = null;
+        draggedGroup = null;
+      }
+
+      function saveSectionOrder() {
+        var groups = ['image', 'utility'];
+        var order = {};
+        groups.forEach(function(group) {
+          var sections = document.querySelectorAll('.section[data-group="' + group + '"]');
+          order[group] = Array.from(sections).map(function(s) { return s.id; });
+        });
+        localStorage.setItem('sectionOrder', JSON.stringify(order));
+      }
+
+      function loadSectionOrder() {
+        var saved = localStorage.getItem('sectionOrder');
+        if (!saved) return;
+        try {
+          var order = JSON.parse(saved);
+          ['image', 'utility'].forEach(function(group) {
+            if (!order[group]) return;
+            var container = document.querySelector('.section[data-group="' + group + '"]');
+            if (!container) return;
+            container = container.parentNode;
+            order[group].forEach(function(id) {
+              var section = document.getElementById(id);
+              if (section && section.getAttribute('data-group') === group) {
+                container.appendChild(section);
+              }
+            });
+          });
+        } catch (e) {
+          console.log('Failed to load section order:', e);
+        }
+      }
+
+      // 初期化
+      document.addEventListener('DOMContentLoaded', initDragAndDrop);
+
+      // ==========================================
+      // フィードバック送信
+      // ==========================================
+      function openFeedback() {
+        window.open('https://haruniko-app.github.io/Designers-palette/feedback-ja.html', '_blank');
       }
 
     </script>

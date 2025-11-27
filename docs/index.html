@@ -49,8 +49,8 @@
         .nav-brand {
             text-decoration: none;
             display: flex;
-            flex-direction: column;
-            line-height: 1.2;
+            align-items: baseline;
+            gap: 8px;
         }
 
         .nav-brand-title {
@@ -61,9 +61,9 @@
         }
 
         .nav-brand-sub {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-secondary);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .nav-links {
@@ -107,12 +107,19 @@
         }
 
         .hero {
-            padding: 180px 40px 120px;
+            padding: 140px 40px 80px;
             text-align: center;
             max-width: 800px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
+        }
+
+        .hero-tagline {
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .hero h1 {
@@ -163,14 +170,14 @@
 
         /* Section */
         .section {
-            padding: 100px 40px;
+            padding: 70px 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 60px;
         }
 
         .section-header h2 {
@@ -224,9 +231,9 @@
         .showcase {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 80px;
+            gap: 60px;
             align-items: center;
-            padding: 80px 0;
+            padding: 60px 0;
             border-top: 1px solid var(--border);
         }
 
@@ -299,7 +306,7 @@
         /* CTA Section */
         .cta-section {
             text-align: center;
-            padding: 120px 40px;
+            padding: 80px 40px;
             background: var(--bg-alt);
         }
 
@@ -397,6 +404,7 @@
 
     <div class="hero-section">
         <section class="hero">
+            <p class="hero-tagline">Design Tools with AI for designers by designers.</p>
             <h1>Designer's Palette</h1>
             <p class="hero-sub">FOR GOOGLE SLIDES™</p>
             <img src="icon.png" alt="Designer's Palette" class="hero-icon">

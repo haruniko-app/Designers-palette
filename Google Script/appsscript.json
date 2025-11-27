@@ -14,11 +14,12 @@
   "oauthScopes": [
     "https://www.googleapis.com/auth/presentations.currentonly",
     "https://www.googleapis.com/auth/presentations",
-    "https://www.googleapis.com/auth/script.container.ui"
+    "https://www.googleapis.com/auth/script.container.ui",
+    "https://www.googleapis.com/auth/script.scriptapp"
   ],
   "addOns": {
     "common": {
-      "name": "Slide AI Tool",
+      "name": "Designer's Palette",
       "logoUrl": "https://www.gstatic.com/images/branding/product/1x/slides_48dp.png",
       "layoutProperties": {
         "primaryColor": "#1a73e8"

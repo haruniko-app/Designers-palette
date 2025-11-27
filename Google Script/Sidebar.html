@@ -9,11 +9,11 @@
       body { font-family: 'Roboto', sans-serif; font-size: 13px; color: #202124; margin: 0; padding: 0; background-color: #fff; display: flex; flex-direction: column; height: 100vh; }
 
       /* Preview */
-      .preview-container { background-color: #f1f3f4; padding: 20px; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid #dadce0; flex-shrink: 0; position: relative; min-height: 200px; }
+      .preview-container { background-color: #f8f9fa; padding: 20px; display: flex; justify-content: center; align-items: center; position: relative; min-height: 200px; border-radius: 8px 8px 0 0; border-bottom: 1px solid #dadce0; }
       canvas { max-width: 100%; max-height: 250px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); background-color: #fff; background-image: linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%); background-size: 20px 20px; display: none; }
 
       /* Placeholder */
-      #placeholder { text-align: center; color: #5f6368; font-size: 13px; line-height: 1.6; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background-color: #f8f9fa; z-index: 5; }
+      #placeholder { text-align: center; color: #5f6368; font-size: 13px; line-height: 1.6; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background-color: #f8f9fa; z-index: 5; border-radius: 8px 8px 0 0; }
       .placeholder-icon { width: 48px; height: 48px; margin-bottom: 10px; opacity: 0.5; fill: #5f6368; }
 
       /* Loading */
@@ -22,10 +22,11 @@
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       .loading-text { font-size: 12px; font-weight: 500; color: #1a73e8; }
 
-      .main-content { flex: 1; overflow-y: auto; opacity: 0.5; pointer-events: none; transition: opacity 0.3s; }
-      .main-content.active { opacity: 1; pointer-events: auto; }
+      .scroll-container { flex: 1; overflow-y: auto; background: #f1f3f4; padding: 0; }
 
-      .standalone-content { overflow-y: auto; border-top: 2px solid #1a73e8; margin-top: 20px; }
+      .main-content { opacity: 1; pointer-events: auto; transition: opacity 0.3s; background: #fff; border-radius: 0 0 8px 8px; margin: 0; }
+
+      .standalone-content { background: #fff; border-radius: 8px; margin: 10px 0 0 0; }
 
       .section { border-bottom: 1px solid #dadce0; }
       .section-header { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; transition: background 0.2s; }
@@ -33,14 +34,16 @@
       .section-title { font-weight: 500; flex: 1; font-size: 14px; color: #202124; }
       .arrow-icon { width: 20px; height: 20px; fill: #5f6368; margin-right: 10px; transform: rotate(-90deg); transition: transform 0.2s; }
       .section.open .arrow-icon { transform: rotate(0deg); }
-      .section-content { display: none; padding: 8px 16px 16px 16px; }
+      .section-content { display: none; padding: 8px 16px 16px 16px; overflow: hidden; }
       .section.open .section-content { display: block; }
 
       .control-label { display: flex; justify-content: space-between; color: #5f6368; font-size: 12px; margin-bottom: 6px; }
       .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-      .input-wrapper { display: flex; align-items: center; border-bottom: 1px solid #5f6368; padding-bottom: 4px; }
-      input[type="number"] { border: none; outline: none; width: 100%; font-size: 13px; background: transparent; color: #202124; }
-      input[type="range"] { width: 100%; accent-color: #1a73e8; margin-top: 8px; cursor: pointer; }
+      .input-wrapper { display: flex; align-items: center; border-bottom: 0; padding-bottom: 0; }
+      input[type="number"] { border: 1px solid #dadce0; border-radius: 4px; outline: none; width: 100%; font-size: 12px; background: #fff; color: #1a73e8; font-weight: 500; padding: 6px 8px; box-sizing: border-box; }
+      input[type="number"]:focus { border-color: #1a73e8; }
+      input[type="range"] { width: 100%; accent-color: #1a73e8; margin-top: 8px; cursor: pointer; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: #dadce0; outline: none; }
+      input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #fff; border: 2px solid #333; border-radius: 50%; cursor: pointer; }
       textarea { border: 1px solid #dadce0; border-radius: 4px; padding: 8px; height: 60px; resize: none; margin-top: 5px; width: 100%; box-sizing: border-box; font-family: inherit; }
 
       .action-btn { background: #fff; border: 1px solid #dadce0; color: #1a73e8; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: 500; font-size: 13px; }
@@ -68,14 +71,184 @@
       .retry-group { display: flex; gap: 10px; margin-top: 10px; }
       .retry-btn { flex: 1; background: #f1f3f4; color: #333; border: 1px solid #dadce0; }
       .confirm-btn { flex: 1; background: #e6f4ea; color: #188038; border: 1px solid #188038; }
-      .control-row { margin-bottom: 12px; }
+      .control-row { margin-bottom: 0; }
+      .control-row + .control-row { margin-top: 8px; }
+      .unit { margin-left: 4px; font-size: 11px; color: #5f6368; }
+      input.color-input { width: 55px !important; flex-shrink: 0; padding: 4px 6px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right; color: #1a73e8; font-weight: 500; }
+      input.color-input:focus { outline: none; border-color: #1a73e8; }
       .val-disp { font-weight: bold; color: #1a73e8; cursor: pointer; }
       .val-disp:hover { text-decoration: underline; }
       .divider { border: none; border-top: 1px dashed #dadce0; margin: 15px 0; }
       #errorMessage { color: #d93025; margin-top: 10px; display: none; font-weight: 500; }
+
+      /* ========================================
+         カラーターゲット切り替えUI
+         ======================================== */
+      .color-target-switcher { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 8px; background: #f8f9fa; border-radius: 12px; }
+      .color-target-group { display: flex; gap: 6px; }
+      .color-target-group.shape-targets { padding-right: 8px; border-right: 1px solid #dadce0; }
+      .color-target { width: 40px; height: 40px; border-radius: 8px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; background: #fff; border: 2px solid transparent; }
+      .color-target:hover { background: #f1f3f4; }
+      .color-target.active { border-color: #1a73e8; background: #e8f0fe; }
+      .color-target.fill-target .color-preview { width: 24px; height: 24px; border-radius: 4px; background: #1a73e8; border: 1px solid rgba(0,0,0,0.1); }
+      .color-target.fill-target.none .color-preview { background: #fff; border: 1px solid #dadce0; position: relative; overflow: hidden; }
+      .color-target.fill-target.none .color-preview::after { content: ''; position: absolute; top: 50%; left: -20%; width: 140%; height: 2px; background: #e53935; transform: rotate(-45deg); }
+      .color-target.stroke-target .color-preview { width: 22px; height: 22px; border-radius: 5px; background: #fff; border: 3px solid #000; }
+      .color-target.stroke-target.none .color-preview { border-color: #e0e0e0; position: relative; overflow: hidden; }
+      .color-target.stroke-target.none .color-preview::after { content: ''; position: absolute; top: 50%; left: -20%; width: 140%; height: 2px; background: #e53935; transform: rotate(-45deg); }
+      .color-target.text-target { flex-direction: column; gap: 2px; }
+      .color-target.text-target .text-icon { font-size: 18px; font-weight: 700; font-family: 'Google Sans', Arial, sans-serif; color: #000; line-height: 1; }
+      .color-target.text-target .color-indicator { width: 20px; height: 4px; border-radius: 2px; background: #000; }
+      .color-target.highlight-target { overflow: hidden; }
+      .color-target.highlight-target .highlight-preview { width: 28px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 3px; background: transparent; border: 1px solid #dadce0; }
+      .color-target.highlight-target .text-icon { font-size: 14px; font-weight: 600; font-family: Arial, sans-serif; color: #333; }
+      .color-target.highlight-target.none .highlight-preview { background: #fff; }
+      .color-target.highlight-target.none .highlight-preview::after { content: ''; position: absolute; width: 28px; height: 2px; background: #e53935; transform: rotate(-45deg); }
+      .color-target::after { content: attr(data-label); position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; color: #5f6368; white-space: nowrap; }
+
+      /* クイックカラー + スポイト */
+      .quick-colors { display: flex; gap: 4px; margin-top: 8px; margin-bottom: 16px; }
+      .eyedropper-btn { width: 24px; height: 24px; border: 1px solid #dadce0; border-radius: 4px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 8px; }
+      .eyedropper-btn:hover { border-color: #1a73e8; background: #e8f0fe; }
+      .eyedropper-btn.active { border-color: #1a73e8; background: #1a73e8; }
+      .eyedropper-btn.active svg { fill: #fff; }
+      .eyedropper-btn svg { width: 14px; height: 14px; fill: #5f6368; }
+      .quick-color { width: 18px; height: 18px; border: 1px solid #dadce0; cursor: pointer; border-radius: 2px; }
+      .quick-color:hover { border-color: #1a73e8; }
+      .quick-color.none-btn { background: linear-gradient(to top right, transparent calc(50% - 1px), #d93025 calc(50% - 1px), #d93025 calc(50% + 1px), transparent calc(50% + 1px)), #fff; }
+      .quick-color.white-btn { background: #fff; }
+      .quick-color.black-btn { background: #000; border-color: #000; }
+
+      /* スウォッチパレット */
+      .swatch-section { margin-bottom: 16px; }
+      .swatch-label { font-size: 11px; color: #5f6368; margin-bottom: 6px; }
+      .swatch-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
+      .swatch { width: 100%; aspect-ratio: 1; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; border-radius: 2px; transition: transform 0.1s; box-sizing: border-box; }
+      .swatch:hover { transform: scale(1.15); z-index: 10; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+      .recent-colors { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; min-height: 24px; }
+      .recent-color { width: 100%; aspect-ratio: 1; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; border-radius: 2px; box-sizing: border-box; }
+      .recent-color.empty { background: repeating-linear-gradient(45deg, #f5f5f5, #f5f5f5 2px, #e0e0e0 2px, #e0e0e0 4px); cursor: default; }
+
+      /* カラースペクトラム */
+      .spectrum-section { margin-bottom: 16px; }
+      .spectrum-container { position: relative; margin-bottom: 10px; }
+      #colorSpectrum { width: 100%; height: 120px; border-radius: 4px; cursor: crosshair; display: block; }
+      .spectrum-cursor { position: absolute; width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.5); pointer-events: none; transform: translate(-50%, -50%); }
+      #hueSlider { width: 100%; height: 16px; border-radius: 8px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); outline: none; cursor: pointer; }
+      #hueSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #fff; border: 2px solid #333; border-radius: 50%; cursor: pointer; }
+
+      /* RGB スライダー */
+      .rgb-section { margin-bottom: 16px; }
+      .rgb-row { display: flex; align-items: center; margin-bottom: 8px; }
+      .rgb-label { width: 20px; font-weight: 500; font-size: 12px; }
+      .rgb-label.r { color: #d93025; }
+      .rgb-label.g { color: #188038; }
+      .rgb-label.b { color: #1a73e8; }
+      .rgb-slider { flex: 1; margin: 0 10px; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; outline: none; cursor: pointer; }
+      .rgb-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #fff; border: 2px solid #333; border-radius: 50%; cursor: pointer; }
+      #sliderR { background: linear-gradient(to right, #000, #ff0000); }
+      #sliderG { background: linear-gradient(to right, #000, #00ff00); }
+      #sliderB { background: linear-gradient(to right, #000, #0000ff); }
+      input.rgb-value { width: 55px !important; text-align: center; padding: 4px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; flex-shrink: 0; flex-grow: 0; }
+
+      /* 色調補正スライダー */
+      .adjust-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .adjust-label { width: 70px; font-size: 12px; color: #5f6368; flex-shrink: 0; }
+      .adjust-row input[type="range"] { flex: 1; margin: 0; }
+
+      /* HEX 入力 */
+      .hex-section { display: flex; align-items: center; gap: 8px; }
+      .hex-preview { width: 32px; height: 32px; border: 1px solid #dadce0; border-radius: 4px; }
+      .hex-input-wrapper { display: flex; align-items: center; border: 1px solid #dadce0; border-radius: 4px; padding: 4px 8px; }
+      .hex-input-wrapper span { color: #5f6368; }
+      #hexInput { border: none; outline: none; width: 70px; font-family: monospace; font-size: 13px; text-transform: uppercase; }
+      .apply-btn { flex: 1; background: #1a73e8; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 13px; }
+      .apply-btn:hover { background: #1765cc; }
+
+      /* 枠線スタイル */
+      .stroke-row { display: flex; align-items: center; margin-bottom: 10px; }
+      .stroke-label { width: 50px; font-size: 12px; color: #5f6368; }
+      input.stroke-weight-input { width: 55px !important; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: center; flex-shrink: 0; }
+      .stroke-weight-unit { margin-left: 4px; font-size: 11px; color: #5f6368; }
+      .stroke-dash-options { display: flex; gap: 4px; flex: 1; }
+      .dash-option { flex: 1; height: 32px; border: 1px solid #dadce0; border-radius: 4px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+      .dash-option:hover { border-color: #1a73e8; }
+      .dash-option.selected { border-color: #1a73e8; background: #e8f0fe; }
+      .dash-option svg { width: 100%; height: 8px; }
+      .dash-option svg line { stroke: #333; stroke-width: 2; }
+
+      /* サイズセクション */
+      .size-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+      .size-label { flex-shrink: 0; width: 30px; font-size: 12px; color: #5f6368; }
+      .size-input { width: 70px; flex-shrink: 0; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right; }
+      .size-unit { flex-shrink: 0; font-size: 11px; color: #5f6368; }
+      .size-apply-btn { background: #1a73e8; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+      .size-apply-btn:hover { background: #1765cc; }
+      .size-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+      .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5f6368; cursor: pointer; }
+      .checkbox-label input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+
+      /* アスペクト比ボタン */
+      .aspect-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0; }
+      .aspect-label { font-size: 11px; color: #5f6368; margin-bottom: 8px; }
+      .aspect-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+      .aspect-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 4px; border: 1px solid #dadce0; border-radius: 4px; background: #fff; cursor: pointer; min-height: 44px; }
+      .aspect-btn:hover { border-color: #1a73e8; background: #f8f9fa; }
+      .aspect-btn .aspect-icon { display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+      .aspect-btn .aspect-icon svg { fill: #5f6368; }
+      .aspect-btn:hover .aspect-icon svg { fill: #1a73e8; }
+      .aspect-btn .aspect-text { font-size: 9px; color: #5f6368; white-space: nowrap; }
+      .aspect-btn:hover .aspect-text { color: #1a73e8; }
+
+      /* 間隔セクション */
+      .spacing-row { display: flex; align-items: center; margin-bottom: 12px; }
+      .spacing-label { flex-shrink: 0; font-size: 12px; color: #5f6368; margin-right: 8px; }
+      .spacing-input { width: 60px; flex-shrink: 0; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right; }
+      .spacing-unit { margin-left: 4px; font-size: 11px; color: #5f6368; }
+      .spacing-buttons { display: flex; gap: 8px; }
+
+      /* 複製セクション */
+      .duplicate-row { display: flex; align-items: center; margin-bottom: 10px; }
+      .duplicate-label { width: 40px; font-size: 12px; color: #5f6368; }
+      .duplicate-input { width: 70px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right; }
+      .duplicate-unit { margin-left: 4px; font-size: 11px; color: #5f6368; }
+      .duplicate-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+
+      /* 回転・反転/順序/グループ共通 */
+      .transform-buttons, .order-buttons, .group-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+
+      /* テキストセクション */
+      .text-row { display: flex; align-items: center; margin-bottom: 10px; }
+      .text-label { width: 50px; font-size: 12px; color: #5f6368; flex-shrink: 0; }
+      .font-select { flex: 1; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; background: #fff; cursor: pointer; }
+      .font-select:focus { outline: none; border-color: #1a73e8; }
+      input.font-size-input { width: 55px !important; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: center; flex-shrink: 0; }
+      .font-size-unit { margin-left: 4px; font-size: 11px; color: #5f6368; }
+      .line-spacing-btn { padding: 4px 8px; font-size: 11px; color: #5f6368; border: 1px solid #dadce0; border-radius: 4px; background: #fff; cursor: pointer; transition: all 0.15s; }
+      .line-spacing-btn:hover { border-color: #1a73e8; background: #f1f3f4; color: #1a73e8; }
+      .text-style-buttons { display: flex; gap: 4px; }
+      .text-style-btn { width: 32px; height: 32px; border: 1px solid #dadce0; border-radius: 4px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; transition: all 0.15s; }
+      .text-style-btn:hover { border-color: #1a73e8; background: #f1f3f4; }
+      .text-style-btn.active { border-color: #1a73e8; background: #e8f0fe; color: #1a73e8; }
+      .text-style-btn.bold { font-weight: 700; }
+      .text-style-btn.italic { font-style: italic; }
+      .text-style-btn.underline { text-decoration: underline; }
+      .text-style-btn.strikethrough { text-decoration: line-through; }
+
+      /* 共通ボタン */
+      .icon-btn { display: flex; align-items: center; gap: 4px; padding: 6px 10px; }
+      .icon-btn svg { flex-shrink: 0; }
+      .wide-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+      /* トースト通知 */
+      .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: #fff; padding: 10px 20px; border-radius: 4px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 280px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+      .toast.show { opacity: 1; }
+      .toast.error { background: #d93025; }
+      .toast.success { background: #188038; }
     </style>
     </head>
     <body>
+        <div class="scroll-container">
         <div class="preview-container">
             <div id="placeholder">
                 <svg class="placeholder-icon" viewBox="0 0 24 24"
@@ -100,7 +273,7 @@
         </div>
 
         <div class="main-content" id="mainContent">
-            <div class="section open" id="sec-crop">
+            <div class="section" id="sec-crop">
                 <div class="section-header"
                     onclick="toggleSection('sec-crop')"><svg class="arrow-icon"
                         viewBox="0 0 24 24"><path
@@ -109,8 +282,6 @@
                 <div class="section-content">
                     <div
                         class="info-box">現在のトリミング範囲で画像を切り抜き、見えていない部分を削除します。</div>
-                    <div id="cropStatus"
-                        style="font-size:12px; color:#666; margin-bottom:5px;">-</div>
                     <button class="action-btn" id="cropBtn"
                         onclick="performCrop()" disabled>トリミングを実行して確定</button>
                 </div>
@@ -123,33 +294,24 @@
                         class="section-title">AI画像拡張</span></div>
                 <div class="section-content">
                     <div class="info-box">AIを使用して画像の周囲を描き足します。</div>
-                    <div class="control-label">拡張サイズ (%)</div>
-                    <div class="grid-inputs">
-                        <div><div class="control-label">横</div><div
-                                class="input-wrapper"><input type="number"
-                                    id="numW" value="0" min="0" max="100"
-                                    oninput="syncSlider('w', this.value)"><span
-                                    class="unit">%</span></div><input
-                                type="range" id="rangeW" min="0" max="100"
-                                value="0"
-                                oninput="syncNum('w', this.value)"></div>
-                        <div><div class="control-label">縦</div><div
-                                class="input-wrapper"><input type="number"
-                                    id="numH" value="0" min="0" max="100"
-                                    oninput="syncSlider('h', this.value)"><span
-                                    class="unit">%</span></div><input
-                                type="range" id="rangeH" min="0" max="100"
-                                value="0"
-                                oninput="syncNum('h', this.value)"></div>
+                    <div class="adjust-row">
+                        <span class="adjust-label">横</span>
+                        <input type="range" id="rangeW" min="0" max="100" value="0" oninput="syncNum('w', this.value)">
+                        <input type="number" class="color-input" id="numW" value="0" min="0" max="100" oninput="syncSlider('w', this.value)">
+                        <span class="unit">%</span>
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label">縦</span>
+                        <input type="range" id="rangeH" min="0" max="100" value="0" oninput="syncNum('h', this.value)">
+                        <input type="number" class="color-input" id="numH" value="0" min="0" max="100" oninput="syncSlider('h', this.value)">
+                        <span class="unit">%</span>
                     </div>
                     <button class="action-btn" id="generateBtn"
-                        onclick="callCloudAI('extend')">生成を実行</button>
+                        onclick="callCloudAI('extend')" disabled>生成を実行</button>
                     <div id="postGenButtons" class="retry-group"
                         style="display:none;">
                         <button class="action-btn retry-btn"
                             onclick="callCloudAI('extend')">再生成</button>
-                        <button class="action-btn confirm-btn"
-                            onclick="confirmAndContinue()">確定して次へ</button>
                     </div>
                 </div>
             </div>
@@ -162,11 +324,8 @@
                 <div class="section-content">
                     <div
                         class="info-box">AIを使用して画像の解像度を2倍に高め、ぼやけた輪郭をくっきりと補正します。</div>
-                    <div class="control-label">倍率</div>
-                    <div class="btn-group"><div
-                            class="btn-opt selected">2倍</div></div>
                     <button class="action-btn" id="upscaleBtn"
-                        onclick="callCloudAI('upscale')">高画質化を実行</button>
+                        onclick="callCloudAI('upscale')" disabled>高画質化を実行</button>
                 </div>
             </div>
             <div class="section" id="sec-color">
@@ -176,45 +335,42 @@
                             d="M7 10l5 5 5-5z" /></svg><span
                         class="section-title">色調調整</span></div>
                 <div class="section-content">
-                    <div class="control-row"><div class="control-label">明るさ
-                            <span class="val-disp" id="val_brightness"
-                                onclick="resetVal('brightness', 100)">100</span></div><input
-                            type="range" id="brightnessRange" min="0" max="200"
-                            value="100" oninput="syncColor('brightness')"></div>
-                    <div class="control-row"><div class="control-label">コントラスト
-                            <span class="val-disp" id="val_contrast"
-                                onclick="resetVal('contrast', 100)">100</span></div><input
-                            type="range" id="contrastRange" min="0" max="200"
-                            value="100" oninput="syncColor('contrast')"></div>
-                    <div class="control-row"><div class="control-label">彩度 <span
-                                class="val-disp" id="val_saturate"
-                                onclick="resetVal('saturate', 100)">100</span></div><input
-                            type="range" id="saturateRange" min="0" max="200"
-                            value="100" oninput="syncColor('saturate')"></div>
-                    <div class="control-row"><div class="control-label">色相 <span
-                                class="val-disp" id="val_hue"
-                                onclick="resetVal('hue', 0)">0</span></div><input
-                            type="range" id="hueRange" min="0" max="360"
-                            value="0" oninput="syncColor('hue')"></div>
+                    <div class="adjust-row">
+                        <span class="adjust-label">明るさ</span>
+                        <input type="range" id="brightnessRange" min="0" max="200" value="100" oninput="syncColor('brightness')">
+                        <input type="number" class="color-input" id="val_brightness" value="100" min="0" max="200" oninput="syncColorFromInput('brightness')">
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label" style="font-size:11px;letter-spacing:-0.5px;">コントラスト</span>
+                        <input type="range" id="contrastRange" min="0" max="200" value="100" oninput="syncColor('contrast')">
+                        <input type="number" class="color-input" id="val_contrast" value="100" min="0" max="200" oninput="syncColorFromInput('contrast')">
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label">彩度</span>
+                        <input type="range" id="saturateRange" min="0" max="200" value="100" oninput="syncColor('saturate')">
+                        <input type="number" class="color-input" id="val_saturate" value="100" min="0" max="200" oninput="syncColorFromInput('saturate')">
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label">色相</span>
+                        <input type="range" id="hueRange" min="0" max="360" value="0" oninput="syncColor('hue')">
+                        <input type="number" class="color-input" id="val_hue" value="0" min="0" max="360" oninput="syncColorFromInput('hue')">
+                    </div>
                     <hr class="divider">
-                    <div class="control-row"><div class="control-label"
-                            style="color:#d93025;">赤 <span class="val-disp"
-                                id="val_colorR"
-                                onclick="resetVal('colorR', 0)">0</span></div><input
-                            type="range" id="colorRRange" min="-100" max="100"
-                            value="0" oninput="syncColor('colorR')"></div>
-                    <div class="control-row"><div class="control-label"
-                            style="color:#188038;">緑 <span class="val-disp"
-                                id="val_colorG"
-                                onclick="resetVal('colorG', 0)">0</span></div><input
-                            type="range" id="colorGRange" min="-100" max="100"
-                            value="0" oninput="syncColor('colorG')"></div>
-                    <div class="control-row"><div class="control-label"
-                            style="color:#1a73e8;">青 <span class="val-disp"
-                                id="val_colorB"
-                                onclick="resetVal('colorB', 0)">0</span></div><input
-                            type="range" id="colorBRange" min="-100" max="100"
-                            value="0" oninput="syncColor('colorB')"></div>
+                    <div class="adjust-row">
+                        <span class="adjust-label" style="color:#d93025;">赤</span>
+                        <input type="range" id="colorRRange" min="-100" max="100" value="0" oninput="syncColor('colorR')">
+                        <input type="number" class="color-input" id="val_colorR" value="0" min="-100" max="100" oninput="syncColorFromInput('colorR')">
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label" style="color:#188038;">緑</span>
+                        <input type="range" id="colorGRange" min="-100" max="100" value="0" oninput="syncColor('colorG')">
+                        <input type="number" class="color-input" id="val_colorG" value="0" min="-100" max="100" oninput="syncColorFromInput('colorG')">
+                    </div>
+                    <div class="adjust-row">
+                        <span class="adjust-label" style="color:#1a73e8;">青</span>
+                        <input type="range" id="colorBRange" min="-100" max="100" value="0" oninput="syncColor('colorB')">
+                        <input type="number" class="color-input" id="val_colorB" value="0" min="-100" max="100" oninput="syncColorFromInput('colorB')">
+                    </div>
                 </div>
             </div>
             <div class="section" id="sec-effect">
@@ -246,66 +402,495 @@
                                 oninput="updatePreview()"></div></div>
                 </div>
             </div>
-            <div style="padding: 16px; border-top: 1px solid #dadce0;">
-                <button class="action-btn primary-btn" id="applyBtn" onclick="applyToSlide()" disabled>スライドに適用</button>
+            <div style="padding: 16px; border-top: 0;">
+                <button class="action-btn primary-btn" id="applyBtn" onclick="applyToSlide()" disabled style="margin-top: 0;">スライドに適用</button>
             </div>
         </div>
 
         <div class="standalone-content">
-            <div class="section open" id="sec-align">
-                <div class="section-header"
-                    onclick="toggleSection('sec-align')"><svg
-                        class="arrow-icon" viewBox="0 0 24 24"><path
-                            d="M7 10l5 5 5-5z" /></svg><span
-                        class="section-title">整列</span></div>
+            <!-- カラーセクション -->
+            <div class="section" id="sec-color-panel">
+                <div class="section-header" onclick="toggleSection('sec-color-panel')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">カラー</span>
+                </div>
                 <div class="section-content">
-                    <div class="info-box">選択した要素をスライド内で整列します。画像、図形、テキストなど、すべての要素に対応しています。</div>
-                    <div class="btn-group" style="margin-top:10px;">
-                        <div class="btn-opt" onclick="alignElement('left')" style="display:flex;align-items:center;justify-content:center;" title="左揃え">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 22H2V2h2v20zM22 7H6v3h16V7zm-6 7H6v3h10v-3z"/>
-                            </svg>
+                    <div class="color-target-switcher">
+                        <div class="color-target-group shape-targets">
+                            <div class="color-target fill-target active" id="fillBox" onclick="setActiveTarget('fill')" data-label="塗り">
+                                <div class="color-preview" id="fillPreview"></div>
+                            </div>
+                            <div class="color-target stroke-target" id="strokeBox" onclick="setActiveTarget('stroke')" data-label="線">
+                                <div class="color-preview" id="strokePreview"></div>
+                            </div>
+                        </div>
+                        <div class="color-target-group text-targets">
+                            <div class="color-target text-target" id="textColorTarget" onclick="setActiveTarget('text')" data-label="文字">
+                                <span class="text-icon">A</span>
+                                <div class="color-indicator" id="textColorBar"></div>
+                            </div>
+                            <div class="color-target highlight-target none" id="highlightTarget" onclick="setActiveTarget('highlight')" data-label="蛍光ペン">
+                                <div class="highlight-preview" id="highlightBg">
+                                    <span class="text-icon">A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quick-colors">
+                        <div class="quick-color none-btn" onclick="setNone()" title="なし"></div>
+                        <div class="quick-color white-btn" onclick="setQuickColor('#FFFFFF')" title="白"></div>
+                        <div class="quick-color black-btn" onclick="setQuickColor('#000000')" title="黒"></div>
+                        <div class="eyedropper-btn" id="eyedropperBtn" onclick="toggleEyedropper()" title="スポイト（選択要素から色を取得）">
+                            <svg viewBox="0 0 24 24"><path d="M20.71 5.63l-2.34-2.34a1 1 0 00-1.41 0l-3.12 3.12-1.41-1.41-1.42 1.41 1.42 1.42-8.32 8.32A2 2 0 003.46 18l-.71 2.12a.5.5 0 00.63.63L5.5 20.04a2 2 0 001.79-.65l8.32-8.32 1.41 1.41 1.41-1.41-1.41-1.41 3.12-3.12a1 1 0 00.07-1.41z"/></svg>
+                        </div>
+                    </div>
+                    <div class="swatch-section">
+                        <div class="swatch-label">最近使用したカラー</div>
+                        <div class="recent-colors" id="recentColors"></div>
+                    </div>
+                    <div class="swatch-section">
+                        <div class="swatch-label">カラーパレット</div>
+                        <div class="swatch-grid" id="swatchGrid"></div>
+                    </div>
+                    <div class="spectrum-section">
+                        <div class="swatch-label">カスタムカラー</div>
+                        <div class="spectrum-container">
+                            <canvas id="colorSpectrum" width="276" height="120"></canvas>
+                            <div class="spectrum-cursor" id="spectrumCursor"></div>
+                        </div>
+                        <input type="range" id="hueSlider" min="0" max="360" value="0" oninput="updateHue(this.value)" onchange="addCurrentColorToRecent()">
+                    </div>
+                    <div class="rgb-section">
+                        <div class="rgb-row">
+                            <span class="rgb-label r">R</span>
+                            <input type="range" class="rgb-slider" id="sliderR" min="0" max="255" value="26" oninput="updateFromRGB()" onchange="addCurrentColorToRecent()">
+                            <input type="number" class="rgb-value" id="valueR" min="0" max="255" value="26" oninput="updateFromRGBInputs()" onchange="addCurrentColorToRecent()">
+                        </div>
+                        <div class="rgb-row">
+                            <span class="rgb-label g">G</span>
+                            <input type="range" class="rgb-slider" id="sliderG" min="0" max="255" value="115" oninput="updateFromRGB()" onchange="addCurrentColorToRecent()">
+                            <input type="number" class="rgb-value" id="valueG" min="0" max="255" value="115" oninput="updateFromRGBInputs()" onchange="addCurrentColorToRecent()">
+                        </div>
+                        <div class="rgb-row">
+                            <span class="rgb-label b">B</span>
+                            <input type="range" class="rgb-slider" id="sliderB" min="0" max="255" value="232" oninput="updateFromRGB()" onchange="addCurrentColorToRecent()">
+                            <input type="number" class="rgb-value" id="valueB" min="0" max="255" value="232" oninput="updateFromRGBInputs()" onchange="addCurrentColorToRecent()">
+                        </div>
+                        <div class="rgb-row">
+                            <span class="rgb-label" style="color:#5f6368;">A</span>
+                            <input type="range" class="rgb-slider" id="sliderA" min="0" max="100" value="100" oninput="updateAlphaUI()" onchange="applyCurrentColorWithAlpha()" style="background:linear-gradient(to right, transparent, #000);">
+                            <input type="number" class="rgb-value" id="valueA" min="0" max="100" value="100" oninput="updateAlphaUI()" onchange="applyCurrentColorWithAlpha()">
+                        </div>
+                    </div>
+                    <div class="hex-section">
+                        <div class="hex-preview" id="hexPreview" style="background: #1a73e8;"></div>
+                        <div class="hex-input-wrapper">
+                            <span>#</span>
+                            <input type="text" id="hexInput" value="1A73E8" maxlength="6" oninput="updateFromHex()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 枠線セクション -->
+            <div class="section" id="sec-stroke">
+                <div class="section-header" onclick="toggleSection('sec-stroke')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">枠線</span>
+                </div>
+                <div class="section-content">
+                    <div class="stroke-row">
+                        <span class="stroke-label">太さ</span>
+                        <input type="number" class="stroke-weight-input" id="strokeWeight" value="1" min="0" max="100" step="0.5" onchange="applyStrokeStyle()">
+                        <span class="stroke-weight-unit">pt</span>
+                    </div>
+                    <div class="stroke-row" style="margin-bottom: 0;">
+                        <span class="stroke-label">種類</span>
+                        <div class="stroke-dash-options">
+                            <div class="dash-option selected" data-dash="SOLID" onclick="setDashStyle('SOLID', this); applyStrokeStyle();" title="実線">
+                                <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4"/></svg>
+                            </div>
+                            <div class="dash-option" data-dash="DASH" onclick="setDashStyle('DASH', this); applyStrokeStyle();" title="破線">
+                                <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="8,4"/></svg>
+                            </div>
+                            <div class="dash-option" data-dash="DOT" onclick="setDashStyle('DOT', this); applyStrokeStyle();" title="点線">
+                                <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="2,4"/></svg>
+                            </div>
+                            <div class="dash-option" data-dash="DASH_DOT" onclick="setDashStyle('DASH_DOT', this); applyStrokeStyle();" title="一点鎖線">
+                                <svg viewBox="0 0 40 8"><line x1="0" y1="4" x2="40" y2="4" stroke-dasharray="8,4,2,4"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- テキストセクション -->
+            <div class="section" id="sec-text">
+                <div class="section-header" onclick="toggleSection('sec-text')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">テキスト</span>
+                </div>
+                <div class="section-content">
+                    <div class="text-row">
+                        <span class="text-label">フォント</span>
+                        <select class="font-select" id="fontSelect" onchange="applyFont()">
+                            <option value="Arial">Arial</option>
+                            <option value="Arial Black">Arial Black</option>
+                            <option value="Comic Sans MS">Comic Sans MS</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Impact">Impact</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Trebuchet MS">Trebuchet MS</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Noto Sans JP">Noto Sans JP</option>
+                            <option value="Noto Serif JP">Noto Serif JP</option>
+                            <option value="M PLUS 1p">M PLUS 1p</option>
+                            <option value="M PLUS Rounded 1c">M PLUS Rounded 1c</option>
+                            <option value="Kosugi Maru">Kosugi Maru</option>
+                            <option value="Sawarabi Gothic">Sawarabi Gothic</option>
+                        </select>
+                    </div>
+                    <div class="text-row">
+                        <span class="text-label">サイズ</span>
+                        <input type="number" class="font-size-input" id="fontSizeInput" value="14" min="1" max="400" step="1" onchange="applyFontSize()">
+                        <span class="font-size-unit">pt</span>
+                    </div>
+                    <div class="text-row">
+                        <span class="text-label">スタイル</span>
+                        <div class="text-style-buttons">
+                            <button class="text-style-btn bold" id="btnBold" onclick="toggleTextStyle('bold')">B</button>
+                            <button class="text-style-btn italic" id="btnItalic" onclick="toggleTextStyle('italic')">I</button>
+                            <button class="text-style-btn underline" id="btnUnderline" onclick="toggleTextStyle('underline')">U</button>
+                            <button class="text-style-btn strikethrough" id="btnStrikethrough" onclick="toggleTextStyle('strikethrough')">S</button>
+                        </div>
+                    </div>
+                    <!-- 行間・段落間隔 -->
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">行間・段落</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#5f6368"><path d="M6 7h2.5L5 3.5 1.5 7H4v10H1.5L5 20.5 8.5 17H6V7zm4-2v2h12V5H10zm0 14h12v-2H10v2zm0-6h12v-2H10v2z"/></svg>
+                            <span style="font-size: 11px; color: #5f6368; width: 35px;">行間</span>
+                            <input type="number" id="lineSpacing" value="1" min="0.5" max="5" step="0.1" style="width: 55px; padding: 5px 6px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;" onchange="applyLineSpacing()">
+                            <div style="display: flex; gap: 4px;">
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1)" title="1行">1</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1.15)" title="1.15行">1.15</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(1.5)" title="1.5行">1.5</div>
+                                <div class="line-spacing-btn" onclick="setLineSpacing(2)" title="2行">2</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#5f6368" style="flex-shrink: 0;"><path d="M10 5h12v2H10V5zm0 12h12v2H10v-2zm-6 0h2v2H4v-2zm0-12h2v2H4V5zm0 6h2v2H4v-2zm6 0h12v2H10v-2z"/></svg>
+                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap;">段落前</span>
+                            <input type="number" id="spaceBefore" value="0" min="0" max="100" step="1" style="width: 40px; padding: 4px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px; text-align: right;" onchange="applyParagraphSpacing()">
+                            <span style="font-size: 10px; color: #5f6368;">pt</span>
+                            <span style="font-size: 10px; color: #5f6368; white-space: nowrap; margin-left: 8px;">段落後</span>
+                            <input type="number" id="spaceAfter" value="0" min="0" max="100" step="1" style="width: 40px; padding: 4px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px; text-align: right;" onchange="applyParagraphSpacing()">
+                            <span style="font-size: 10px; color: #5f6368;">pt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 整列セクション（間隔をマージ） -->
+            <div class="section" id="sec-align">
+                <div class="section-header" onclick="toggleSection('sec-align')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">整列</span>
+                </div>
+                <div class="section-content">
+                    <div class="btn-group" style="margin-top:0; flex-wrap:wrap; gap:4px;">
+                        <div class="btn-opt" onclick="alignElement('left')" style="display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="左揃え">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H2V2h2v20zM22 7H6v3h16V7zm-6 7H6v3h10v-3z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="alignElement('center')" style="display:flex;align-items:center;justify-content:center;" title="中央揃え（横）">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M11 2h2v20h-2V2zm10 5H3v3h18V7zm-4 7H7v3h10v-3z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v20h-2V2zm10 5H3v3h18V7zm-4 7H7v3h10v-3z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="alignElement('right')" style="display:flex;align-items:center;justify-content:center;" title="右揃え">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20 2h2v20h-2V2zM2 10h16V7H2v3zm6 7h10v-3H8v3z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2h2v20h-2V2zM2 10h16V7H2v3zm6 7h10v-3H8v3z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="alignElement('top')" style="display:flex;align-items:center;justify-content:center;" title="上揃え">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 2v2H2V2h20zM7 22h3V6H7v16zm7-6h3V6h-3v10z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 2v2H2V2h20zM7 22h3V6H7v16zm7-6h3V6h-3v10z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="alignElement('middle')" style="display:flex;align-items:center;justify-content:center;" title="中央揃え（縦）">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 11v2H2v-2h20zM7 22h3V2H7v20zm7-4h3V6h-3v12z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 11v2H2v-2h20zM7 22h3V2H7v20zm7-4h3V6h-3v12z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="alignElement('bottom')" style="display:flex;align-items:center;justify-content:center;" title="下揃え">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 22H2v-2h20v2zM10 2H7v16h3V2zm7 6h-3v10h3V8z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 22H2v-2h20v2zM10 2H7v16h3V2zm7 6h-3v10h3V8z"/></svg>
                         </div>
+                        <div style="width: 100%; height: 1px; background: #e0e0e0; margin:0;"></div>
                         <div class="btn-opt" onclick="distributeElement('horizontal')" style="display:flex;align-items:center;justify-content:center;" title="水平方向に均等配置">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 22H2V2h2v20zM22 2h-2v20h2V2zM13 7h-2v10h2V7zM9 7H7v10h2V7zm8 0h-2v10h2V7z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22H2V2h2v20zM22 2h-2v20h2V2zM13 7h-2v10h2V7zM9 7H7v10h2V7zm8 0h-2v10h2V7z"/></svg>
                         </div>
                         <div class="btn-opt" onclick="distributeElement('vertical')" style="display:flex;align-items:center;justify-content:center;" title="垂直方向に均等配置">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 2v2H2V2h20zM2 22h20v-2H2v2zM7 13v-2h10v2H7zm0-6V5h10v2H7zm0 12v-2h10v2H7z"/>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 2v2H2V2h20zM2 22h20v-2H2v2zM7 13v-2h10v2H7zm0-6V5h10v2H7zm0 12v-2h10v2H7z"/></svg>
                         </div>
                     </div>
                     <div id="alignStatus" style="font-size:11px; color:#5f6368; margin-top:10px; text-align:center;"></div>
+                    <!-- 均等間隔配置 -->
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">均等間隔配置</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 12px; color: #5f6368;">間隔</span>
+                            <input type="number" id="spacingValue" value="10" min="0" step="1" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                            <span style="font-size: 11px; color: #5f6368;">px</span>
+                        </div>
+                        <div class="spacing-buttons">
+                            <button class="action-btn icon-btn" onclick="setHorizontalSpacing()">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 4h4v16H4V4zm12 0h4v16h-4V4zm-5 7h2v2h-2v-2z" fill="currentColor"/></svg>
+                                水平
+                            </button>
+                            <button class="action-btn icon-btn" onclick="setVerticalSpacing()">
+                                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 4h16v4H4V4zm0 12h16v4H4v-4zm7-5h2v2h-2v-2z" fill="currentColor"/></svg>
+                                垂直
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- 図形セクション（サイズ + 回転・反転） -->
+            <div class="section" id="sec-shape">
+                <div class="section-header" onclick="toggleSection('sec-shape')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">図形</span>
+                </div>
+                <div class="section-content">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 12px; color: #5f6368;">幅</span>
+                        <input type="number" id="sizeWidth" value="100" min="1" step="1" onchange="applyWidth()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 12px; color: #5f6368;">高さ</span>
+                        <input type="number" id="sizeHeight" value="100" min="1" step="1" onchange="applyHeight()" style="width: 60px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 11px; color: #5f6368;">px</span>
+                    </div>
+                    <div class="size-row">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="keepAspectRatio" checked>
+                            <span>縦横比を維持</span>
+                        </label>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">サイズを揃える</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 12px; color: #5f6368;">基準:</span>
+                            <select id="alignReference" style="flex: 1; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; background: #fff;">
+                                <option value="first">最初に選択した要素</option>
+                                <option value="last">最後に選択した要素</option>
+                                <option value="largest">最大の要素</option>
+                                <option value="smallest">最小の要素</option>
+                            </select>
+                        </div>
+                        <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
+                            <div class="btn-opt" onclick="matchWidth()" style="display:flex;align-items:center;justify-content:center;" title="幅を揃える">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4H2v16h2V4zm18 0h-2v16h2V4zM9 7h6v4H9V7zm0 6h6v4H9v-4z"/></svg>
+                            </div>
+                            <div class="btn-opt" onclick="matchHeight()" style="display:flex;align-items:center;justify-content:center;" title="高さを揃える">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2v2h16V2H4zm0 18v2h16v-2H4zM7 9v6h4V9H7zm6 0v6h4V9h-4z"/></svg>
+                            </div>
+                            <div class="btn-opt" onclick="matchSize()" style="display:flex;align-items:center;justify-content:center;" title="サイズを揃える">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4H2v16h2V4zm18 0h-2v16h2V4zM4 2v2h16V2H4zm0 18v2h16v-2H4zM8 8h8v8H8V8z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aspect-section">
+                        <div class="aspect-label">アスペクト比に変形</div>
+                        <div class="aspect-grid">
+                            <button class="aspect-btn" onclick="setAspectRatio(1, 1)" title="1:1 正方形">
+                                <div class="aspect-icon"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">1:1</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(4, 3)" title="4:3 スタンダード">
+                                <div class="aspect-icon"><svg width="24" height="18" viewBox="0 0 24 18"><rect x="1" y="1" width="22" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">4:3</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(3, 4)" title="3:4 縦長">
+                                <div class="aspect-icon"><svg width="18" height="24" viewBox="0 0 18 24"><rect x="1" y="1" width="16" height="22" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">3:4</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(16, 9)" title="16:9 ワイド">
+                                <div class="aspect-icon"><svg width="28" height="16" viewBox="0 0 28 16"><rect x="1" y="1" width="26" height="14" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">16:9</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(9, 16)" title="9:16 縦長ワイド">
+                                <div class="aspect-icon"><svg width="16" height="28" viewBox="0 0 16 28"><rect x="1" y="1" width="14" height="26" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">9:16</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(2, 1)" title="2:1 パノラマ">
+                                <div class="aspect-icon"><svg width="28" height="14" viewBox="0 0 28 14"><rect x="1" y="1" width="26" height="12" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">2:1</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(1, 2)" title="1:2 縦長">
+                                <div class="aspect-icon"><svg width="14" height="28" viewBox="0 0 14 28"><rect x="1" y="1" width="12" height="26" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">1:2</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(3, 2)" title="3:2 写真">
+                                <div class="aspect-icon"><svg width="24" height="16" viewBox="0 0 24 16"><rect x="1" y="1" width="22" height="14" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">3:2</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(2, 3)" title="2:3 縦長写真">
+                                <div class="aspect-icon"><svg width="16" height="24" viewBox="0 0 16 24"><rect x="1" y="1" width="14" height="22" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">2:3</span>
+                            </button>
+                            <button class="aspect-btn" onclick="setAspectRatio(21, 9)" title="21:9 シネマ">
+                                <div class="aspect-icon"><svg width="32" height="14" viewBox="0 0 32 14"><rect x="1" y="1" width="30" height="12" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+                                <span class="aspect-text">21:9</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 回転・反転 -->
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                        <div style="font-size: 12px; color: #5f6368; margin-bottom: 8px;">回転・反転</div>
+                        <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
+                            <div class="btn-opt" onclick="rotate90CW()" style="display:flex;align-items:center;justify-content:center;gap:2px;padding:4px 8px;" title="90° 右回転">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                                <span style="font-size:11px;">90</span>
+                            </div>
+                            <div class="btn-opt" onclick="rotate90CCW()" style="display:flex;align-items:center;justify-content:center;gap:2px;padding:4px 8px;" title="90° 左回転">
+                                <span style="font-size:11px;">90</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" transform="scale(-1,1) translate(-24,0)"/></svg>
+                            </div>
+                            <div class="btn-opt" onclick="rotate180()" style="display:flex;align-items:center;justify-content:center;gap:2px;padding:4px 8px;" title="180° 回転">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5H5c0 3.87 3.13 7 7 7s7-3.13 7-7-3.13-7-7-7z"/></svg>
+                                <span style="font-size:11px;">180</span>
+                            </div>
+                            <div class="btn-opt" onclick="flipHorizontal()" style="display:flex;align-items:center;justify-content:center;" title="左右反転">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15 21h2v-2h-2v2zm4-12h2V7h-2v2zM3 5v14c0 1.1.9 2 2 2h4v-2H5V5h4V3H5c-1.1 0-2 .9-2 2zm16-2v2h2c0-1.1-.9-2-2-2zm-8 20h2V1h-2v22zm8-6h2v-2h-2v2zM15 5h2V3h-2v2zm4 8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2z"/></svg>
+                            </div>
+                            <div class="btn-opt" onclick="flipVertical()" style="display:flex;align-items:center;justify-content:center;" title="上下反転">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15 21h2v-2h-2v2zm4-12h2V7h-2v2zM3 5v14c0 1.1.9 2 2 2h4v-2H5V5h4V3H5c-1.1 0-2 .9-2 2zm16-2v2h2c0-1.1-.9-2-2-2zm-8 20h2V1h-2v22zm8-6h2v-2h-2v2zM15 5h2V3h-2v2zm4 8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2z" transform="rotate(90 12 12)"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連続複製セクション -->
+            <div class="section" id="sec-duplicate">
+                <div class="section-header" onclick="toggleSection('sec-duplicate')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">連続複製</span>
+                </div>
+                <div class="section-content">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 12px; color: #5f6368;">個数</span>
+                        <input type="number" id="duplicateCount" value="3" min="1" max="50" step="1" style="width: 50px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 12px; color: #5f6368;">間隔</span>
+                        <input type="number" id="duplicateSpacing" value="20" min="0" step="1" style="width: 50px; padding: 6px 8px; border: 1px solid #dadce0; border-radius: 4px; font-size: 12px; text-align: right;">
+                        <span style="font-size: 11px; color: #5f6368;">px</span>
+                    </div>
+                    <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
+                        <div class="btn-opt" onclick="duplicateHorizontal()" style="display:flex;align-items:center;justify-content:center;" title="右へ複製">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="4" cy="12" r="3"/><circle cx="12" cy="12" r="3"/><circle cx="20" cy="12" r="3"/></svg>
+                        </div>
+                        <div class="btn-opt" onclick="duplicateVertical()" style="display:flex;align-items:center;justify-content:center;" title="下へ複製">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="3"/><circle cx="12" cy="12" r="3"/><circle cx="12" cy="20" r="3"/></svg>
+                        </div>
+                        <div class="btn-opt" onclick="duplicateGrid()" style="display:flex;align-items:center;justify-content:center;" title="グリッド複製">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="4" cy="4" r="2.5"/><circle cx="12" cy="4" r="2.5"/><circle cx="20" cy="4" r="2.5"/><circle cx="4" cy="12" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="20" cy="12" r="2.5"/><circle cx="4" cy="20" r="2.5"/><circle cx="12" cy="20" r="2.5"/><circle cx="20" cy="20" r="2.5"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 順序セクション -->
+            <div class="section" id="sec-order">
+                <div class="section-header" onclick="toggleSection('sec-order')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">順序</span>
+                </div>
+                <div class="section-content">
+                    <div class="btn-group" style="margin-top: 0; flex-wrap: wrap; gap: 4px;">
+                        <div class="btn-opt" onclick="bringForward()" style="display:flex;align-items:center;justify-content:center;" title="前面へ移動">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 13h4v4H6v-4zm0-6h4v4H6V7zm6 3h4v4h-4v-4zm6-3h4v4h-4V7z" opacity="0.3"/><path d="M12 5l-4 4h8l-4-4z"/></svg>
+                        </div>
+                        <div class="btn-opt" onclick="bringToFront()" style="display:flex;align-items:center;justify-content:center;" title="最前面へ移動">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 15h4v4H6v-4zm0-6h4v4H6V9zm6 3h4v4h-4v-4zm6-3h4v4h-4V9z" opacity="0.3"/><path d="M12 3l-4 4h8l-4-4zm-4 6l4-4 4 4H8z"/></svg>
+                        </div>
+                        <div class="btn-opt" onclick="sendBackward()" style="display:flex;align-items:center;justify-content:center;" title="背面へ移動">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 7h4v4H6V7zm0 6h4v4H6v-4zm6-3h4v4h-4v-4zm6 3h4v4h-4v-4z" opacity="0.3"/><path d="M12 19l4-4H8l4 4z"/></svg>
+                        </div>
+                        <div class="btn-opt" onclick="sendToBack()" style="display:flex;align-items:center;justify-content:center;" title="最背面へ移動">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v4H6V5zm0 6h4v4H6v-4zm6-3h4v4h-4V8zm6 3h4v4h-4v-4z" opacity="0.3"/><path d="M12 21l4-4H8l4 4zm4-6l-4 4-4-4h8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- グループセクション -->
+            <div class="section" id="sec-group">
+                <div class="section-header" onclick="toggleSection('sec-group')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">グループ</span>
+                </div>
+                <div class="section-content">
+                    <div class="group-buttons">
+                        <button class="action-btn wide-btn" onclick="groupElements()">
+                            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm8-2h8v8h-8v-8zm2 2v4h4v-4h-4z" fill="currentColor"/></svg>
+                            グループ化
+                        </button>
+                        <button class="action-btn wide-btn" onclick="ungroupElements()">
+                            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm8-2h8v8h-8v-8zm2 2v4h4v-4h-4zM1 1l22 22" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                            グループ解除
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 共通選択セクション -->
+            <div class="section" id="sec-similar">
+                <div class="section-header" onclick="toggleSection('sec-similar')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">共通選択</span>
+                </div>
+                <div class="section-content">
+                    <div class="info-box">選択中のオブジェクトと同じ属性を持つオブジェクトを一括選択します</div>
+                    <div id="similarAttrs" style="font-size:12px; color:#5f6368; margin-bottom:10px;">オブジェクトを選択してください</div>
+                    <div class="similar-buttons" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarFill" onclick="selectSimilar('fillColor')" disabled>
+                            <span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:#ccc;vertical-align:middle;margin-right:4px;" id="previewFill"></span>塗りつぶし色
+                        </button>
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarStroke" onclick="selectSimilar('strokeColor')" disabled>
+                            <span style="display:inline-block;width:12px;height:12px;border:2px solid #ccc;border-radius:2px;vertical-align:middle;margin-right:4px;box-sizing:border-box;" id="previewStroke"></span>枠線色
+                        </button>
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarTextColor" onclick="selectSimilar('textColor')" disabled>
+                            <span style="color:#ccc;font-weight:bold;margin-right:4px;" id="previewTextColor">A</span>文字色
+                        </button>
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarFont" onclick="selectSimilar('fontFamily')" disabled>
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFont">Aa</span>フォント
+                        </button>
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarFontSize" onclick="selectSimilar('fontSize')" disabled>
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewFontSize">--</span>pt
+                        </button>
+                        <button class="action-btn" style="margin-top:0;" id="btnSimilarStrokeWeight" onclick="selectSimilar('strokeWeight')" disabled>
+                            <span style="font-size:11px;color:#5f6368;margin-right:2px;" id="previewStrokeWeight">--</span>pt枠
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 書式・スタイルコピー履歴セクション -->
+            <div class="section" id="sec-style-history">
+                <div class="section-header" onclick="toggleSection('sec-style-history')">
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    <span class="section-title">書式・スタイルコピー履歴</span>
+                </div>
+                <div class="section-content">
+                    <button class="action-btn" onclick="copyCurrentStyle()" style="margin-top:0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:4px;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/></svg>
+                        選択中のスタイルをコピー
+                    </button>
+                    <div id="styleHistoryList" style="margin-top:10px;max-height:200px;overflow-y:auto;">
+                        <div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;">履歴がありません</div>
+                    </div>
+                    <button class="action-btn" onclick="clearStyleHistory()" style="margin-top:8px;font-size:11px;padding:6px;color:#5f6368;">履歴をクリア</button>
+                </div>
+            </div>
+
         </div>
+        </div>
+
+        <!-- トースト通知 -->
+        <div id="toast" class="toast"></div>
 
         <script>
       // ==========================================
@@ -313,6 +898,19 @@
       // ==========================================
       const CLOUD_FUNCTION_URL = "https://generate-image-1017901325674.us-central1.run.app";
       // ==========================================
+
+      // トースト通知
+      function showToast(message, type, duration) {
+        type = type || 'info';
+        duration = duration || 3000;
+        var toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast ' + type;
+        toast.classList.add('show');
+        setTimeout(function() {
+          toast.classList.remove('show');
+        }, duration);
+      }
 
       var canvas = document.getElementById('previewCanvas');
       var ctx = canvas.getContext('2d');
@@ -325,15 +923,32 @@
       var state = { extW: 0, extH: 0, upscaleFactor: '2x', brightness: 100, contrast: 100, saturate: 100, hue: 0, colorR: 0, colorG: 0, colorB: 0, effectType: 'none', effectVal: 0 };
 
       // --- Auto Poll (500ms Interval) ---
+      var pollingEnabled = true;
       window.onload = function() {
-        setInterval(checkAndFetch, 500);
+        if (pollingEnabled) {
+          setInterval(checkAndFetch, 500);
+        }
       };
 
+      var lastElementId = null;
       function checkAndFetch() {
+        // 全要素の選択変更を監視（色情報用）
         google.script.run.withSuccessHandler(function(id) {
-            if (id !== currentImageId) {
-               if (id) {
-                 currentImageId = id;
+            // 選択要素が変わったら色情報を取得
+            if (id !== lastElementId) {
+              lastElementId = id;
+              loadSelectedElementColors();
+              updateSimilarPanel(); // 類似オブジェクト選択パネルも更新
+            }
+        }).withFailureHandler(function(e) {
+            console.log("Polling error: " + e.message);
+        }).checkSelection();
+
+        // 画像の選択変更を監視（画像編集用）
+        google.script.run.withSuccessHandler(function(imageId) {
+            if (imageId !== currentImageId) {
+               if (imageId) {
+                 currentImageId = imageId;
                  fetchImage();
                } else {
                  currentImageId = null;
@@ -341,8 +956,135 @@
                }
             }
         }).withFailureHandler(function(e) {
-            console.log("Polling error: " + e.message);
-        }).checkSelection();
+            console.log("Image polling error: " + e.message);
+        }).checkSelectionForImage();
+      }
+
+      function loadSelectedElementColors() {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            console.log('getSelectedElementColors result:', JSON.stringify(result));
+            if (result) {
+              // 塗りつぶしの透明度（先に処理）
+              if (result.fillAlpha !== undefined) {
+                colorState.alpha = Math.round(result.fillAlpha * 100);
+                document.getElementById('sliderA').value = colorState.alpha;
+                document.getElementById('valueA').value = colorState.alpha;
+              }
+              // 塗りつぶし色
+              if (result.fillColor) {
+                colorState.fillColor = result.fillColor;
+                document.getElementById('fillBox').classList.remove('none');
+                document.getElementById('fillPreview').style.background = hexToRgba(result.fillColor, colorState.alpha / 100);
+              } else {
+                colorState.fillColor = null;
+                document.getElementById('fillBox').classList.add('none');
+              }
+              // 枠線色
+              if (result.strokeColor) {
+                colorState.strokeColor = result.strokeColor;
+                document.getElementById('strokeBox').classList.remove('none');
+                document.getElementById('strokePreview').style.borderColor = result.strokeColor;
+              } else {
+                colorState.strokeColor = null;
+                document.getElementById('strokeBox').classList.add('none');
+              }
+              // 枠線スタイル
+              if (result.strokeWeight !== null) {
+                colorState.strokeWeight = result.strokeWeight;
+                document.getElementById('strokeWeight').value = result.strokeWeight;
+              }
+              if (result.strokeDashStyle) {
+                colorState.strokeDashStyle = result.strokeDashStyle;
+                // ダッシュスタイルのUI更新
+                var dashOptions = document.querySelectorAll('.dash-option');
+                dashOptions.forEach(function(opt) {
+                  opt.classList.remove('selected');
+                  if (opt.getAttribute('data-dash') === result.strokeDashStyle) {
+                    opt.classList.add('selected');
+                  }
+                });
+              }
+              // テキスト色
+              if (result.textColor) {
+                colorState.textColor = result.textColor;
+                document.getElementById('textColorBar').style.background = result.textColor;
+              }
+              // ハイライト色
+              if (result.backgroundColor) {
+                colorState.highlightColor = result.backgroundColor;
+                document.getElementById('highlightTarget').classList.remove('none');
+                document.getElementById('highlightBg').style.background = result.backgroundColor;
+              } else {
+                colorState.highlightColor = null;
+                document.getElementById('highlightTarget').classList.add('none');
+              }
+              // フォント情報
+              if (result.fontSize !== null && result.fontSize !== undefined) {
+                document.getElementById('fontSizeInput').value = result.fontSize;
+              }
+              if (result.fontFamily) {
+                document.getElementById('fontSelect').value = result.fontFamily;
+              }
+              if (result.bold !== null && result.bold !== undefined) {
+                document.getElementById('btnBold').classList.toggle('active', result.bold === true);
+              } else {
+                document.getElementById('btnBold').classList.remove('active');
+              }
+              if (result.italic !== null && result.italic !== undefined) {
+                document.getElementById('btnItalic').classList.toggle('active', result.italic === true);
+              } else {
+                document.getElementById('btnItalic').classList.remove('active');
+              }
+              if (result.underline !== null && result.underline !== undefined) {
+                document.getElementById('btnUnderline').classList.toggle('active', result.underline === true);
+              } else {
+                document.getElementById('btnUnderline').classList.remove('active');
+              }
+              if (result.strikethrough !== null && result.strikethrough !== undefined) {
+                document.getElementById('btnStrikethrough').classList.toggle('active', result.strikethrough === true);
+              } else {
+                document.getElementById('btnStrikethrough').classList.remove('active');
+              }
+              // 行間・段落間隔
+              if (result.lineSpacing !== null && result.lineSpacing !== undefined) {
+                document.getElementById('lineSpacing').value = result.lineSpacing;
+              }
+              if (result.spaceBefore !== null && result.spaceBefore !== undefined) {
+                document.getElementById('spaceBefore').value = result.spaceBefore;
+              }
+              if (result.spaceAfter !== null && result.spaceAfter !== undefined) {
+                document.getElementById('spaceAfter').value = result.spaceAfter;
+              }
+              // 現在選択中のターゲットに応じてカラーパネルを更新
+              updateColorPanelFromState();
+            }
+          })
+          .withFailureHandler(function(e) {
+            // 選択なしの場合は無視
+          })
+          .getSelectedElementColors();
+      }
+
+      function updateColorPanelFromState() {
+        var color = null;
+        if (colorState.activeTarget === 'fill') {
+          color = colorState.fillColor;
+        } else if (colorState.activeTarget === 'stroke') {
+          color = colorState.strokeColor;
+        } else if (colorState.activeTarget === 'text') {
+          color = colorState.textColor;
+        } else if (colorState.activeTarget === 'highlight') {
+          color = colorState.highlightColor;
+        }
+        console.log('updateColorPanelFromState: activeTarget=' + colorState.activeTarget + ', color=' + color);
+        if (color) {
+          // 色が正しい形式か確認し、#で始まっていなければ追加
+          if (color.charAt(0) !== '#') {
+            color = '#' + color;
+          }
+          setColorToUI(color);
+        }
       }
 
       function fetchImage() {
@@ -353,12 +1095,11 @@
 
       function onImageLoaded(data) {
         currentCropInfo = data.cropInfo;
-        var statusDiv = document.getElementById('cropStatus');
         var cropBtn = document.getElementById('cropBtn');
         if (currentCropInfo && ((currentCropInfo.leftOffset > 0) || (currentCropInfo.rightOffset > 0) || (currentCropInfo.topOffset > 0) || (currentCropInfo.bottomOffset > 0))) {
-          statusDiv.textContent = "現在の状態: トリミングされています"; statusDiv.style.color = "#188038"; cropBtn.disabled = false;
+          cropBtn.disabled = false;
         } else {
-          statusDiv.textContent = "現在の状態: トリミングされていません (全体表示)"; statusDiv.style.color = "#666"; cropBtn.disabled = true;
+          cropBtn.disabled = true;
         }
         loadBase64(data.base64);
       }
@@ -373,9 +1114,11 @@
           hideLoadingOverlay();
           document.getElementById('placeholder').style.display = 'none';
           document.getElementById('previewCanvas').style.display = 'block';
-          document.getElementById('mainContent').classList.add('active');
+          // ボタンを有効化
           document.getElementById('applyBtn').disabled = false;
+          document.getElementById('generateBtn').disabled = false;
           document.getElementById('generateBtn').style.display = 'block';
+          document.getElementById('upscaleBtn').disabled = false;
           document.getElementById('postGenButtons').style.display = 'none';
           document.getElementById('downloadBtn').classList.add('active');
         };
@@ -392,8 +1135,11 @@
         aiResultImg = null;
         document.getElementById('placeholder').style.display = 'flex';
         document.getElementById('previewCanvas').style.display = 'none';
-        document.getElementById('mainContent').classList.remove('active');
+        // ボタンを無効化
         document.getElementById('applyBtn').disabled = true;
+        document.getElementById('generateBtn').disabled = true;
+        document.getElementById('upscaleBtn').disabled = true;
+        document.getElementById('cropBtn').disabled = true;
         document.getElementById('downloadBtn').classList.remove('active');
         hideLoadingOverlay();
 
@@ -415,14 +1161,66 @@
       }
       function resetAndLoad() { currentImageId = null; checkAndFetch(); }
 
-      function syncVal(key) { var val = document.getElementById(key + 'Range').value; state[key] = parseInt(val); document.getElementById('val_' + key).textContent = val; updatePreview(); }
+      function syncVal(key) { var val = document.getElementById(key + 'Range').value; state[key] = parseInt(val); document.getElementById('val_' + key).value = val; updatePreview(); }
       function syncColor(key) { syncVal(key); }
-      function resetVal(key, def) { state[key] = def; document.getElementById(key + 'Range').value = def; document.getElementById('val_' + key).textContent = def; updatePreview(); }
+      function syncColorFromInput(key) { var val = parseInt(document.getElementById('val_' + key).value) || 0; state[key] = val; document.getElementById(key + 'Range').value = val; updatePreview(); }
+      function resetVal(key, def) { state[key] = def; document.getElementById(key + 'Range').value = def; document.getElementById('val_' + key).value = def; updatePreview(); }
       function resetAllParams() { ['brightness','contrast','saturate'].forEach(k => resetVal(k, 100)); ['hue','colorR','colorG','colorB'].forEach(k => resetVal(k, 0)); setEffect('none', document.querySelector('.btn-opt')); document.getElementById('effectRange').value = 0; }
       function updateStateFromUI() { state.extW = parseInt(document.getElementById('rangeW').value); state.extH = parseInt(document.getElementById('rangeH').value); }
       function syncSlider(axis, val) { document.getElementById('range' + axis.toUpperCase()).value = val; updateStateFromUI(); updatePreview(); }
       function syncNum(axis, val) { document.getElementById('num' + axis.toUpperCase()).value = val; updateStateFromUI(); updatePreview(); }
-      function toggleSection(id) { document.getElementById(id).classList.toggle('open'); }
+      function toggleSection(id) {
+        var section = document.getElementById(id);
+        section.classList.toggle('open');
+        // カラーパネルを開いた時にスペクトラムを再描画
+        if (id === 'sec-color-panel' && section.classList.contains('open')) {
+          setTimeout(function() {
+            initSpectrum();
+          }, 50);
+        }
+        // 状態を保存
+        saveSectionStates();
+      }
+
+      // セクションの開閉状態を保存
+      function saveSectionStates() {
+        var sections = document.querySelectorAll('.section');
+        var states = {};
+        sections.forEach(function(section) {
+          if (section.id) {
+            states[section.id] = section.classList.contains('open');
+          }
+        });
+        try {
+          localStorage.setItem('sidebarSectionStates', JSON.stringify(states));
+        } catch(e) {}
+      }
+
+      // セクションの開閉状態を復元
+      function restoreSectionStates() {
+        try {
+          var saved = localStorage.getItem('sidebarSectionStates');
+          if (saved) {
+            var states = JSON.parse(saved);
+            for (var id in states) {
+              var section = document.getElementById(id);
+              if (section) {
+                if (states[id]) {
+                  section.classList.add('open');
+                  // カラーパネルを開く場合はスペクトラムを初期化
+                  if (id === 'sec-color-panel') {
+                    setTimeout(function() {
+                      initSpectrum();
+                    }, 50);
+                  }
+                } else {
+                  section.classList.remove('open');
+                }
+              }
+            }
+          }
+        } catch(e) {}
+      }
       function setEffect(type, el) { state.effectType = type; document.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('selected')); if(el) el.classList.add('selected'); var slider = document.getElementById('effectRange'); if (type === 'none') { state.effectVal = 0; slider.value = 0; slider.disabled = true; } else { if (state.effectVal === 0) { state.effectVal = (type === 'vignette' || type === 'grayscale' || type === 'sepia') ? 50 : 20; slider.value = state.effectVal; } slider.disabled = false; } document.getElementById('effectValLabel').textContent = slider.value; updatePreview(); }
 
       function updatePreview() {
@@ -481,12 +1279,12 @@
         var left = w * (currentCropInfo.leftOffset || 0); var top = h * (currentCropInfo.topOffset || 0);
         var right = w * (currentCropInfo.rightOffset || 0); var bottom = h * (currentCropInfo.bottomOffset || 0);
         var cropW = w - left - right; var cropH = h - top - bottom;
-        if (cropW <= 0 || cropH <= 0) { hideLoadingOverlay(); alert("トリミング範囲が無効です"); return; }
+        if (cropW <= 0 || cropH <= 0) { hideLoadingOverlay(); showToast("トリミング範囲が無効です", "error"); return; }
         var cropCanvas = document.createElement('canvas'); cropCanvas.width = cropW; cropCanvas.height = cropH; var cCtx = cropCanvas.getContext('2d'); cCtx.drawImage(originalImg, left, top, cropW, cropH, 0, 0, cropW, cropH);
-        var newBase64 = cropCanvas.toDataURL('image/png'); currentCropInfo = null; document.getElementById('cropStatus').textContent = "トリミング適用済み"; document.getElementById('cropBtn').disabled = true; loadBase64(newBase64);
+        var newBase64 = cropCanvas.toDataURL('image/png'); currentCropInfo = null; document.getElementById('cropBtn').disabled = true; loadBase64(newBase64);
       }
       function callCloudAI(mode) {
-        if (mode === 'extend' && state.extW === 0 && state.extH === 0) { alert("拡張サイズを入力してください"); return; }
+        if (mode === 'extend' && state.extW === 0 && state.extH === 0) { showToast("拡張サイズを入力してください", "error"); return; }
         showLoadingOverlay(mode === 'upscale' ? 'AI高画質化中(2倍)...' : 'AI生成中...');
         var rawBase64 = (aiResultImg && mode === 'upscale') ? aiResultImg.src : originalImg.src;
         fetch(CLOUD_FUNCTION_URL, {
@@ -499,17 +1297,7 @@
             if(mode === 'extend') { document.getElementById('generateBtn').style.display = 'none'; document.getElementById('postGenButtons').style.display = 'flex'; }
             updatePreview(); hideLoadingOverlay();
           }; newImg.src = data.result_image;
-        }).catch(err => { console.error(err); alert("AIエラー: " + err.message); hideLoadingOverlay(); });
-      }
-      function confirmAndContinue() {
-        if (!aiResultImg) return;
-        // スライダーをリセット（新しいベース画像になるため）
-        document.getElementById('rangeW').value = 0;
-        document.getElementById('numW').value = 0;
-        document.getElementById('rangeH').value = 0;
-        document.getElementById('numH').value = 0;
-        updateStateFromUI();
-        loadBase64(aiResultImg.src);
+        }).catch(err => { console.error(err); showToast("AIエラー: " + err.message, "error"); hideLoadingOverlay(); });
       }
       function applyToSlide() {
         showLoadingOverlay('スライドに配置中...');
@@ -519,13 +1307,13 @@
         var data = outputCanvas.toDataURL('image/jpeg', 0.85);
         google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e) => {
              console.log("Retry with lower quality..."); var lowData = outputCanvas.toDataURL('image/jpeg', 0.7);
-             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { alert("エラー: 画像が大きすぎます"); hideLoadingOverlay(); }).replaceImage(lowData);
+             google.script.run.withSuccessHandler(() => { hideLoadingOverlay(); }).withFailureHandler((e2) => { showToast("画像が大きすぎます", "error"); hideLoadingOverlay(); }).replaceImage(lowData);
         }).replaceImage(data);
       }
 
       function downloadImage() {
         if (!isImageLoaded && !aiResultImg) {
-          alert('画像が読み込まれていません');
+          showToast('画像が読み込まれていません', 'error');
           return;
         }
 
@@ -544,8 +1332,6 @@
         document.body.removeChild(link);
       }
 
-      function toggleSection(id) { document.getElementById(id).classList.toggle('open'); }
-
       // ==========================================
       // 整列機能
       // ==========================================
@@ -554,32 +1340,7 @@
         statusEl.textContent = '整列中...';
         statusEl.style.color = '#1a73e8';
 
-        var functionName = '';
-        switch(type) {
-          case 'left':
-            functionName = 'alignLeft';
-            break;
-          case 'center':
-            functionName = 'alignCenter';
-            break;
-          case 'right':
-            functionName = 'alignRight';
-            break;
-          case 'top':
-            functionName = 'alignTop';
-            break;
-          case 'middle':
-            functionName = 'alignMiddle';
-            break;
-          case 'bottom':
-            functionName = 'alignBottom';
-            break;
-          default:
-            statusEl.textContent = '不明な整列タイプ';
-            statusEl.style.color = '#d93025';
-            return;
-        }
-
+        // 整列セクションは常にスライド基準
         google.script.run
           .withSuccessHandler(function(result) {
             statusEl.textContent = '✓ ' + result;
@@ -595,7 +1356,7 @@
               statusEl.textContent = '';
             }, 3000);
           })
-          [functionName]();
+          .alignElements(type, 'slide');
       }
 
       // ==========================================
@@ -637,6 +1398,861 @@
           })
           [functionName]();
       }
+
+      // ==========================================
+      // カラーパネル機能
+      // ==========================================
+      var colorState = {
+        activeTarget: 'fill',
+        fillColor: '#1A73E8',
+        strokeColor: null,
+        textColor: '#000000',
+        highlightColor: null,
+        strokeWeight: 1,
+        strokeDashStyle: 'SOLID',
+        currentHue: 220,
+        recentColors: [],
+        alpha: 100
+      };
+
+      var swatchColors = [
+        '#000000', '#434343', '#666666', '#999999', '#B7B7B7', '#CCCCCC', '#D9D9D9', '#EFEFEF', '#F3F3F3', '#FFFFFF',
+        '#FF0000', '#FF9900', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9900FF', '#FF00FF', '#FF6699', '#FFB3BA',
+        '#D93025', '#F29900', '#FBBC04', '#34A853', '#4285F4', '#1A73E8', '#A142F4', '#E91E63', '#FF5722', '#795548',
+        '#F4CCCC', '#FCE5CD', '#FFF2CC', '#D9EAD3', '#D0E0E3', '#CFE2F3', '#D9D2E9', '#EAD1DC', '#FFCCBC', '#D7CCC8',
+        '#990000', '#B45F06', '#BF9000', '#38761D', '#134F5C', '#0B5394', '#351C75', '#741B47', '#BF360C', '#4E342E'
+      ];
+
+      var spectrumCanvas, spectrumCtx;
+      var isDraggingSpectrum = false;
+
+      // カラーパネル初期化（window.onloadを拡張）
+      var originalOnLoad = window.onload;
+      window.onload = function() {
+        if (originalOnLoad) originalOnLoad();
+        restoreSectionStates();
+        initColorPanel();
+        loadStyleHistory();
+      };
+
+      function initColorPanel() {
+        initSwatches();
+        initSpectrum();
+        loadRecentColors();
+      }
+
+      function setActiveTarget(target) {
+        colorState.activeTarget = target;
+        document.getElementById('fillBox').classList.toggle('active', target === 'fill');
+        document.getElementById('strokeBox').classList.toggle('active', target === 'stroke');
+        document.getElementById('textColorTarget').classList.toggle('active', target === 'text');
+        document.getElementById('highlightTarget').classList.toggle('active', target === 'highlight');
+
+        var currentColor;
+        if (target === 'fill') currentColor = colorState.fillColor;
+        else if (target === 'stroke') currentColor = colorState.strokeColor;
+        else if (target === 'text') currentColor = colorState.textColor;
+        else currentColor = colorState.highlightColor;
+        if (currentColor) setColorToUI(currentColor);
+
+        // テキスト・ハイライトの場合はAlphaスライダーを無効化
+        var alphaEnabled = (target === 'fill' || target === 'stroke');
+        var sliderA = document.getElementById('sliderA');
+        var valueA = document.getElementById('valueA');
+        sliderA.disabled = !alphaEnabled;
+        valueA.disabled = !alphaEnabled;
+        var alphaRow = sliderA.parentElement;
+        alphaRow.style.opacity = alphaEnabled ? '1' : '0.4';
+      }
+
+      function setNone() {
+        if (colorState.activeTarget === 'fill') {
+          colorState.fillColor = null;
+          document.getElementById('fillBox').classList.add('none');
+          document.getElementById('fillPreview').style.background = '';
+          google.script.run.setFillColor(null);
+        } else if (colorState.activeTarget === 'stroke') {
+          colorState.strokeColor = null;
+          document.getElementById('strokeBox').classList.add('none');
+          document.getElementById('strokePreview').style.borderColor = '';
+          google.script.run.setStrokeColor(null);
+        } else if (colorState.activeTarget === 'highlight') {
+          colorState.highlightColor = null;
+          document.getElementById('highlightTarget').classList.add('none');
+          document.getElementById('highlightBg').style.background = '';
+          google.script.run.setTextBackgroundColor(null);
+        }
+      }
+
+      function setQuickColor(color) {
+        setColor(color, true);
+      }
+
+      function setColor(hexColor, addToRecent) {
+        var funcName;
+        var useAlpha = false;
+        if (colorState.activeTarget === 'fill') {
+          colorState.fillColor = hexColor;
+          document.getElementById('fillBox').classList.remove('none');
+          document.getElementById('fillPreview').style.background = hexToRgba(hexColor, colorState.alpha / 100);
+          funcName = 'setFillColor';
+          useAlpha = true;
+        } else if (colorState.activeTarget === 'stroke') {
+          colorState.strokeColor = hexColor;
+          document.getElementById('strokeBox').classList.remove('none');
+          document.getElementById('strokePreview').style.borderColor = hexColor;
+          funcName = 'setStrokeColor';
+          useAlpha = true;
+        } else if (colorState.activeTarget === 'text') {
+          colorState.textColor = hexColor;
+          document.getElementById('textColorBar').style.background = hexColor;
+          funcName = 'setTextColor';
+        } else if (colorState.activeTarget === 'highlight') {
+          colorState.highlightColor = hexColor;
+          document.getElementById('highlightTarget').classList.remove('none');
+          document.getElementById('highlightBg').style.background = hexColor;
+          funcName = 'setTextBackgroundColor';
+        }
+        setColorToUI(hexColor);
+        if (addToRecent) addToRecentColors(hexColor);
+        // 自動的にスライドに適用（alphaは0-100を0-1に変換）
+        if (funcName) {
+          if (useAlpha) {
+            var alpha = colorState.alpha / 100;
+            google.script.run[funcName](hexColor, alpha);
+          } else {
+            google.script.run[funcName](hexColor);
+          }
+        }
+      }
+
+      function setColorToUI(hexColor) {
+        var rgb = hexToRgb(hexColor);
+        document.getElementById('sliderR').value = rgb.r;
+        document.getElementById('sliderG').value = rgb.g;
+        document.getElementById('sliderB').value = rgb.b;
+        document.getElementById('valueR').value = rgb.r;
+        document.getElementById('valueG').value = rgb.g;
+        document.getElementById('valueB').value = rgb.b;
+        document.getElementById('hexInput').value = hexColor.replace('#', '');
+        document.getElementById('hexPreview').style.backgroundColor = hexColor;
+        var hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+        colorState.currentHue = hsv.h;
+        document.getElementById('hueSlider').value = hsv.h;
+        drawSpectrum(hsv.h);
+        updateSpectrumCursor(hsv.s, hsv.v);
+      }
+
+      function initSwatches() {
+        var grid = document.getElementById('swatchGrid');
+        if (!grid) return;
+        swatchColors.forEach(function(color) {
+          var swatch = document.createElement('div');
+          swatch.className = 'swatch';
+          swatch.style.backgroundColor = color;
+          swatch.onclick = function() { setColor(color, true); };
+          grid.appendChild(swatch);
+        });
+      }
+
+      function loadRecentColors() {
+        try {
+          var saved = localStorage.getItem('recentColors');
+          if (saved) colorState.recentColors = JSON.parse(saved);
+        } catch(e) {}
+        renderRecentColors();
+      }
+
+      function addToRecentColors(color) {
+        colorState.recentColors = colorState.recentColors.filter(function(c) {
+          return c.toUpperCase() !== color.toUpperCase();
+        });
+        colorState.recentColors.unshift(color);
+        if (colorState.recentColors.length > 8) colorState.recentColors = colorState.recentColors.slice(0, 8);
+        try { localStorage.setItem('recentColors', JSON.stringify(colorState.recentColors)); } catch(e) {}
+        renderRecentColors();
+      }
+
+      function renderRecentColors() {
+        var container = document.getElementById('recentColors');
+        if (!container) return;
+        container.innerHTML = '';
+        for (var i = 0; i < 8; i++) {
+          var div = document.createElement('div');
+          div.className = 'recent-color';
+          if (colorState.recentColors[i]) {
+            div.style.backgroundColor = colorState.recentColors[i];
+            div.onclick = (function(color) { return function() { setColor(color, false); }; })(colorState.recentColors[i]);
+          } else {
+            div.className += ' empty';
+          }
+          container.appendChild(div);
+        }
+      }
+
+      function initSpectrum() {
+        spectrumCanvas = document.getElementById('colorSpectrum');
+        if (!spectrumCanvas) return;
+        spectrumCtx = spectrumCanvas.getContext('2d');
+        // コンテナの幅を取得、取得できない場合はデフォルト値
+        var containerWidth = spectrumCanvas.parentElement ? spectrumCanvas.parentElement.offsetWidth : 0;
+        var width = containerWidth > 0 ? containerWidth : 276;
+        var height = 120;
+        spectrumCanvas.width = width;
+        spectrumCanvas.height = height;
+        drawSpectrum(colorState.currentHue);
+        // イベントリスナーは一度だけ追加
+        if (!spectrumCanvas.hasListener) {
+          spectrumCanvas.hasListener = true;
+          spectrumCanvas.addEventListener('mousedown', function(e) { isDraggingSpectrum = true; pickColorFromSpectrum(e); });
+          document.addEventListener('mousemove', function(e) { if (isDraggingSpectrum) pickColorFromSpectrum(e); });
+          document.addEventListener('mouseup', function() {
+            if (isDraggingSpectrum) {
+              isDraggingSpectrum = false;
+              var color = colorState.activeTarget === 'fill' ? colorState.fillColor :
+                          colorState.activeTarget === 'stroke' ? colorState.strokeColor :
+                          colorState.activeTarget === 'text' ? colorState.textColor : colorState.highlightColor;
+              if (color) addToRecentColors(color);
+            }
+          });
+        }
+      }
+
+      function drawSpectrum(hue) {
+        if (!spectrumCanvas || !spectrumCtx) return;
+        var width = spectrumCanvas.width, height = spectrumCanvas.height;
+        for (var x = 0; x < width; x++) {
+          for (var y = 0; y < height; y++) {
+            var s = x / width, v = 1 - (y / height);
+            var rgb = hsvToRgb(hue, s, v);
+            spectrumCtx.fillStyle = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
+            spectrumCtx.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+
+      function pickColorFromSpectrum(e) {
+        var rect = spectrumCanvas.getBoundingClientRect();
+        var x = Math.max(0, Math.min(e.clientX - rect.left, spectrumCanvas.width - 1));
+        var y = Math.max(0, Math.min(e.clientY - rect.top, spectrumCanvas.height - 1));
+        var s = x / spectrumCanvas.width, v = 1 - (y / spectrumCanvas.height);
+        var rgb = hsvToRgb(colorState.currentHue, s, v);
+        var hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        setColor(hex, false);
+        updateSpectrumCursor(s, v);
+      }
+
+      function updateSpectrumCursor(s, v) {
+        var cursor = document.getElementById('spectrumCursor');
+        if (!cursor || !spectrumCanvas) return;
+        cursor.style.left = (s * spectrumCanvas.width) + 'px';
+        cursor.style.top = ((1 - v) * spectrumCanvas.height) + 'px';
+      }
+
+      function updateHue(hue) {
+        colorState.currentHue = parseInt(hue);
+        drawSpectrum(colorState.currentHue);
+        var currentColor = colorState.activeTarget === 'fill' ? colorState.fillColor : colorState.strokeColor;
+        if (currentColor) {
+          var rgb = hexToRgb(currentColor);
+          var hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+          var newRgb = hsvToRgb(colorState.currentHue, hsv.s, hsv.v);
+          setColor(rgbToHex(newRgb.r, newRgb.g, newRgb.b), false);
+        }
+      }
+
+      function updateFromRGB() {
+        var r = parseInt(document.getElementById('sliderR').value);
+        var g = parseInt(document.getElementById('sliderG').value);
+        var b = parseInt(document.getElementById('sliderB').value);
+        document.getElementById('valueR').value = r;
+        document.getElementById('valueG').value = g;
+        document.getElementById('valueB').value = b;
+        setColor(rgbToHex(r, g, b), false);
+      }
+
+      function updateFromRGBInputs() {
+        var r = Math.max(0, Math.min(255, parseInt(document.getElementById('valueR').value) || 0));
+        var g = Math.max(0, Math.min(255, parseInt(document.getElementById('valueG').value) || 0));
+        var b = Math.max(0, Math.min(255, parseInt(document.getElementById('valueB').value) || 0));
+        document.getElementById('sliderR').value = r;
+        document.getElementById('sliderG').value = g;
+        document.getElementById('sliderB').value = b;
+        setColor(rgbToHex(r, g, b), false);
+      }
+
+      function updateAlphaUI() {
+        var sliderVal = parseInt(document.getElementById('sliderA').value);
+        var inputVal = parseInt(document.getElementById('valueA').value) || 100;
+        // スライダーとインプットを同期（UIのみ更新、適用はしない）
+        document.getElementById('sliderA').value = sliderVal;
+        document.getElementById('valueA').value = sliderVal;
+        colorState.alpha = sliderVal;
+        // 塗りのプレビューを更新
+        if (colorState.activeTarget === 'fill' && colorState.fillColor) {
+          document.getElementById('fillPreview').style.background = hexToRgba(colorState.fillColor, sliderVal / 100);
+        }
+      }
+
+      function applyCurrentColorWithAlpha() {
+        var hexColor, funcName, useAlpha = false;
+        if (colorState.activeTarget === 'fill') {
+          hexColor = colorState.fillColor;
+          funcName = 'setFillColor';
+          useAlpha = true;
+          // プレビューも更新
+          if (hexColor) {
+            document.getElementById('fillPreview').style.background = hexToRgba(hexColor, colorState.alpha / 100);
+          }
+        } else if (colorState.activeTarget === 'stroke') {
+          hexColor = colorState.strokeColor;
+          funcName = 'setStrokeColor';
+          useAlpha = true;
+        }
+        if (funcName && hexColor && useAlpha) {
+          var alpha = colorState.alpha / 100;
+          google.script.run[funcName](hexColor, alpha);
+        }
+      }
+
+      function updateFromHex() {
+        var hex = document.getElementById('hexInput').value.replace('#', '');
+        if (hex.length === 6 && /^[0-9A-Fa-f]{6}$/.test(hex)) {
+          setColor('#' + hex.toUpperCase(), false);
+        }
+      }
+
+      function addCurrentColorToRecent() {
+        var color = colorState.activeTarget === 'fill' ? colorState.fillColor :
+                    colorState.activeTarget === 'stroke' ? colorState.strokeColor :
+                    colorState.activeTarget === 'text' ? colorState.textColor : colorState.highlightColor;
+        if (color) addToRecentColors(color);
+      }
+
+      function hexToRgb(hex) {
+        if (!hex) return { r: 0, g: 0, b: 0 };
+        hex = hex.replace('#', '');
+        // 8桁（RRGGBBAA）の場合は6桁に切り詰め
+        if (hex.length > 6) hex = hex.substring(0, 6);
+        // 3桁（RGB）の場合は6桁に展開
+        if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        // 4桁（RGBA）の場合は6桁に
+        if (hex.length === 4) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        // 6桁未満は0でパディング
+        while (hex.length < 6) hex = hex + '0';
+        var r = parseInt(hex.substring(0, 2), 16) || 0;
+        var g = parseInt(hex.substring(2, 4), 16) || 0;
+        var b = parseInt(hex.substring(4, 6), 16) || 0;
+        return { r: r, g: g, b: b };
+      }
+
+      function rgbToHex(r, g, b) {
+        return '#' + [r, g, b].map(function(x) { var h = x.toString(16); return h.length === 1 ? '0' + h : h; }).join('').toUpperCase();
+      }
+
+      function hexToRgba(hex, alpha) {
+        var rgb = hexToRgb(hex);
+        return 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + alpha + ')';
+      }
+
+      function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b), h, s, v = max, d = max - min;
+        s = max === 0 ? 0 : d / max;
+        if (max === min) { h = 0; }
+        else { switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; }
+        return { h: Math.round(h * 360), s: s, v: v };
+      }
+
+      function hsvToRgb(h, s, v) {
+        var r, g, b, i = Math.floor(h / 60) % 6, f = h / 60 - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+        switch (i) { case 0: r = v; g = t; b = p; break; case 1: r = q; g = v; b = p; break; case 2: r = p; g = v; b = t; break; case 3: r = p; g = q; b = v; break; case 4: r = t; g = p; b = v; break; case 5: r = v; g = p; b = q; break; }
+        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+      }
+
+      function toggleEyedropper() {
+        var btn = document.getElementById('eyedropperBtn');
+        if (btn.classList.contains('active')) { btn.classList.remove('active'); }
+        else {
+          btn.classList.add('active');
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result) {
+                if (colorState.activeTarget === 'fill' && result.fillColor) setColor(result.fillColor, true);
+                else if (colorState.activeTarget === 'stroke' && result.strokeColor) setColor(result.strokeColor, true);
+                else if (colorState.activeTarget === 'text' && result.textColor) setColor(result.textColor, true);
+                else if (colorState.activeTarget === 'highlight' && result.backgroundColor) setColor(result.backgroundColor, true);
+              }
+              btn.classList.remove('active');
+            })
+            .withFailureHandler(function(e) { showToast(e.message, 'error'); btn.classList.remove('active'); })
+            .getSelectedElementColors();
+        }
+      }
+
+      // ==========================================
+      // 枠線スタイル機能
+      // ==========================================
+      function setDashStyle(style, el) {
+        colorState.strokeDashStyle = style;
+        document.querySelectorAll('.dash-option').forEach(function(opt) { opt.classList.remove('selected'); });
+        el.classList.add('selected');
+      }
+
+      function applyStrokeStyle() {
+        colorState.strokeWeight = parseFloat(document.getElementById('strokeWeight').value) || 1;
+        google.script.run.setStrokeStyle(colorState.strokeWeight, colorState.strokeDashStyle);
+      }
+
+      // ==========================================
+      // サイズ変更機能
+      // ==========================================
+      function applyWidth() {
+        var width = parseFloat(document.getElementById('sizeWidth').value);
+        var keepRatio = document.getElementById('keepAspectRatio').checked;
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setElementWidth(width, keepRatio);
+      }
+
+      function applyHeight() {
+        var height = parseFloat(document.getElementById('sizeHeight').value);
+        var keepRatio = document.getElementById('keepAspectRatio').checked;
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setElementHeight(height, keepRatio);
+      }
+
+      function matchWidth() {
+        var reference = document.getElementById('alignReference').value;
+        google.script.run
+          .withSuccessHandler(function(r) { showToast(r, 'success'); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .matchElementsWidth(reference);
+      }
+      function matchHeight() {
+        var reference = document.getElementById('alignReference').value;
+        google.script.run
+          .withSuccessHandler(function(r) { showToast(r, 'success'); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .matchElementsHeight(reference);
+      }
+      function matchSize() {
+        var reference = document.getElementById('alignReference').value;
+        google.script.run
+          .withSuccessHandler(function(r) { showToast(r, 'success'); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .matchElementsSize(reference);
+      }
+
+      function setAspectRatio(widthRatio, heightRatio) {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setElementAspectRatio(widthRatio, heightRatio);
+      }
+
+      // ==========================================
+      // 間隔調整機能
+      // ==========================================
+      function setHorizontalSpacing() {
+        var spacing = parseFloat(document.getElementById('spacingValue').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setHorizontalSpacing(spacing);
+      }
+
+      function setVerticalSpacing() {
+        var spacing = parseFloat(document.getElementById('spacingValue').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setVerticalSpacing(spacing);
+      }
+
+      // ==========================================
+      // 複製機能
+      // ==========================================
+      function duplicateHorizontal() {
+        var count = parseInt(document.getElementById('duplicateCount').value);
+        var spacing = parseFloat(document.getElementById('duplicateSpacing').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .duplicateHorizontal(count, spacing);
+      }
+
+      function duplicateVertical() {
+        var count = parseInt(document.getElementById('duplicateCount').value);
+        var spacing = parseFloat(document.getElementById('duplicateSpacing').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .duplicateVertical(count, spacing);
+      }
+
+      function duplicateGrid() {
+        var count = parseInt(document.getElementById('duplicateCount').value);
+        var spacing = parseFloat(document.getElementById('duplicateSpacing').value);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .duplicateGrid(count, spacing);
+      }
+
+      // ==========================================
+      // 回転・反転機能
+      // ==========================================
+      function rotate90CW() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .rotateElement(90);
+      }
+      function rotate90CCW() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .rotateElement(-90);
+      }
+      function rotate180() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .rotateElement(180);
+      }
+      function flipHorizontal() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .flipHorizontal();
+      }
+      function flipVertical() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .flipVertical();
+      }
+
+      // ==========================================
+      // 順序変更機能
+      // ==========================================
+      function bringToFront() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .bringToFront();
+      }
+      function bringForward() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .bringForward();
+      }
+      function sendBackward() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .sendBackward();
+      }
+      function sendToBack() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .sendToBack();
+      }
+
+      // ==========================================
+      // グループ化機能
+      // ==========================================
+      function groupElements() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .groupElements();
+      }
+      function ungroupElements() {
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .ungroupElements();
+      }
+
+      // ==========================================
+      // 類似オブジェクト選択機能
+      // ==========================================
+      var currentElementAttrs = null;
+
+      function updateSimilarPanel() {
+        google.script.run
+          .withSuccessHandler(function(attrs) {
+            currentElementAttrs = attrs;
+            updateSimilarButtons(attrs);
+          })
+          .withFailureHandler(function(e) {
+            currentElementAttrs = null;
+            updateSimilarButtons(null);
+          })
+          .getSelectedElementAttributes();
+      }
+
+      function updateSimilarButtons(attrs) {
+        var statusDiv = document.getElementById('similarAttrs');
+        var btnFill = document.getElementById('btnSimilarFill');
+        var btnStroke = document.getElementById('btnSimilarStroke');
+        var btnTextColor = document.getElementById('btnSimilarTextColor');
+        var btnFont = document.getElementById('btnSimilarFont');
+        var btnFontSize = document.getElementById('btnSimilarFontSize');
+        var btnStrokeWeight = document.getElementById('btnSimilarStrokeWeight');
+
+        if (!attrs) {
+          statusDiv.textContent = 'オブジェクトを選択してください';
+          btnFill.disabled = true;
+          btnStroke.disabled = true;
+          btnTextColor.disabled = true;
+          btnFont.disabled = true;
+          btnFontSize.disabled = true;
+          btnStrokeWeight.disabled = true;
+          document.getElementById('previewFill').style.background = '#ccc';
+          document.getElementById('previewStroke').style.borderColor = '#ccc';
+          document.getElementById('previewTextColor').style.color = '#ccc';
+          document.getElementById('previewFont').textContent = 'Aa';
+          document.getElementById('previewFontSize').textContent = '--';
+          document.getElementById('previewStrokeWeight').textContent = '--';
+          return;
+        }
+
+        statusDiv.textContent = attrs.elementType + ' を選択中';
+
+        // 塗りつぶし色
+        if (attrs.fillColor) {
+          btnFill.disabled = false;
+          document.getElementById('previewFill').style.background = attrs.fillColor;
+        } else {
+          btnFill.disabled = true;
+          document.getElementById('previewFill').style.background = '#ccc';
+        }
+
+        // 枠線色
+        if (attrs.strokeColor) {
+          btnStroke.disabled = false;
+          document.getElementById('previewStroke').style.borderColor = attrs.strokeColor;
+        } else {
+          btnStroke.disabled = true;
+          document.getElementById('previewStroke').style.borderColor = '#ccc';
+        }
+
+        // 文字色
+        if (attrs.textColor) {
+          btnTextColor.disabled = false;
+          document.getElementById('previewTextColor').style.color = attrs.textColor;
+        } else {
+          btnTextColor.disabled = true;
+          document.getElementById('previewTextColor').style.color = '#ccc';
+        }
+
+        // フォント
+        if (attrs.fontFamily) {
+          btnFont.disabled = false;
+          document.getElementById('previewFont').textContent = attrs.fontFamily.substring(0, 6);
+        } else {
+          btnFont.disabled = true;
+          document.getElementById('previewFont').textContent = 'Aa';
+        }
+
+        // フォントサイズ
+        if (attrs.fontSize) {
+          btnFontSize.disabled = false;
+          document.getElementById('previewFontSize').textContent = Math.round(attrs.fontSize);
+        } else {
+          btnFontSize.disabled = true;
+          document.getElementById('previewFontSize').textContent = '--';
+        }
+
+        // 枠線の太さ
+        if (attrs.strokeWeight) {
+          btnStrokeWeight.disabled = false;
+          document.getElementById('previewStrokeWeight').textContent = attrs.strokeWeight.toFixed(1);
+        } else {
+          btnStrokeWeight.disabled = true;
+          document.getElementById('previewStrokeWeight').textContent = '--';
+        }
+      }
+
+      function selectSimilar(matchType) {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            showToast(result.message, result.count > 0 ? 'success' : 'info');
+          })
+          .withFailureHandler(function(e) {
+            showToast(e.message, 'error');
+          })
+          .selectSimilarElements(matchType);
+      }
+
+      // ==========================================
+      // 書式・スタイルコピー履歴機能
+      // ==========================================
+      var styleHistory = [];
+      var MAX_STYLE_HISTORY = 10;
+
+      function loadStyleHistory() {
+        try {
+          var saved = localStorage.getItem('styleHistory');
+          if (saved) {
+            styleHistory = JSON.parse(saved);
+            renderStyleHistory();
+          }
+        } catch(e) {}
+      }
+
+      function saveStyleHistory() {
+        try {
+          localStorage.setItem('styleHistory', JSON.stringify(styleHistory));
+        } catch(e) {}
+      }
+
+      function copyCurrentStyle() {
+        google.script.run
+          .withSuccessHandler(function(style) {
+            styleHistory.unshift(style);
+            if (styleHistory.length > MAX_STYLE_HISTORY) {
+              styleHistory.pop();
+            }
+            saveStyleHistory();
+            renderStyleHistory();
+            showToast('スタイルをコピーしました', 'success');
+          })
+          .withFailureHandler(function(e) {
+            showToast(e.message, 'error');
+          })
+          .copyElementStyle();
+      }
+
+      function renderStyleHistory() {
+        var container = document.getElementById('styleHistoryList');
+        if (styleHistory.length === 0) {
+          container.innerHTML = '<div style="color:#5f6368;font-size:12px;text-align:center;padding:20px 0;">履歴がありません</div>';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < styleHistory.length; i++) {
+          var style = styleHistory[i];
+          var previewHtml = '';
+
+          if (style.fillColor) {
+            previewHtml += '<span style="display:inline-block;width:14px;height:14px;background:' + style.fillColor + ';border-radius:2px;vertical-align:middle;margin-right:3px;border:1px solid #ddd;"></span>';
+          }
+          if (style.strokeColor) {
+            previewHtml += '<span style="display:inline-block;width:14px;height:14px;border:2px solid ' + style.strokeColor + ';border-radius:2px;vertical-align:middle;margin-right:3px;box-sizing:border-box;"></span>';
+          }
+          if (style.textColor) {
+            previewHtml += '<span style="color:' + style.textColor + ';font-weight:bold;margin-right:3px;">A</span>';
+          }
+
+          var labelParts = [];
+          if (style.fontFamily) labelParts.push(style.fontFamily.substring(0, 10));
+          if (style.fontSize) labelParts.push(style.fontSize + 'pt');
+          var labelText = labelParts.join(' ');
+
+          html += '<div class="style-history-item" data-index="' + i + '" style="display:flex;align-items:center;padding:8px;border:1px solid #dadce0;border-radius:4px;margin-bottom:6px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background=\'#f8fbff\'" onmouseout="this.style.background=\'#fff\'">';
+          html += '<div style="flex:1;display:flex;align-items:center;">' + previewHtml + '<span style="font-size:11px;color:#5f6368;">' + labelText + '</span></div>';
+          html += '<button onclick="applyStyleFromHistory(' + i + ');event.stopPropagation();" style="background:#1a73e8;color:#fff;border:none;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">適用</button>';
+          html += '<button onclick="removeStyleFromHistory(' + i + ');event.stopPropagation();" style="background:none;border:none;color:#5f6368;padding:4px;cursor:pointer;margin-left:4px;font-size:14px;">x</button>';
+          html += '</div>';
+        }
+        container.innerHTML = html;
+      }
+
+      function applyStyleFromHistory(index) {
+        var style = styleHistory[index];
+        if (!style) return;
+
+        google.script.run
+          .withSuccessHandler(function(result) {
+            showToast(result, 'success');
+          })
+          .withFailureHandler(function(e) {
+            showToast(e.message, 'error');
+          })
+          .applyElementStyle(style, { all: true });
+      }
+
+      function removeStyleFromHistory(index) {
+        styleHistory.splice(index, 1);
+        saveStyleHistory();
+        renderStyleHistory();
+      }
+
+      function clearStyleHistory() {
+        styleHistory = [];
+        saveStyleHistory();
+        renderStyleHistory();
+        showToast('履歴をクリアしました', 'info');
+      }
+
+      // ==========================================
+      // テキスト機能
+      // ==========================================
+      var textState = { font: 'Arial', size: 14, bold: false, italic: false, underline: false, strikethrough: false };
+
+      function applyFont() {
+        textState.font = document.getElementById('fontSelect').value;
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setTextFont(textState.font);
+      }
+
+      function applyFontSize() {
+        textState.size = parseInt(document.getElementById('fontSizeInput').value) || 14;
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setTextFontSize(textState.size);
+      }
+
+      function toggleTextStyle(style) {
+        var btn, funcName;
+        switch(style) {
+          case 'bold': textState.bold = !textState.bold; btn = document.getElementById('btnBold'); funcName = 'setTextBold'; break;
+          case 'italic': textState.italic = !textState.italic; btn = document.getElementById('btnItalic'); funcName = 'setTextItalic'; break;
+          case 'underline': textState.underline = !textState.underline; btn = document.getElementById('btnUnderline'); funcName = 'setTextUnderline'; break;
+          case 'strikethrough': textState.strikethrough = !textState.strikethrough; btn = document.getElementById('btnStrikethrough'); funcName = 'setTextStrikethrough'; break;
+        }
+        btn.classList.toggle('active', textState[style]);
+        google.script.run
+          .withSuccessHandler(function(r) { console.log('成功:', r); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          [funcName](textState[style]);
+      }
+
+      function setLineSpacing(value) {
+        document.getElementById('lineSpacing').value = value;
+        applyLineSpacing();
+      }
+
+      function applyLineSpacing() {
+        var spacing = parseFloat(document.getElementById('lineSpacing').value) || 1;
+        google.script.run
+          .withSuccessHandler(function(r) { showToast(r, 'success'); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setLineSpacing(spacing);
+      }
+
+      function applyParagraphSpacing() {
+        var before = parseFloat(document.getElementById('spaceBefore').value) || 0;
+        var after = parseFloat(document.getElementById('spaceAfter').value) || 0;
+        google.script.run
+          .withSuccessHandler(function(r) { showToast(r, 'success'); })
+          .withFailureHandler(function(e) { showToast(e.message, 'error'); })
+          .setParagraphSpacing(before, after);
+      }
+
     </script>
     </body>
 </html>

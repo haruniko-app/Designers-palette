@@ -114,16 +114,20 @@
         }
 
         .hero-tagline {
-            font-size: 14px;
+            font-size: 18px;
             color: var(--text-secondary);
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .hero-tagline-tight {
+            margin-bottom: -8px !important;
         }
 
         .hero h1 {
-            font-size: 48px;
+            font-size: 80px;
             font-weight: 600;
-            letter-spacing: -1.5px;
+            letter-spacing: -2.5px;
             margin-bottom: 8px;
             color: var(--text);
         }
@@ -425,7 +429,7 @@
             .nav-links { gap: 16px; }
             .nav-links a { font-size: 12px; }
             .hero { padding: 140px 20px 80px; }
-            .hero h1 { font-size: 32px; }
+            .hero h1 { font-size: 48px; }
             .hero p { font-size: 16px; }
             .section { padding: 60px 20px; }
             .section-header { margin-bottom: 48px; }
@@ -458,7 +462,7 @@
 
     <div class="hero-section">
         <section class="hero">
-            <p class="hero-tagline">Design Tools with AI for designers by designers.</p>
+            <p class="hero-tagline hero-tagline-tight">Design Tools with AI for designers by designers.</p>
             <h1>Designer's Palette</h1>
             <p class="hero-sub">FOR GOOGLE SLIDES™</p>
             <img src="icon.png" alt="Designer's Palette" class="hero-icon">
@@ -506,7 +510,7 @@
                     <path d="M10 40h28M14 44h20" opacity="0.5"/>
                 </svg>
                 <h3>Image Effects</h3>
-                <p>Apply blur, sharpen, grayscale, sepia, and other effects directly in Slides.</p>
+                <p>Apply blur, grayscale, sepia, and other effects directly in Slides.</p>
             </div>
 
             <div class="feature">
@@ -621,6 +625,7 @@
                 <h3>Export Options</h3>
                 <p>Export slides or selected elements as PNG, JPG, or PDF with quality control.</p>
             </div>
+
         </div>
     </section>
 
@@ -665,12 +670,12 @@
             </div>
             <div class="showcase-content">
                 <h3>Image Effects</h3>
-                <p>Apply professional image effects directly within Google Slides. Transform your images with blur, sharpen, and color effects — no external editor needed.</p>
+                <p>Apply professional image effects directly within Google Slides. Transform your images with blur and color effects — no external editor needed.</p>
                 <ul>
-                    <li>Blur and sharpen filters</li>
+                    <li>Blur and pixelate filters</li>
                     <li>Grayscale and sepia tones</li>
                     <li>Brightness and contrast</li>
-                    <li>Color inversion and vintage</li>
+                    <li>Vignette effect</li>
                 </ul>
             </div>
         </div>
@@ -776,7 +781,6 @@
                     <li>Distribute Spacing</li>
                     <li>X/Y Coordinates</li>
                     <li>Grid Duplicate</li>
-                    <li>Snap to Grid</li>
                 </ul>
             </div>
             <div class="utility-category">
@@ -786,7 +790,6 @@
                     <li>Aspect Ratio Lock</li>
                     <li>Preset Ratios</li>
                     <li>Rotation & Flip</li>
-                    <li>Scale Options</li>
                 </ul>
             </div>
         </div>

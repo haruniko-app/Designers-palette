@@ -431,6 +431,11 @@
             .utility-grid { grid-template-columns: 1fr; }
             .utility-benefit { padding: 20px; }
             .cta-section { padding: 80px 20px; }
+            .pain-points-grid { grid-template-columns: 1fr !important; }
+        }
+
+        @media (max-width: 900px) {
+            .pain-points-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
     </style>
 </head>
@@ -463,6 +468,49 @@
             <a href="https://workspace.google.com/marketplace/" class="cta-btn">無料でインストール</a>
         </section>
     </div>
+
+    <!-- Pain Points Section -->
+    <section class="section" style="background: var(--bg-alt); padding: 80px 40px;">
+        <div class="section-header">
+            <h2>Google スライドに足りないもの</h2>
+            <p>こんな経験、ありませんか？</p>
+        </div>
+        <div class="pain-points-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1000px; margin: 0 auto;">
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「画像のサイズが足りない...外部ツールで拡張するしかないのか」
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「低解像度の画像しかない...引き伸ばすとぼやけてしまう」
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「この色と同じオブジェクトを全部選択したいのに、一つずつクリックするしかない」
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「要素を等間隔に並べたいけど、ガイドがないから目分量になる」
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「書式のコピペが面倒...何度も同じ作業を繰り返している」
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    「トリミングしたはずなのに、共有したら元の画像が見えてしまった」
+                </p>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 48px; font-size: 18px; color: var(--text);">
+            <strong>Designer's Palette</strong> は、これらすべてを解決します。
+        </p>
+    </section>
 
     <hr class="divider">
 

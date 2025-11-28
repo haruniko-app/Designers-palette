@@ -439,6 +439,11 @@
             .utility-grid { grid-template-columns: 1fr; }
             .utility-benefit { padding: 20px; }
             .cta-section { padding: 80px 20px; }
+            .pain-points-grid { grid-template-columns: 1fr !important; }
+        }
+
+        @media (max-width: 900px) {
+            .pain-points-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
     </style>
 </head>
@@ -471,6 +476,49 @@
             <a href="https://workspace.google.com/marketplace/" class="cta-btn">Install Free</a>
         </section>
     </div>
+
+    <!-- Pain Points Section -->
+    <section class="section" style="background: var(--bg-alt); padding: 80px 40px;">
+        <div class="section-header">
+            <h2>What's Missing in Google Slides</h2>
+            <p>Sound familiar?</p>
+        </div>
+        <div class="pain-points-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1000px; margin: 0 auto;">
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "My image doesn't fit the slide... I need an external tool just to extend it."
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "This image is low-res... if I scale it up, it looks terrible."
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "I want to select all objects with this color, but I have to click them one by one."
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "I need to space these evenly, but there's no guide — I'm just eyeballing it."
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "Copy-pasting styles is tedious... I keep doing the same thing over and over."
+                </p>
+            </div>
+            <div class="pain-point" style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px;">
+                <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin: 0;">
+                    "I cropped this image, but the hidden part showed up when I shared it."
+                </p>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 48px; font-size: 18px; color: var(--text);">
+            <strong>Designer's Palette</strong> solves all of these.
+        </p>
+    </section>
 
     <hr class="divider">
 

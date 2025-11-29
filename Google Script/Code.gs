@@ -793,7 +793,16 @@ function getSelectedElementColors(lang) {
             }
           }
           // 背景色（ハイライト）を取得
-          var bgColor = textStyle.getBackgroundColor();
+          var bgColor = null;
+          try {
+            bgColor = textStyle.getBackgroundColor();
+            console.log('=== HIGHLIGHT_BG === bgColor: ' + bgColor);
+            if (bgColor) {
+              console.log('=== HIGHLIGHT_BG === colorType: ' + bgColor.getColorType());
+            }
+          } catch(bgErr) {
+            console.log('=== HIGHLIGHT_BG === error: ' + bgErr.message);
+          }
           if (bgColor) {
             try {
               var bgColorType = bgColor.getColorType();
@@ -2538,6 +2547,7 @@ function copyElementStyle(lang) {
       strokeWeight: null,
       strokeDashStyle: null,
       textColor: null,
+      backgroundColor: null,
       fontFamily: null,
       fontSize: null,
       bold: null,
@@ -2633,6 +2643,22 @@ function copyElementStyle(lang) {
               style.textColor = rgbColorToHex(fgColor.asRgbColor());
             } catch(e2) {}
           }
+          // テキスト背景色（ハイライト）
+          try {
+            var bgColor = textStyle.getBackgroundColor();
+            if (bgColor) {
+              var bgColorType = bgColor.getColorType();
+              if (bgColorType === SlidesApp.ColorType.RGB) {
+                style.backgroundColor = rgbColorToHex(bgColor.asRgbColor());
+              } else if (bgColorType === SlidesApp.ColorType.THEME) {
+                var bgThemeColor = bgColor.asThemeColor();
+                var bgPresentation = SlidesApp.getActivePresentation();
+                var bgScheme = bgPresentation.getMasters()[0].getColorScheme();
+                var bgResolvedColor = bgScheme.getConcreteColor(bgThemeColor.getThemeColorType());
+                style.backgroundColor = rgbColorToHex(bgResolvedColor.asRgbColor());
+              }
+            }
+          } catch(e) {}
           style.fontFamily = textStyle.getFontFamily();
           style.fontSize = textStyle.getFontSize();
           style.bold = textStyle.isBold();
@@ -2757,6 +2783,14 @@ function applyElementStyle(style, options, lang) {
           if ((applyAll || options.textColor) && style.textColor) {
             try {
               textStyle.setForegroundColor(style.textColor);
+              applied = true;
+            } catch(e) {}
+          }
+
+          // テキスト背景色（ハイライト）
+          if ((applyAll || options.backgroundColor) && style.backgroundColor) {
+            try {
+              textStyle.setBackgroundColor(style.backgroundColor);
               applied = true;
             } catch(e) {}
           }

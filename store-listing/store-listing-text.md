@@ -29,7 +29,7 @@ Expand images seamlessly in any direction. The AI intelligently generates matchi
 Transform low-resolution images into crisp, high-quality versions. AI enhances details and sharpens edges while maintaining natural appearance.
 
 ▸ Image Effects
-Apply professional effects directly in Slides — blur, sharpen, grayscale, sepia, brightness, contrast, and more. No external editor needed.
+Apply professional effects directly in Slides — blur, pixelate, grayscale, sepia, vignette, and more. No external editor needed.
 
 ▸ Crop Commit
 Permanently finalize your image crops. Remove hidden areas to optimize file size and ensure what you see is what you get.
@@ -50,7 +50,7 @@ Create multiple copies with precise spacing. Duplicate horizontally, vertically,
 【Image Editing】
 • AI Image Extension
 • AI Upscaling (2x)
-• Image Effects (blur, sharpen, grayscale, sepia, etc.)
+• Image Effects (blur, pixelate, grayscale, sepia, vignette)
 • Crop Commit
 • Color Adjustment (brightness, contrast, saturation)
 
@@ -124,7 +124,7 @@ Designer's Palette for Google Slides™は、プレゼンテーションにプ�
 低解像度の画像を鮮明で高品質なバージョンに変換。AIがディテールを強化し、エッジをシャープに。
 
 ▸ 画像エフェクト
-Slides上で直接プロフェッショナルなエフェクトを適用 — ぼかし、シャープ、グレースケール、セピア、明るさ、コントラストなど。外部エディタ不要。
+Slides上で直接プロフェッショナルなエフェクトを適用 — ぼかし、モザイク、グレースケール、セピア、周辺減光など。外部エディタ不要。
 
 ▸ トリミング確定
 クロップを永続的に適用。隠れた領域を削除してファイルサイズを最適化。
@@ -145,7 +145,7 @@ Slides上で直接プロフェッショナルなエフェクトを適用 — ぼ
 【画像編集】
 • AI画像拡張
 • AI高画質化（2倍）
-• 画像エフェクト（ぼかし、シャープ、グレースケール、セピアなど）
+• 画像エフェクト（ぼかし、モザイク、グレースケール、セピア、周辺減光）
 • トリミング確定
 • 色調調整（明るさ、コントラスト、彩度）
 

@@ -38,3 +38,6 @@ Thumbs.db
 # Google Apps Script - clasp
 # .clasp.json は環境によって異なるため、バージョン管理しない
 Google Script/.clasp.json
+
+# Claude Code settings (contains sensitive tokens)
+CLAUDE.md
